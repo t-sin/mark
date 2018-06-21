@@ -1,7 +1,5 @@
 # Mark - Little squirrel program
 
-Little squirrel awakes.
-
 > Mark wakes up.
 > --- "The Squirrel Awakes" by Toh Enjoe
 
