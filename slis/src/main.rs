@@ -59,7 +59,7 @@ struct Token {
 struct ReadState {
     input: String,
     pos: usize,
-    ast: Vec<Cons>,
+    ast: Cons,
     current_node: Cons,
     stack: Vec<Token>,
 }
@@ -72,10 +72,14 @@ fn top(state: &ReadState) -> Option<usize> {
     }
 }
 
+fn is_delimiter(c: char) -> bool {
+    c == ' ' || c == '\n'
+}
+
 fn cheap_read_dispatch(state: &mut ReadState) {
     let c = state.input.chars().nth(state.pos).unwrap();
 
-    if c == ' ' || c == '\n' {
+    if is_delimiter(c) {
         state.pos += 1;
 
     } else if c.is_digit(10) {
@@ -96,41 +100,63 @@ fn cheap_read_dispatch(state: &mut ReadState) {
     state.pos += 1;
  }
 
+fn cheap_read_non_terminate(state: &mut ReadState) {
+    let c = state.input.chars().nth(state.pos).unwrap();
+    println!("stack: {:?}", state.stack);
+    println!("char is {:?}!", c);
+
+    match top(state) {
+        Some(pos) => match state.stack[pos].kind {
+            TokenKind::Initial => cheap_read_dispatch(state),
+            TokenKind::Integer => {
+                if is_delimiter(c) {
+                    let token = state.stack.pop().unwrap();
+                    if let Ok(i) = token.buffer.parse::<i64>() {
+                        state.ast = Cons::Atom(Atom::Int(i));
+                        state.pos += 1;
+                    } else {
+                        panic!("'{}' is not a number", token.buffer);
+                    }
+                } else if c.is_digit(10) {
+                    match top(state) {
+                        Some(pos) => {
+                            state.stack[pos].buffer.push(c);
+                            state.pos += 1;
+                        },
+                        None => (),
+                    }
+                }
+            },
+            _ => (),
+        },
+        None => panic!("????"),
+    };
+}
+
 fn cheap_read_1(state: &mut ReadState) {
     loop {
         if state.pos >= state.input.len() {
             println!("EOF!!");
+            if state.stack.len() > 1 {
+                let token = state.stack.pop().unwrap();
+                if let Ok(i) = token.buffer.parse::<i64>() {
+                    state.ast = Cons::Atom(Atom::Int(i));
+                    state.pos += 1;
+                } else {
+                    panic!("'{}' is not a number", token.buffer);
+                }
+            }
             return;
         }
-        let c = state.input.chars().nth(state.pos).unwrap();
-        println!("stack: {:?}", state.stack);
-        println!("char is {:?}!", c);
 
-        match top(state) {
-            Some(pos) => match state.stack[pos].kind {
-                TokenKind::Initial => cheap_read_dispatch(state),
-                TokenKind::Integer => {
-                    if c.is_digit(10) {
-                        match top(state) {
-                            Some(pos) => {
-                                state.stack[pos].buffer.push(c);
-                                state.pos += 1;
-                            },
-                            None => (),
-                        }
-                    }
-                },
-                _ => (),
-            },
-            None => panic!("????"),
-        };
+        cheap_read_non_terminate(state);
     }
 }
 
-fn cheap_read(s: String) -> Vec<Cons> {
+fn cheap_read(s: String) -> Cons {
     let mut state = ReadState {
         input: s, pos: 0,
-        ast: Vec::new(),
+        ast: Cons::Null,
         current_node: Cons::Null,
         stack: vec![Token { kind: TokenKind::Initial, buffer: "".to_string()}],
     };
@@ -142,8 +168,6 @@ fn cheap_read(s: String) -> Vec<Cons> {
 
 fn main() {
     let code = "12345".to_string();
-    for sexp in cheap_read(code) {
-        cheap_print(&sexp);
-        println!("");
-    }
+    cheap_print(&cheap_read(code));
+    println!("");
 }
