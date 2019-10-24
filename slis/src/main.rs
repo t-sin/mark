@@ -1,6 +1,7 @@
 use std::rc::Rc;
 
 
+#[derive(Debug)]
 enum Atom {
     Nil,
     Int(i64),
@@ -10,6 +11,7 @@ enum Atom {
     // Timestamp(),
 }
 
+#[derive(Debug)]
 enum Cons {
     Null,
     Atom(Atom),
