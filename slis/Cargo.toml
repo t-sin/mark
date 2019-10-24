@@ -1,0 +1,7 @@
+[package]
+name = "slis"
+version = "0.1.0"
+authors = ["t-sin <shinichi.tanaka45@gmail.com>"]
+edition = "2018"
+
+[dependencies]

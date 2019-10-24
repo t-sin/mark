@@ -1,4 +1,6 @@
-# Sciurus Lisp - Lisp for lis implementation
+# Sciurus Lisp
+
+## Notes
 
 The [Japanese squirrels](https://duckduckgo.com/?q=sciurus+lis&t=h_&iax=images&ia=images) are called by binomial name *Sciurus lis* and *squirrel* called *lis* in Japanese.
 
