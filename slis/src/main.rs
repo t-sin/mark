@@ -64,12 +64,6 @@ struct ReadState {
     stack: Vec<Token>,
 }
 
-fn cheap_read_int(state: &mut ReadState) {}
-fn cheap_read_str(state: &mut ReadState) {}
-fn cheap_read_char(state: &mut ReadState) {}
-fn cheap_read_list(state: &mut ReadState) {}
-fn cheap_read_symbol(state: &mut ReadState) {}
-
 fn top(state: &ReadState) -> Option<usize> {
     if state.stack.len() < 1 {
         None
@@ -92,12 +86,12 @@ fn cheap_read_dispatch(state: &mut ReadState) {
         state.stack.push(int_token);
 
     } else if c == '\"' {
-        cheap_read_str(state);
+        // read string
     } else if c == '(' {
         state.pos += 1;
-        cheap_read_list(state);
+        // read list
     } else {
-        cheap_read_symbol(state);
+        // read symbol
     }
     state.pos += 1;
  }
