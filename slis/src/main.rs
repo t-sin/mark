@@ -70,11 +70,11 @@ fn cheap_read_char(state: &mut ReadState) {}
 fn cheap_read_list(state: &mut ReadState) {}
 fn cheap_read_symbol(state: &mut ReadState) {}
 
-fn top(state: &ReadState) -> Option<&Token> {
+fn top(state: &ReadState) -> Option<usize> {
     if state.stack.len() < 1 {
         None
     } else {
-        Some(&state.stack[state.stack.len() - 1])
+        Some(state.stack.len() - 1)
     }
 }
 
@@ -113,9 +113,19 @@ fn cheap_read_1(state: &mut ReadState) {
         println!("char is {:?}!", c);
 
         match top(state) {
-            Some(token) => match token.kind {
+            Some(pos) => match state.stack[pos].kind {
                 TokenKind::Initial => cheap_read_dispatch(state),
-                TokenKind::Integer => (),
+                TokenKind::Integer => {
+                    if c.is_digit(10) {
+                        match top(state) {
+                            Some(pos) => {
+                                state.stack[pos].buffer.push(c);
+                                state.pos += 1;
+                            },
+                            None => (),
+                        }
+                    }
+                },
                 _ => (),
             },
             None => panic!("????"),
