@@ -92,6 +92,14 @@ fn cheap_read_dispatch(state: &mut ReadState) {
         int_token.buffer.push(c);
         state.stack.push(int_token);
 
+    } else if c == '#' {
+        let mut char_token = Token {
+            kind: TokenKind::Char,
+            buffer: "".to_string(),
+        };
+        char_token.buffer.push(c);
+        state.stack.push(char_token);
+
     } else if c == '\"' {
         // read string
     } else if c == '(' {
@@ -114,6 +122,9 @@ fn cheap_read_terminate(state: &mut ReadState) {
                 panic!("'{}' is not a number", token.buffer);
             }
         },
+        TokenKind::Char => {
+            state.ast = Cons::Atom(Atom::Char(token.buffer.chars().nth(2).unwrap()));
+        },
         _ => (),
     }
 }
@@ -135,9 +146,21 @@ fn cheap_read_non_terminate(state: &mut ReadState) {
                     state.stack[pos].buffer.push(c);
                     state.pos += 1;
                 } else {
-                    panic!("{} is not allowed in an integer", c)
+                    panic!("{} is not allowed in an integer", c);
                 }
             },
+            TokenKind::Char => {
+                if state.stack[pos].buffer.len() == 1 && c == '\\' {
+                    state.stack[pos].buffer.push(c);
+                    state.pos += 1;
+                } else if state.stack[pos].buffer.len() == 2 {
+                    state.stack[pos].buffer.push(c);
+                    state.pos += 1;
+                    cheap_read_terminate(state);
+                } else {
+                    panic!("{} is not allowed in character literal", c);
+                }
+            }
             _ => (),
         },
         None => panic!("...unmatched what??"),
@@ -210,7 +233,8 @@ fn cheap_read(s: String) -> Vec<Cons> {
 
 
 fn main() {
-    let code = "12345 123".to_string();
+    let code = "12345 #\\1 123".to_string();
+    println!("code: {:?}", code);
     let cons_vec = cheap_read(code);
     for cons in cons_vec {
         cheap_print(&cons);
