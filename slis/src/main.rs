@@ -131,8 +131,6 @@ fn cheap_read_terminate(state: &mut ReadState) {
 
 fn cheap_read_non_terminate(state: &mut ReadState) {
     let c = state.input.chars().nth(state.pos).unwrap();
-    println!("stack: {:?}", state.stack);
-    println!("char is {:?}!", c);
 
     match stack_top(state) {
         Some(pos) => match state.stack[pos].kind {
@@ -215,8 +213,8 @@ fn cheap_read(s: String) -> Vec<Cons> {
     loop {
         cheap_read_1(&mut state);
         cons_vec.push(state.ast);
-        println!("stack: {:?}", state.stack);
-        println!("cons_vec: {:?}", cons_vec);
+        // println!("stack: {:?}", state.stack);
+        // println!("cons_vec: {:?}", cons_vec);
 
         state.initial = true;
         state.ast = Cons::Null;
