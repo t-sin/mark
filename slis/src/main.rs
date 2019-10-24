@@ -59,6 +59,7 @@ struct Token {
 }
 
 struct ReadState {
+    initial: bool,
     input: String,
     pos: usize,
     ast: Cons,
@@ -66,7 +67,7 @@ struct ReadState {
     stack: Vec<Token>,
 }
 
-fn top(state: &ReadState) -> Option<usize> {
+fn stack_top(state: &ReadState) -> Option<usize> {
     if state.stack.len() < 1 {
         None
     } else {
@@ -122,53 +123,97 @@ fn cheap_read_non_terminate(state: &mut ReadState) {
     println!("stack: {:?}", state.stack);
     println!("char is {:?}!", c);
 
-    if is_delimiter(c) {
-        cheap_read_terminate(state)
-    } else {
-        match top(state) {
-            Some(pos) => match state.stack[pos].kind {
-                TokenKind::Initial => cheap_read_dispatch(state),
-                TokenKind::Integer => {
-                    if c.is_digit(10) {
-                        state.stack[pos].buffer.push(c);
-                        state.pos += 1;
-                    }
-                },
-                _ => (),
+    match stack_top(state) {
+        Some(pos) => match state.stack[pos].kind {
+            TokenKind::Initial => {
+                cheap_read_dispatch(state);
             },
-            None => panic!("????"),
-        };
+            TokenKind::Integer => {
+                if is_delimiter(c) {
+                    cheap_read_terminate(state);
+                } else if c.is_digit(10) {
+                    state.stack[pos].buffer.push(c);
+                    state.pos += 1;
+                } else {
+                    panic!("{} is not allowed in an integer", c)
+                }
+            },
+            _ => (),
+        },
+        None => panic!("...unmatched what??"),
     }
 }
 
 fn cheap_read_1(state: &mut ReadState) {
+    cheap_read_non_terminate(state);
     loop {
         if state.pos >= state.input.len() {
-            println!("EOF!!");
-            if state.stack.len() > 1 {
-                cheap_read_terminate(state);
+            cheap_read_terminate(state);
+            if let Some(top) = stack_top(state) {
+                if top == 0 {
+                    if let TokenKind::Initial = state.stack[top].kind {
+                        state.stack.pop();
+                        state.stack.push(Token { kind: TokenKind::EOF, buffer: "".to_string() });
+                        return;
+                    }
+                }
+            } else {
+                println!("stack broken");
             }
             return;
         }
+
+        if state.initial == true {
+            state.initial = false;
+        } else {
+            if let Some(top) = stack_top(state) {
+                if top == 0 {
+                    if let TokenKind::Initial = state.stack[top].kind {
+                        return;
+                    }
+                }
+            } else {
+                println!("stack broken");
+            }
+        }
+
         cheap_read_non_terminate(state);
     }
 }
 
-fn cheap_read(s: String) -> Cons {
+fn cheap_read(s: String) -> Vec<Cons> {
+    let mut cons_vec = Vec::new();
     let mut state = ReadState {
-        input: s, pos: 0,
+        initial: true, input: s, pos: 0,
         ast: Cons::Null,
         current_node: Cons::Null,
         stack: vec![Token { kind: TokenKind::Initial, buffer: "".to_string()}],
     };
-    cheap_read_1(&mut state);
-    println!("stack: {:?}", state.stack);
-    state.ast
+    loop {
+        cheap_read_1(&mut state);
+        cons_vec.push(state.ast);
+        println!("stack: {:?}", state.stack);
+        println!("cons_vec: {:?}", cons_vec);
+
+        state.initial = true;
+        state.ast = Cons::Null;
+        state.current_node = Cons::Null;
+
+        if let Some(top) = stack_top(&state) {
+            if let TokenKind::EOF = state.stack[top].kind {
+                break;
+            }
+        }
+    };
+    cons_vec
 }
 
 
 fn main() {
-    let code = "12345".to_string();
-    cheap_print(&cheap_read(code));
-    println!("");
+    let code = "12345 123".to_string();
+    let cons_vec = cheap_read(code);
+    for cons in cons_vec {
+        cheap_print(&cons);
+        println!("");
+    }
 }
