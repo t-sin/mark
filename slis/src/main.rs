@@ -40,34 +40,31 @@ fn cheap_print(c: &Cons) {
 
 
 #[derive(Debug)]
-enum TokenKind {
+enum ObjectType {
     Initial,
     EOF,
-    Space,
-    OpenParen,
-    CloseParen,
+    List,
     Integer,
-    StringDelimiter,
     String,
     Char,
 }
 
 #[derive(Debug)]
-struct Token {
-    kind: TokenKind,
+struct ParseState {
+    kind: ObjectType,
     buffer: String,
 }
 
-struct ReadState {
+struct Reader {
     initial: bool,
     input: String,
     pos: usize,
     ast: Cons,
     current_node: Cons,
-    stack: Vec<Token>,
+    stack: Vec<ParseState>,
 }
 
-fn stack_top(state: &ReadState) -> Option<usize> {
+fn stack_top(state: &Reader) -> Option<usize> {
     if state.stack.len() < 1 {
         None
     } else {
@@ -79,7 +76,7 @@ fn is_delimiter(c: char) -> bool {
     c == ' ' || c == '\n'
 }
 
-fn cheap_read_dispatch(state: &mut ReadState) {
+fn cheap_read_dispatch(state: &mut Reader) {
     let c = state.input.chars().nth(state.pos).unwrap();
 
     if is_delimiter(c) {
@@ -87,28 +84,28 @@ fn cheap_read_dispatch(state: &mut ReadState) {
 
     } else if c.is_digit(10) {
         state.pos += 1;
-        let mut int_token = Token {
-            kind: TokenKind::Integer, buffer: "".to_string()
+        let mut ps = ParseState {
+            kind: ObjectType::Integer, buffer: "".to_string()
         };
-        int_token.buffer.push(c);
-        state.stack.push(int_token);
+        ps.buffer.push(c);
+        state.stack.push(ps);
 
 
     } else if c == '#' {
         state.pos += 1;
-        let mut char_token = Token {
-            kind: TokenKind::Char,
+        let mut ps = ParseState {
+            kind: ObjectType::Char,
             buffer: "".to_string(),
         };
-        char_token.buffer.push(c);
-        state.stack.push(char_token);
+        ps.buffer.push(c);
+        state.stack.push(ps);
 
     } else if c == '\"' {
         state.pos += 1;
-        let mut str_token = Token {
-            kind: TokenKind::String, buffer: "".to_string()
+        let mut ps = ParseState {
+            kind: ObjectType::String, buffer: "".to_string()
         };
-        state.stack.push(str_token);
+        state.stack.push(ps);
 
     } else if c == '(' {
         state.pos += 1;
@@ -118,37 +115,37 @@ fn cheap_read_dispatch(state: &mut ReadState) {
     }
  }
 
-fn cheap_read_terminate(state: &mut ReadState) {
-    let token = state.stack.pop().unwrap();
-    match token.kind {
-        TokenKind::Integer => {
-            if let Ok(i) = token.buffer.parse::<i64>() {
+fn cheap_read_terminate(state: &mut Reader) {
+    let ps = state.stack.pop().unwrap();
+    match ps.kind {
+        ObjectType::Integer => {
+            if let Ok(i) = ps.buffer.parse::<i64>() {
                 state.ast = Cons::Atom(Atom::Int(i));
                 state.pos += 1;
             } else {
-                panic!("'{}' is not a number", token.buffer);
+                panic!("'{}' is not a number", ps.buffer);
             }
         },
-        TokenKind::Char => {
-            state.ast = Cons::Atom(Atom::Char(token.buffer.chars().nth(2).unwrap()));
+        ObjectType::Char => {
+            state.ast = Cons::Atom(Atom::Char(ps.buffer.chars().nth(2).unwrap()));
         },
-        TokenKind::String => {
-            state.ast = Cons::Atom(Atom::Str(token.buffer));
+        ObjectType::String => {
+            state.ast = Cons::Atom(Atom::Str(ps.buffer));
             state.pos += 1;
         },
         _ => (),
     }
 }
 
-fn cheap_read_non_terminate(state: &mut ReadState) {
+fn cheap_read_non_terminate(state: &mut Reader) {
     let c = state.input.chars().nth(state.pos).unwrap();
 
     match stack_top(state) {
         Some(pos) => match state.stack[pos].kind {
-            TokenKind::Initial => {
+            ObjectType::Initial => {
                 cheap_read_dispatch(state);
             },
-            TokenKind::Integer => {
+            ObjectType::Integer => {
                 if is_delimiter(c) {
                     cheap_read_terminate(state);
                 } else if c.is_digit(10) {
@@ -158,7 +155,7 @@ fn cheap_read_non_terminate(state: &mut ReadState) {
                     panic!("{} is not allowed in an integer", c);
                 }
             },
-            TokenKind::Char => {
+            ObjectType::Char => {
                 if state.stack[pos].buffer.len() == 1 && c == '\\' {
                     state.stack[pos].buffer.push(c);
                     state.pos += 1;
@@ -170,7 +167,7 @@ fn cheap_read_non_terminate(state: &mut ReadState) {
                     panic!("{} is not allowed in character literal", c);
                 }
             },
-            TokenKind::String => {
+            ObjectType::String => {
                 if c == '\"' {
                     cheap_read_terminate(state);
                 } else {
@@ -184,16 +181,16 @@ fn cheap_read_non_terminate(state: &mut ReadState) {
     }
 }
 
-fn cheap_read_1(state: &mut ReadState) {
+fn cheap_read_1(state: &mut Reader) {
     cheap_read_non_terminate(state);
     loop {
         if state.pos >= state.input.len() {
             cheap_read_terminate(state);
             if let Some(top) = stack_top(state) {
                 if top == 0 {
-                    if let TokenKind::Initial = state.stack[top].kind {
+                    if let ObjectType::Initial = state.stack[top].kind {
                         state.stack.pop();
-                        state.stack.push(Token { kind: TokenKind::EOF, buffer: "".to_string() });
+                        state.stack.push(ParseState { kind: ObjectType::EOF, buffer: "".to_string() });
                         return;
                     }
                 }
@@ -208,7 +205,7 @@ fn cheap_read_1(state: &mut ReadState) {
         } else {
             if let Some(top) = stack_top(state) {
                 if top == 0 {
-                    if let TokenKind::Initial = state.stack[top].kind {
+                    if let ObjectType::Initial = state.stack[top].kind {
                         return;
                     }
                 }
@@ -223,11 +220,11 @@ fn cheap_read_1(state: &mut ReadState) {
 
 fn cheap_read(s: String) -> Vec<Cons> {
     let mut cons_vec = Vec::new();
-    let mut state = ReadState {
+    let mut state = Reader {
         initial: true, input: s, pos: 0,
         ast: Cons::Null,
         current_node: Cons::Null,
-        stack: vec![Token { kind: TokenKind::Initial, buffer: "".to_string()}],
+        stack: vec![ParseState { kind: ObjectType::Initial, buffer: "".to_string()}],
     };
     loop {
         cheap_read_1(&mut state);
@@ -240,7 +237,7 @@ fn cheap_read(s: String) -> Vec<Cons> {
         state.current_node = Cons::Null;
 
         if let Some(top) = stack_top(&state) {
-            if let TokenKind::EOF = state.stack[top].kind {
+            if let ObjectType::EOF = state.stack[top].kind {
                 break;
             }
         }
