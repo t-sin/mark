@@ -109,7 +109,11 @@ fn cheap_read_dispatch(state: &mut Reader) {
 
     } else if c == '(' {
         state.pos += 1;
-        // read list
+        let mut ps = ParseState {
+            kind: ObjectType::List, buffer: "".to_string()
+        };
+        state.stack.push(ps);
+
     } else {
         // read symbol
     }
