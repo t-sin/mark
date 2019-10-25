@@ -86,13 +86,16 @@ fn cheap_read_dispatch(state: &mut ReadState) {
         state.pos += 1;
 
     } else if c.is_digit(10) {
+        state.pos += 1;
         let mut int_token = Token {
             kind: TokenKind::Integer, buffer: "".to_string()
         };
         int_token.buffer.push(c);
         state.stack.push(int_token);
 
+
     } else if c == '#' {
+        state.pos += 1;
         let mut char_token = Token {
             kind: TokenKind::Char,
             buffer: "".to_string(),
@@ -101,14 +104,18 @@ fn cheap_read_dispatch(state: &mut ReadState) {
         state.stack.push(char_token);
 
     } else if c == '\"' {
-        // read string
+        state.pos += 1;
+        let mut str_token = Token {
+            kind: TokenKind::String, buffer: "".to_string()
+        };
+        state.stack.push(str_token);
+
     } else if c == '(' {
         state.pos += 1;
         // read list
     } else {
         // read symbol
     }
-    state.pos += 1;
  }
 
 fn cheap_read_terminate(state: &mut ReadState) {
@@ -124,6 +131,10 @@ fn cheap_read_terminate(state: &mut ReadState) {
         },
         TokenKind::Char => {
             state.ast = Cons::Atom(Atom::Char(token.buffer.chars().nth(2).unwrap()));
+        },
+        TokenKind::String => {
+            state.ast = Cons::Atom(Atom::Str(token.buffer));
+            state.pos += 1;
         },
         _ => (),
     }
@@ -158,7 +169,15 @@ fn cheap_read_non_terminate(state: &mut ReadState) {
                 } else {
                     panic!("{} is not allowed in character literal", c);
                 }
-            }
+            },
+            TokenKind::String => {
+                if c == '\"' {
+                    cheap_read_terminate(state);
+                } else {
+                    state.stack[pos].buffer.push(c);
+                    state.pos += 1;
+                }
+            },
             _ => (),
         },
         None => panic!("...unmatched what??"),
@@ -231,7 +250,7 @@ fn cheap_read(s: String) -> Vec<Cons> {
 
 
 fn main() {
-    let code = "12345 #\\1 123".to_string();
+    let code = "12345 #\\1 \"hoge fuga\" 123".to_string();
     println!("code: {:?}", code);
     let cons_vec = cheap_read(code);
     for cons in cons_vec {
