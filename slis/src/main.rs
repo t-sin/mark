@@ -72,14 +72,18 @@ fn stack_top(state: &Reader) -> Option<usize> {
     }
 }
 
+fn is_whitespace(c: char) -> bool {
+    c == ' ' || c == '\n' || c == '\t'
+}
+
 fn is_delimiter(c: char) -> bool {
-    c == ' ' || c == '\n'
+    is_whitespace(c) || c == ')'
 }
 
 fn cheap_read_dispatch(state: &mut Reader) {
     let c = state.input.chars().nth(state.pos).unwrap();
 
-    if is_delimiter(c) {
+    if is_whitespace(c) {
         state.pos += 1;
 
     } else if c.is_digit(10) {
@@ -141,46 +145,48 @@ fn cheap_read_terminate(state: &mut Reader) {
 }
 
 fn cheap_read_non_terminate(state: &mut Reader) {
-    let c = state.input.chars().nth(state.pos).unwrap();
-
-    match stack_top(state) {
-        Some(pos) => match state.stack[pos].kind {
-            ObjectType::Initial => {
-                cheap_read_dispatch(state);
+    if let Some(c) = state.input.chars().nth(state.pos) {
+        match stack_top(state) {
+            Some(pos) => match state.stack[pos].kind {
+                ObjectType::Initial => {
+                    cheap_read_dispatch(state);
+                },
+                ObjectType::Integer => {
+                    if is_delimiter(c) {
+                        cheap_read_terminate(state);
+                    } else if c.is_digit(10) {
+                        state.stack[pos].buffer.push(c);
+                        state.pos += 1;
+                    } else {
+                        panic!("{} is not allowed in an integer", c);
+                    }
+                },
+                ObjectType::Char => {
+                    if state.stack[pos].buffer.len() == 1 && c == '\\' {
+                        state.stack[pos].buffer.push(c);
+                        state.pos += 1;
+                    } else if state.stack[pos].buffer.len() == 2 {
+                        state.stack[pos].buffer.push(c);
+                        state.pos += 1;
+                        cheap_read_terminate(state);
+                    } else {
+                        panic!("{} is not allowed in character literal", c);
+                    }
+                },
+                ObjectType::String => {
+                    if c == '\"' {
+                        cheap_read_terminate(state);
+                    } else {
+                        state.stack[pos].buffer.push(c);
+                        state.pos += 1;
+                    }
+                },
+                _ => (),
             },
-            ObjectType::Integer => {
-                if is_delimiter(c) {
-                    cheap_read_terminate(state);
-                } else if c.is_digit(10) {
-                    state.stack[pos].buffer.push(c);
-                    state.pos += 1;
-                } else {
-                    panic!("{} is not allowed in an integer", c);
-                }
-            },
-            ObjectType::Char => {
-                if state.stack[pos].buffer.len() == 1 && c == '\\' {
-                    state.stack[pos].buffer.push(c);
-                    state.pos += 1;
-                } else if state.stack[pos].buffer.len() == 2 {
-                    state.stack[pos].buffer.push(c);
-                    state.pos += 1;
-                    cheap_read_terminate(state);
-                } else {
-                    panic!("{} is not allowed in character literal", c);
-                }
-            },
-            ObjectType::String => {
-                if c == '\"' {
-                    cheap_read_terminate(state);
-                } else {
-                    state.stack[pos].buffer.push(c);
-                    state.pos += 1;
-                }
-            },
-            _ => (),
-        },
-        None => panic!("...unmatched what??"),
+            None => panic!("...unmatched what??"),
+        }
+    } else {
+        panic!("unexpected EOF");
     }
 }
 
