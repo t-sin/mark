@@ -125,7 +125,6 @@ fn cheap_read_terminate(state: &mut Reader) {
         ObjectType::Integer => {
             if let Ok(i) = ps.buffer.parse::<i64>() {
                 state.ast = Cons::Atom(Atom::Int(i));
-                state.pos += 1;
             } else {
                 panic!("'{}' is not a number", ps.buffer);
             }
