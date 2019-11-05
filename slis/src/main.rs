@@ -14,7 +14,7 @@ enum Atom {
 #[derive(Debug)]
 enum Cons {
     Null,
-    Atom(Atom),
+    Atom(Rc<Atom>),
     Cons(Rc<Cons>, Rc<Cons>),
 }
 
@@ -59,8 +59,8 @@ struct Reader {
     initial: bool,
     input: String,
     pos: usize,
-    ast: Cons,
-    current_node: Cons,
+    ast: Rc<Cons>,
+    current_cons: Rc<Cons>,
     stack: Vec<ParseState>,
 }
 
@@ -116,6 +116,22 @@ fn cheap_read_dispatch(state: &mut Reader) {
         let mut ps = ParseState {
             kind: ObjectType::List, buffer: "".to_string()
         };
+        let mut cons = Rc::new(Cons::Cons(Rc::new(Cons::Null), Rc::new(Cons::Atom(Rc::new(Atom::Nil)))));
+        match state.ast {
+            Cons::Null => {
+                state.ast = cons.clone();
+                state.current_cons = cons.clone();
+            },
+            Cons::Atom(atom) => panic!("unexpected list (or read twice?) {:?}", atom),
+            Cons::Cons(_, _) => {
+                state.current_cons = if let Cons::Cons(car, cdr) = *state.current_cons {
+                    state.current_cons = cons.clone();
+                    Rc::new(Cons::Cons(car.clone(), cons.clone()))
+                } else {
+                    state.current_cons
+                }
+            },
+        }
         state.stack.push(ps);
 
     } else {
@@ -128,20 +144,19 @@ fn cheap_read_terminate(state: &mut Reader) {
     match ps.kind {
         ObjectType::Integer => {
             if let Ok(i) = ps.buffer.parse::<i64>() {
-                state.ast = Cons::Atom(Atom::Int(i));
+                state.ast = Rc::new(Cons::Atom(Rc::new(Atom::Int(i))));
             } else {
                 panic!("'{}' is not a number", ps.buffer);
             }
         },
         ObjectType::Char => {
-            state.ast = Cons::Atom(Atom::Char(ps.buffer.chars().nth(2).unwrap()));
+            state.ast = Rc::new(Cons::Atom(Rc::new(Atom::Char(ps.buffer.chars().nth(2).unwrap()))));
         },
         ObjectType::String => {
-            state.ast = Cons::Atom(Atom::Str(ps.buffer));
+            state.ast = Rc::new(Cons::Atom(Rc::new(Atom::Str(ps.buffer))));
             state.pos += 1;
         },
         ObjectType::List => {
-            state.ast = Cons::Atom(Atom::Nil);
             state.pos += 1;
         },
         _ => (),
@@ -240,12 +255,13 @@ fn cheap_read_1(state: &mut Reader) {
     }
 }
 
-fn cheap_read(s: String) -> Vec<Cons> {
+fn cheap_read(s: String) -> Vec<Rc<Cons>> {
     let mut cons_vec = Vec::new();
+    let mut ast = Rc::new(Cons::Null);
     let mut state = Reader {
         initial: true, input: s, pos: 0,
-        ast: Cons::Null,
-        current_node: Cons::Null,
+        ast: ast.clone(),
+        current_cons: ast.clone(),
         stack: vec![ParseState { kind: ObjectType::Initial, buffer: "".to_string()}],
     };
     loop {
@@ -255,8 +271,8 @@ fn cheap_read(s: String) -> Vec<Cons> {
         // println!("cons_vec: {:?}", cons_vec);
 
         state.initial = true;
-        state.ast = Cons::Null;
-        state.current_node = Cons::Null;
+        state.ast = Rc::new(Cons::Null);
+        state.current_cons = state.ast.clone();
 
         if let Some(top) = stack_top(&state) {
             if let ObjectType::EOF = state.stack[top].kind {
