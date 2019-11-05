@@ -140,6 +140,10 @@ fn cheap_read_terminate(state: &mut Reader) {
             state.ast = Cons::Atom(Atom::Str(ps.buffer));
             state.pos += 1;
         },
+        ObjectType::List => {
+            state.ast = Cons::Atom(Atom::Nil);
+            state.pos += 1;
+        },
         _ => (),
     }
 }
@@ -179,6 +183,15 @@ fn cheap_read_non_terminate(state: &mut Reader) {
                     } else {
                         state.stack[pos].buffer.push(c);
                         state.pos += 1;
+                    }
+                },
+                ObjectType::List => {
+                    if c == ')' {
+                        cheap_read_terminate(state);
+                    } else if is_whitespace(c) {
+                        state.pos += 1;
+                    } else {
+                        cheap_read_dispatch(state);
                     }
                 },
                 _ => (),
@@ -256,7 +269,7 @@ fn cheap_read(s: String) -> Vec<Cons> {
 
 
 fn main() {
-    let code = "12345 #\\1 \"hoge fuga\" 123".to_string();
+    let code = "12345 #\\1 \"hoge fuga\" (1 (2 (3 4) 5)) 123".to_string();
     println!("code: {:?}", code);
     let cons_vec = cheap_read(code);
     for cons in cons_vec {
