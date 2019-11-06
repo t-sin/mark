@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::{Arc, Mutex};
 
 
 #[derive(Debug)]
@@ -14,15 +14,15 @@ enum Atom {
 #[derive(Debug)]
 enum Cons {
     Null,
-    Atom(Rc<Atom>),
-    Cons(Rc<Cons>, Rc<Cons>),
+    Atom(Arc<Mutex<Atom>>),
+    Cons(Arc<Mutex<Cons>>, Arc<Mutex<Cons>>),
 }
 
 
-fn cheap_print(c: &Cons) {
-    match c {
+fn cheap_print(c: Arc<Mutex<Cons>>) {
+    match &*c.lock().unwrap() {
         Cons::Null => print!("NULL"),
-        Cons::Atom(a) => match a {
+        Cons::Atom(a) => match &*a.lock().unwrap() {
             Atom::Nil => print!("()"),
             Atom::Int(i) => print!("{}", i),
             Atom::Char(c) => print!("{:?}", c),
@@ -30,9 +30,9 @@ fn cheap_print(c: &Cons) {
         },
         Cons::Cons(car, cdr) => {
             print!("(");
-            cheap_print(car);
+            cheap_print(car.clone());
             print!(" . ");
-            cheap_print(cdr);
+            cheap_print(cdr.clone());
             print!(")");
         },
     };
@@ -59,8 +59,8 @@ struct Reader {
     initial: bool,
     input: String,
     pos: usize,
-    ast: Rc<Cons>,
-    current_cons: Rc<Cons>,
+    ast: Arc<Mutex<Cons>>,
+    current_cons: Arc<Mutex<Cons>>,
     stack: Vec<ParseState>,
 }
 
@@ -116,22 +116,38 @@ fn cheap_read_dispatch(state: &mut Reader) {
         let mut ps = ParseState {
             kind: ObjectType::List, buffer: "".to_string()
         };
-        let mut cons = Rc::new(Cons::Cons(Rc::new(Cons::Null), Rc::new(Cons::Atom(Rc::new(Atom::Nil)))));
-        match state.ast {
+        let mut nil = Arc::new(Mutex::new(Cons::Atom(Arc::new(Mutex::new(Atom::Nil)))));
+        let new_ast = match &*state.ast.lock().unwrap() {
             Cons::Null => {
-                state.ast = cons.clone();
-                state.current_cons = cons.clone();
+                state.current_cons = nil.clone();
+                nil.clone()
             },
-            Cons::Atom(atom) => panic!("unexpected list (or read twice?) {:?}", atom),
-            Cons::Cons(_, _) => {
-                state.current_cons = if let Cons::Cons(car, cdr) = *state.current_cons {
+            Cons::Atom(atom) => {
+                if let Atom::Nil = &*atom.lock().unwrap() {
+                    let cons = Arc::new(Mutex::new(Cons::Cons(
+                        Arc::new(Mutex::new(Cons::Null)),
+                        Arc::new(Mutex::new(Cons::Atom(atom.clone())))
+                    )));
                     state.current_cons = cons.clone();
-                    Rc::new(Cons::Cons(car.clone(), cons.clone()))
+                    cons.clone()
                 } else {
-                    state.current_cons
+                    panic!("wrong... ;  ~~unexpected list (or read twice?) {:?}~~", atom)
                 }
             },
-        }
+            Cons::Cons(_, _) => {
+                let mut new_ast: Arc<Mutex<Cons>>;
+                let new_curcons = if let Cons::Cons(car, cdr) = &*state.current_cons.lock().unwrap() {
+                    new_ast = Arc::new(Mutex::new(Cons::Cons(car.clone(), nil.clone())));
+                    nil.clone()
+                } else {
+                    new_ast = state.ast.clone();
+                    state.current_cons.clone()
+                };
+                state.current_cons = new_curcons;
+                new_ast
+            },
+        };
+        state.ast = new_ast;
         state.stack.push(ps);
 
     } else {
@@ -144,16 +160,39 @@ fn cheap_read_terminate(state: &mut Reader) {
     match ps.kind {
         ObjectType::Integer => {
             if let Ok(i) = ps.buffer.parse::<i64>() {
-                state.ast = Rc::new(Cons::Atom(Rc::new(Atom::Int(i))));
+                let int = Arc::new(Mutex::new(Cons::Atom(Arc::new(Mutex::new(Atom::Int(i))))));
+                if let Some(top) = stack_top(state) {
+                    println!("obj: {:?}", int);
+                    if let ObjectType::List = state.stack[top].kind {
+                        let new_curcons = match &*state.current_cons.lock().unwrap() {
+                            Cons::Cons(car, cdr) => {
+                                Arc::new(Mutex::new(Cons::Cons(int.clone(), state.current_cons.clone())))
+                            },
+                            Cons::Atom(atom) => {
+                                Arc::new(Mutex::new(Cons::Cons(
+                                    Arc::new(Mutex::new(Cons::Atom(atom.clone()))), state.current_cons.clone())
+                                ))
+                            },
+                            _ => panic!("woops sexp is broken while parsing"),
+                        };
+                        state.current_cons = new_curcons;
+                    } else {
+                        state.ast = int;
+                    }
+                } else {
+                    state.ast = int;
+                }
             } else {
                 panic!("'{}' is not a number", ps.buffer);
             }
         },
         ObjectType::Char => {
-            state.ast = Rc::new(Cons::Atom(Rc::new(Atom::Char(ps.buffer.chars().nth(2).unwrap()))));
+            state.ast = Arc::new(Mutex::new(Cons::Atom(
+                Arc::new(Mutex::new(Atom::Char(ps.buffer.chars().nth(2).unwrap())))
+            )));
         },
         ObjectType::String => {
-            state.ast = Rc::new(Cons::Atom(Rc::new(Atom::Str(ps.buffer))));
+            state.ast = Arc::new(Mutex::new(Cons::Atom(Arc::new(Mutex::new(Atom::Str(ps.buffer))))));
             state.pos += 1;
         },
         ObjectType::List => {
@@ -255,9 +294,9 @@ fn cheap_read_1(state: &mut Reader) {
     }
 }
 
-fn cheap_read(s: String) -> Vec<Rc<Cons>> {
+fn cheap_read(s: String) -> Vec<Arc<Mutex<Cons>>> {
     let mut cons_vec = Vec::new();
-    let mut ast = Rc::new(Cons::Null);
+    let mut ast = Arc::new(Mutex::new(Cons::Null));
     let mut state = Reader {
         initial: true, input: s, pos: 0,
         ast: ast.clone(),
@@ -271,7 +310,7 @@ fn cheap_read(s: String) -> Vec<Rc<Cons>> {
         // println!("cons_vec: {:?}", cons_vec);
 
         state.initial = true;
-        state.ast = Rc::new(Cons::Null);
+        state.ast = Arc::new(Mutex::new(Cons::Null));
         state.current_cons = state.ast.clone();
 
         if let Some(top) = stack_top(&state) {
@@ -285,11 +324,11 @@ fn cheap_read(s: String) -> Vec<Rc<Cons>> {
 
 
 fn main() {
-    let code = "12345 #\\1 \"hoge fuga\" (1 (2 (3 4) 5)) 123".to_string();
+    let code = "12345 #\\1 () (1) \"hoge fuga\" (1 (2 (3 4) 5)) 123".to_string();
     println!("code: {:?}", code);
     let cons_vec = cheap_read(code);
     for cons in cons_vec {
-        cheap_print(&cons);
+        cheap_print(cons);
         println!("");
     }
 }
