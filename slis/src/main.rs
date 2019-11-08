@@ -67,9 +67,42 @@ fn skip_comment(chars: &mut Peekable<Chars>) {
     }
 }
 
+fn cheap_read_string(chars: &mut Peekable<Chars>) -> Sexp {
+    Sexp::Nil
+}
 
-fn cheap_read_1(chars: &mut Peekable<Chars>) {
+fn cheap_read_char(chars: &mut Peekable<Chars>) -> Sexp {
+    Sexp::Nil
+}
+
+fn cheap_read_int(chars: &mut Peekable<Chars>) -> Sexp {
+    Sexp::Nil
+}
+
+fn cheap_read_symbol(chars: &mut Peekable<Chars>) -> Sexp {
+    Sexp::Nil
+}
+
+fn cheap_read_list(chars: &mut Peekable<Chars>) -> Sexp {
+    Sexp::Nil
+}
+
+fn cheap_read_1(chars: &mut Peekable<Chars>) -> Sexp {
     skip_whitespaces(chars);
+    let c = chars.peek();
+    match c {
+        None => Sexp::Nil,
+        Some(';') => {
+            skip_comment(chars);
+            Sexp::Nil
+        },
+        Some(')') => panic!("unexpected close paren"),
+        Some('(') => cheap_read_list(chars),
+        Some('\"') => cheap_read_string(chars),
+        Some('#') => cheap_read_char(chars),
+        Some(c) if c.is_digit(10) => cheap_read_int(chars),
+        Some(c) => cheap_read_symbol(chars),
+    }
 }
 
 fn cheap_read(s: String) -> Vec<Arc<Mutex<Sexp>>> {
