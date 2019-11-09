@@ -20,8 +20,8 @@ impl Sexp {
     }
 }
 
-fn cheap_print(c: Arc<Mutex<Sexp>>) {
-    match &*c.lock().unwrap() {
+fn cheap_print_elem(sexp: &Sexp) {
+   match sexp {
         Sexp::Null => print!("NULL"),
         Sexp::Nil => print!("()"),
         Sexp::Int(i) => print!("{}", i),
@@ -30,12 +30,29 @@ fn cheap_print(c: Arc<Mutex<Sexp>>) {
         Sexp::Symbol(n) => print!("{}", n),
         Sexp::Cons(car, cdr) => {
             print!("(");
-            cheap_print(car.clone());
-            print!(" . ");
-            cheap_print(cdr.clone());
+            cheap_print_list(car.clone(), cdr.clone());
             print!(")");
         },
     };
+}
+
+fn cheap_print_list(car: Arc<Mutex<Sexp>>, cdr: Arc<Mutex<Sexp>>) {
+    cheap_print(car.clone());
+    match &*cdr.lock().unwrap() {
+        Sexp::Cons(ref car, ref cdr) => {
+            print!(" ");
+            cheap_print_list(car.clone(), cdr.clone());
+        },
+        Sexp::Nil => (),
+        ref c => {
+            print!(" . ");
+            cheap_print_elem(c);
+        },
+    }
+}
+
+fn cheap_print(c: Arc<Mutex<Sexp>>) {
+    cheap_print_elem(&*c.lock().unwrap());
 }
 
 
