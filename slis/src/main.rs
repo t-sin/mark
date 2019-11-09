@@ -212,7 +212,20 @@ fn cheap_read_all(s: String) -> Vec<Arc<Mutex<Sexp>>> {
 }
 
 fn eval(sexp: Arc<Mutex<Sexp>>) -> Arc<Mutex<Sexp>> {
-    sexp
+    match *sexp.lock().unwrap() {
+        Sexp::Null => panic!("whoa! it's null!"),
+        Sexp::Nil => sexp.clone(),
+        Sexp::Int(_) => sexp.clone(),
+        Sexp::Char(_) => sexp.clone(),
+        Sexp::Str(_) => sexp.clone(),
+        Sexp::Symbol(ref name) => {
+            println!("{:?} is symbol!", name);
+            sexp.clone()
+        },
+        Sexp::Cons(ref car, ref cdr) => {
+            sexp.clone()
+        },
+    }
 }
 
 fn main() {
