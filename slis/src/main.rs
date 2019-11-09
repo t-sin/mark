@@ -211,13 +211,16 @@ fn cheap_read_all(s: String) -> Vec<Arc<Mutex<Sexp>>> {
     values
 }
 
+fn eval(sexp: Arc<Mutex<Sexp>>) -> Arc<Mutex<Sexp>> {
+    sexp
+}
 
 fn main() {
     let code = "12345 #\\1 () (1) \"hoge fuga\" (1 (2 (10 20 30) (3 4) 5)) 123 symbol :keyword".to_string();
     println!("code: {:?}", code);
-    let cons_vec = cheap_read_all(code);
-    for cons in cons_vec {
-        cheap_print(cons);
+    let sexp_vec = cheap_read_all(code);
+    for sexp in sexp_vec {
+        cheap_print(eval(sexp));
         println!("");
     }
 }
