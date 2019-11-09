@@ -9,7 +9,7 @@ enum Sexp {
     Int(i64),
     Char(char),
     Str(String),
-    // Symbol(),
+    Symbol(String),
     // Timestamp(),
     Cons(Arc<Mutex<Sexp>>, Arc<Mutex<Sexp>>),
 }
@@ -27,6 +27,7 @@ fn cheap_print(c: Arc<Mutex<Sexp>>) {
         Sexp::Int(i) => print!("{}", i),
         Sexp::Char(c) => print!("{:?}", c),
         Sexp::Str(s) => print!("\"{}\"", s),
+        Sexp::Symbol(n) => print!("{}", n),
         Sexp::Cons(car, cdr) => {
             print!("(");
             cheap_print(car.clone());
@@ -144,7 +145,14 @@ fn cheap_read_int(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
 }
 
 fn cheap_read_symbol(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
-    Sexp::new(Sexp::Nil)
+    let mut s = String::new();
+    loop {
+        match chars.peek() {
+            Some(c) if !is_delimiter(*c) => s.push(chars.next().unwrap()),
+            _ => break,
+        }
+    }
+    Sexp::new(Sexp::Symbol(s))
 }
 
 fn vec_to_cons(vec: &[Arc<Mutex<Sexp>>]) -> Arc<Mutex<Sexp>> {
@@ -205,7 +213,7 @@ fn cheap_read_all(s: String) -> Vec<Arc<Mutex<Sexp>>> {
 
 
 fn main() {
-    let code = "12345 #\\1 () (1) \"hoge fuga\" (1 (2 (10 20 30) (3 4) 5)) 123".to_string();
+    let code = "12345 #\\1 () (1) \"hoge fuga\" (1 (2 (10 20 30) (3 4) 5)) 123 symbol :keyword".to_string();
     println!("code: {:?}", code);
     let cons_vec = cheap_read_all(code);
     for cons in cons_vec {
