@@ -255,7 +255,18 @@ fn eval(sexp: Arc<Mutex<Sexp>>) -> Arc<Mutex<Sexp>> {
             sexp.clone()
         },
         Sexp::Cons(ref car, ref cdr) => {
-            sexp.clone()
+            match &*car.lock().unwrap() {
+                Sexp::Symbol(ref s) if s == "quote" => cdr.clone(),
+                Sexp::Symbol(ref s) if s == "cond" => cdr.clone(),
+                Sexp::Symbol(ref s) if s == "defun" => cdr.clone(),
+                Sexp::Symbol(ref s) if s == "setq" => cdr.clone(),
+                Sexp::Symbol(ref s) if s == "lambda" => cdr.clone(),
+                Sexp::Symbol(_name) => Arc::new(Mutex::new(Sexp::Nil)),
+                _ => {
+                    println!("it should raise 'invalid function call'");
+                    Arc::new(Mutex::new(Sexp::Null))
+                }
+            }
         },
     }
 }
