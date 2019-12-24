@@ -116,7 +116,7 @@ fn cheap_read_string(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
                 break;
             },
             None => break,
-            Some(c) => s.push(chars.next().unwrap()),
+            Some(_) => s.push(chars.next().unwrap()),
         }
     }
     Sexp::new(Sexp::Str(s))
@@ -142,7 +142,7 @@ fn cheap_read_char(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
             "space" => Sexp::new(Sexp::Char(' ')),
             "tab" => Sexp::new(Sexp::Char('\t')),
             "newline" => Sexp::new(Sexp::Char('\n')),
-            c => {
+            _ => {
                 if let Some(c) = name.chars().nth(0) {
                     Sexp::new(Sexp::Char(c))
                 } else {
@@ -226,7 +226,7 @@ fn cheap_read(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
         Some('\"') => cheap_read_string(chars),
         Some('#') => cheap_read_char(chars),
         Some(c) if c.is_digit(10) => cheap_read_int(chars),
-        Some(c) => cheap_read_symbol(chars),
+        Some(_) => cheap_read_symbol(chars),
     }
 }
 
