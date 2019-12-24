@@ -1,3 +1,4 @@
+use std::cmp::PartialEq;
 use std::iter::Peekable;
 use std::str::Chars;
 use std::sync::{Arc, Mutex};
@@ -17,6 +18,20 @@ enum Sexp {
 impl Sexp {
     fn new(sexp: Sexp) -> Arc<Mutex<Sexp>> {
         Arc::new(Mutex::new(sexp))
+    }
+}
+
+impl PartialEq for Sexp {
+    fn eq(&self, other: &Self) -> bool {
+        match self {
+            Sexp::Null => if let Sexp::Null = other { true } else { false },
+            Sexp::Nil => if let Sexp::Nil = other { true } else { false },
+            Sexp::Int(s) => if let Sexp::Int(o) = other { s == o } else { false },
+            Sexp::Char(s) => if let Sexp::Char(o) = other { s == o } else { false },
+            Sexp::Str(s) => if let Sexp::Str(o) = other { &s[..] == &o[..] } else { false },
+            Sexp::Symbol(s) => if let Sexp::Symbol(o) = other { &s[..] == &o[..] } else { false },
+            _ => false,
+        }
     }
 }
 
@@ -252,5 +267,32 @@ fn main() {
     for sexp in sexp_vec {
         cheap_print(eval(sexp));
         println!("");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_cheap_read(code: &str, expected: Sexp) {
+        let str = code.to_string();
+        let mut peekable = str.chars().peekable();
+        assert_eq!(*cheap_read(&mut peekable).lock().unwrap(), expected);
+    }
+
+    #[test]
+    fn cheap_reader() {
+        let code = "12345";  // integer
+        test_cheap_read(code, Sexp::Int(12345));
+        let code = "#\\1";  // charactor
+        test_cheap_read(code, Sexp::Char('1'));
+
+        // lists
+        let code = "()";
+        test_cheap_read(code, Sexp::Nil);
+        let code = "(1)";
+        let expected = Sexp::Cons(Arc::new(Mutex::new(Sexp::Int(1))),
+                                  Arc::new(Mutex::new(Sexp::Nil)));
+        test_cheap_read(code, expected);
     }
 }
