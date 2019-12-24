@@ -4,21 +4,20 @@ use std::str::Chars;
 use std::sync::{Arc, Mutex};
 
 #[derive(Debug)]
-enum Sexp {
-    Null,
+enum Sexp<'a> {
     Nil,
     Int(i64),
     Char(char),
     Str(String),
     Symbol(String),
     // Timestamp(),
-    Cons(Arc<Mutex<Sexp>>, Arc<Mutex<Sexp>>),
+    Cons(&'a Cell, &'a Cell),
 }
 
-impl Sexp {
-    fn new(sexp: Sexp) -> Arc<Mutex<Sexp>> {
-        Arc::new(Mutex::new(sexp))
-    }
+struct Cell {
+    id: usize,
+    live: bool,
+    val: Sexp
 }
 
 impl PartialEq for Sexp {
@@ -34,6 +33,36 @@ impl PartialEq for Sexp {
         }
     }
 }
+
+struct Memory {
+    cells: Vec<Cell>,
+}
+
+impl Memory {
+    pub fn new(size: usize) {
+        let mut cells = Vec::new();
+        let mut count = 0;
+        for _ in 0..size {
+            cells.push(Cell { id: count, live: false, val: Sexp::Nil });
+            count += 1;
+        }
+        Memory { cells: cells }
+    }
+
+    pub fn get_mut(&mut self, i: usize) -> Option<&mut Cell> {
+        self.cells.get_mut()
+    }
+
+    pub fn get_new(&mut self) -> Option<&mut Cell> {
+        for c in self.cells.iter() {
+            if c.live == false {
+                return Some(&mut c)
+            }
+        }
+        None
+    }
+}
+
 
 fn cheap_print_elem(sexp: &Sexp) {
    match sexp {
