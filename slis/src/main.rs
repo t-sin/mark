@@ -5,100 +5,142 @@ use std::sync::{Arc, Mutex};
 
 #[derive(Debug)]
 enum Sexp<'a> {
+    None,
     Nil,
     Int(i64),
     Char(char),
     Str(String),
     Symbol(String),
     // Timestamp(),
-    Cons(&'a Cell, &'a Cell),
+    Cons(&'a Cell<'a>, &'a Cell<'a>),
 }
 
-struct Cell {
+#[derive(Debug)]
+struct Cell<'a> {
     id: usize,
     live: bool,
-    val: Sexp
+    val: Sexp<'a>,
 }
 
-impl PartialEq for Sexp {
+impl<'a> PartialEq for Sexp<'a> {
     fn eq(&self, other: &Self) -> bool {
         match self {
-            Sexp::Null => if let Sexp::Null = other { true } else { false },
-            Sexp::Nil => if let Sexp::Nil = other { true } else { false },
-            Sexp::Int(s) => if let Sexp::Int(o) = other { s == o } else { false },
-            Sexp::Char(s) => if let Sexp::Char(o) = other { s == o } else { false },
-            Sexp::Str(s) => if let Sexp::Str(o) = other { &s[..] == &o[..] } else { false },
-            Sexp::Symbol(s) => if let Sexp::Symbol(o) = other { &s[..] == &o[..] } else { false },
+            Sexp::None => {
+                if let Sexp::None = other {
+                    true
+                } else {
+                    false
+                }
+            }
+            Sexp::Nil => {
+                if let Sexp::Nil = other {
+                    true
+                } else {
+                    false
+                }
+            }
+            Sexp::Int(s) => {
+                if let Sexp::Int(o) = other {
+                    s == o
+                } else {
+                    false
+                }
+            }
+            Sexp::Char(s) => {
+                if let Sexp::Char(o) = other {
+                    s == o
+                } else {
+                    false
+                }
+            }
+            Sexp::Str(s) => {
+                if let Sexp::Str(o) = other {
+                    &s[..] == &o[..]
+                } else {
+                    false
+                }
+            }
+            Sexp::Symbol(s) => {
+                if let Sexp::Symbol(o) = other {
+                    &s[..] == &o[..]
+                } else {
+                    false
+                }
+            }
             _ => false,
         }
     }
 }
 
-struct Memory {
-    cells: Vec<Cell>,
+struct Memory<'a> {
+    cells: Vec<Cell<'a>>,
 }
 
-impl Memory {
-    pub fn new(size: usize) {
+impl<'a> Memory<'a> {
+    pub fn new(size: usize) -> Memory<'a> {
         let mut cells = Vec::new();
         let mut count = 0;
-        for _ in 0..size {
-            cells.push(Cell { id: count, live: false, val: Sexp::Nil });
+        cells.push(Cell {
+            id: count,
+            live: true,
+            val: Sexp::Nil,
+        });
+        for _ in 1..size {
+            cells.push(Cell {
+                id: count,
+                live: false,
+                val: Sexp::None,
+            });
             count += 1;
         }
         Memory { cells: cells }
     }
 
-    pub fn get_mut(&mut self, i: usize) -> Option<&mut Cell> {
-        self.cells.get_mut()
+    pub fn get_mut(&mut self, i: usize) -> Option<&mut Cell<'a>> {
+        self.cells.get_mut(i)
     }
 
-    pub fn get_new(&mut self) -> Option<&mut Cell> {
-        for c in self.cells.iter() {
+    pub fn get_new(&mut self) -> Option<&mut Cell<'a>> {
+        for c in self.cells.iter_mut() {
             if c.live == false {
-                return Some(&mut c)
+                c.live = true;
+                return Some(c);
             }
         }
         None
     }
 }
 
+fn cheap_print_list<'a>(car: &Cell<'a>, cdr: &Cell<'a>) {
+    cheap_print(car);
+    match cdr.val {
+        Sexp::Cons(ref car, ref cdr) => {
+            print!(" ");
+            cheap_print_list(car, cdr);
+        }
+        Sexp::Nil => (),
+        _ => {
+            print!(" . ");
+            cheap_print(cdr);
+        }
+    }
+}
 
-fn cheap_print_elem(sexp: &Sexp) {
-   match sexp {
-        Sexp::Null => print!("NULL"),
+fn cheap_print<'a>(cell: &Cell<'a>) {
+    match &cell.val {
+        Sexp::None => print!("None"),
         Sexp::Nil => print!("()"),
         Sexp::Int(i) => print!("{}", i),
         Sexp::Char(c) => print!("{:?}", c),
         Sexp::Str(s) => print!("\"{}\"", s),
         Sexp::Symbol(n) => print!("{}", n),
-        Sexp::Cons(car, cdr) => {
+        Sexp::Cons(ref car, ref cdr) => {
             print!("(");
-            cheap_print_list(car.clone(), cdr.clone());
+            cheap_print_list(car, cdr);
             print!(")");
-        },
+        }
     };
 }
-
-fn cheap_print_list(car: Arc<Mutex<Sexp>>, cdr: Arc<Mutex<Sexp>>) {
-    cheap_print(car.clone());
-    match &*cdr.lock().unwrap() {
-        Sexp::Cons(ref car, ref cdr) => {
-            print!(" ");
-            cheap_print_list(car.clone(), cdr.clone());
-        },
-        Sexp::Nil => (),
-        ref c => {
-            print!(" . ");
-            cheap_print_elem(c);
-        },
-    }
-}
-
-fn cheap_print(c: Arc<Mutex<Sexp>>) {
-    cheap_print_elem(&*c.lock().unwrap());
-}
-
 
 fn is_whitespace(c: char) -> bool {
     c == ' ' || c == '\n' || c == '\t'
@@ -118,7 +160,7 @@ fn skip_whitespaces(chars: &mut Peekable<Chars>) {
                 } else {
                     break;
                 }
-            },
+            }
             _ => break,
         };
     }
@@ -135,7 +177,7 @@ fn skip_comment(chars: &mut Peekable<Chars>) {
     }
 }
 
-fn cheap_read_string(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
+fn cheap_read_string<'a>(chars: &mut Peekable<Chars>, mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
     chars.next();
     let mut s = String::new();
     loop {
@@ -143,21 +185,28 @@ fn cheap_read_string(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
             Some('"') => {
                 chars.next();
                 break;
-            },
+            }
             None => break,
             Some(_) => s.push(chars.next().unwrap()),
         }
     }
-    Sexp::new(Sexp::Str(s))
+
+    let cell = mem.get_new();
+    if let Some(cell) = cell {
+        cell.val = Sexp::Str(s);
+        cell
+    } else {
+        panic!("cell pool exhausted");
+    }
 }
 
-fn cheap_read_char(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
+fn cheap_read_char<'a>(chars: &mut Peekable<Chars>, mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
     chars.next();
     if let Some('\\') = chars.peek() {
         chars.next();
         let mut name = String::new();
         loop {
-            if let Some(c)  = chars.peek() {
+            if let Some(c) = chars.peek() {
                 if !is_delimiter(*c) {
                     name.push(chars.next().unwrap());
                 } else {
@@ -167,24 +216,31 @@ fn cheap_read_char(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
                 break;
             }
         }
-        match &name[..] {
-            "space" => Sexp::new(Sexp::Char(' ')),
-            "tab" => Sexp::new(Sexp::Char('\t')),
-            "newline" => Sexp::new(Sexp::Char('\n')),
+        let ch = match &name[..] {
+            "space" => Sexp::Char(' '),
+            "tab" => Sexp::Char('\t'),
+            "newline" => Sexp::Char('\n'),
             _ => {
                 if let Some(c) = name.chars().nth(0) {
-                    Sexp::new(Sexp::Char(c))
+                    Sexp::Char(c)
                 } else {
                     panic!("invalid character literal (missing char itself)")
                 }
             }
+        };
+        let cell = mem.get_new();
+        if let Some(cell) = cell {
+            cell.val = ch;
+            cell
+        } else {
+            panic!("cell pool exhausted");
         }
     } else {
         panic!("invalid character literal");
     }
 }
 
-fn cheap_read_int(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
+fn cheap_read_int<'a>(chars: &mut Peekable<Chars>, mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
     let mut s = String::new();
     s.push(chars.next().unwrap());
     loop {
@@ -199,13 +255,19 @@ fn cheap_read_int(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
         }
     }
     if let Ok(n) = s.parse::<i64>() {
-        Sexp::new(Sexp::Int(n))
+        let cell = mem.get_new();
+        if let Some(cell) = cell {
+            cell.val = Sexp::Int(n);
+            cell
+        } else {
+            panic!("cell pool exhausted");
+        }
     } else {
         panic!("cannot parse {:?} as i64", s)
     }
 }
 
-fn cheap_read_symbol(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
+fn cheap_read_symbol<'a>(chars: &mut Peekable<Chars>, mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
     let mut s = String::new();
     loop {
         match chars.peek() {
@@ -213,18 +275,31 @@ fn cheap_read_symbol(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
             _ => break,
         }
     }
-    Sexp::new(Sexp::Symbol(s))
-}
-
-fn vec_to_cons(vec: &[Arc<Mutex<Sexp>>]) -> Arc<Mutex<Sexp>> {
-    if vec.len() == 0 {
-        Sexp::new(Sexp::Nil)
+    let cell = mem.get_new();
+    if let Some(cell) = cell {
+        cell.val = Sexp::Symbol(s);
+        cell
     } else {
-        Sexp::new(Sexp::Cons(vec[0].clone(), vec_to_cons(&vec[1..])))
+        panic!("cell pool exhausted");
     }
 }
 
-fn cheap_read_list(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
+fn vec_to_cons<'a>(vec: &[&'a Cell<'a>], mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
+    let cell = mem.get_new();
+    if let Some(cell) = cell {
+        if vec.len() == 0 {
+            cell.val = Sexp::Nil;
+            cell
+        } else {
+            cell.val = Sexp::Cons(vec[0], vec_to_cons(&vec[1..], mem));
+            cell
+        }
+    } else {
+        panic!("cell pool exhausted");
+    }
+}
+
+fn cheap_read_list<'a>(chars: &mut Peekable<Chars>, mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
     chars.next();
     let mut vec = Vec::new();
     loop {
@@ -233,37 +308,51 @@ fn cheap_read_list(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
             Some(')') => {
                 chars.next();
                 break;
-            },
+            }
             None => break,
-            _ => vec.push(cheap_read(chars)),
+            _ => vec.push(cheap_read(chars, mem)),
         }
     }
-    vec_to_cons(&vec[..])
+    vec_to_cons(&vec[..], mem)
 }
 
-fn cheap_read(chars: &mut Peekable<Chars>) -> Arc<Mutex<Sexp>> {
+fn cheap_read<'a>(chars: &mut Peekable<Chars>, mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
     skip_whitespaces(chars);
     let c = chars.peek();
     match c {
-        None => Sexp::new(Sexp::Nil),
+        None => {
+            let cell = mem.get_new();
+            if let Some(cell) = cell {
+                cell.val = Sexp::Nil;
+                cell
+            } else {
+                panic!("cell pool exhausted");
+            }
+        }
         Some(';') => {
             skip_comment(chars);
-            Sexp::new(Sexp::Nil)
-        },
+            let cell = mem.get_new();
+            if let Some(cell) = cell {
+                cell.val = Sexp::Nil;
+                cell
+            } else {
+                panic!("cell pool exhausted");
+            }
+        }
         Some(')') => panic!("unexpected close paren"),
-        Some('(') => cheap_read_list(chars),
-        Some('\"') => cheap_read_string(chars),
-        Some('#') => cheap_read_char(chars),
-        Some(c) if c.is_digit(10) => cheap_read_int(chars),
-        Some(_) => cheap_read_symbol(chars),
+        Some('(') => cheap_read_list(chars, mem),
+        Some('\"') => cheap_read_string(chars, mem),
+        Some('#') => cheap_read_char(chars, mem),
+        Some(c) if c.is_digit(10) => cheap_read_int(chars, mem),
+        Some(_) => cheap_read_symbol(chars, mem),
     }
 }
 
-fn cheap_read_all(s: String) -> Vec<Arc<Mutex<Sexp>>> {
+fn cheap_read_all<'a>(s: String, mem: &'a mut Memory<'a>) -> Vec<&'a Cell<'a>> {
     let mut chars = s.chars().peekable();
     let mut values = Vec::new();
     loop {
-        let sexp = cheap_read(&mut chars);
+        let sexp = cheap_read(&mut chars, mem);
         values.push(sexp);
         if let None = chars.peek() {
             break;
@@ -272,28 +361,40 @@ fn cheap_read_all(s: String) -> Vec<Arc<Mutex<Sexp>>> {
     values
 }
 
-fn eval(sexp: Arc<Mutex<Sexp>>) -> Arc<Mutex<Sexp>> {
-    match *sexp.lock().unwrap() {
-        Sexp::Null => panic!("whoa! it's null!"),
-        Sexp::Nil => sexp.clone(),
-        Sexp::Int(_) => sexp.clone(),
-        Sexp::Char(_) => sexp.clone(),
-        Sexp::Str(_) => sexp.clone(),
+fn eval<'a>(cell: &'a Cell<'a>, mem: &'a mut Memory<'a>) -> &'a Cell<'a> {
+    match cell.val {
+        Sexp::None => panic!("whoa! it's none!"),
+        Sexp::Nil => cell,
+        Sexp::Int(_) => cell,
+        Sexp::Char(_) => cell,
+        Sexp::Str(_) => cell,
         Sexp::Symbol(ref name) => {
             println!("{:?} is symbol!", name);
-            sexp.clone()
-        },
-        Sexp::Cons(ref car, ref cdr) => {
-            match &*car.lock().unwrap() {
-                Sexp::Symbol(ref s) if s == "quote" => cdr.clone(),
-                Sexp::Symbol(ref s) if s == "cond" => cdr.clone(),
-                Sexp::Symbol(ref s) if s == "defun" => cdr.clone(),
-                Sexp::Symbol(ref s) if s == "setq" => cdr.clone(),
-                Sexp::Symbol(ref s) if s == "lambda" => cdr.clone(),
-                Sexp::Symbol(_name) => Arc::new(Mutex::new(Sexp::Nil)),
-                _ => {
-                    println!("it should raise 'invalid function call'");
-                    Arc::new(Mutex::new(Sexp::Null))
+            cell
+        }
+        Sexp::Cons(ref car, ref cdr) => match &car.val {
+            Sexp::Symbol(ref s) if s == "quote" => cdr,
+            Sexp::Symbol(ref s) if s == "cond" => cdr,
+            Sexp::Symbol(ref s) if s == "defun" => cdr,
+            Sexp::Symbol(ref s) if s == "setq" => cdr,
+            Sexp::Symbol(ref s) if s == "lambda" => cdr,
+            Sexp::Symbol(_name) => {
+                let cell = mem.get_new();
+                if let Some(cell) = cell {
+                    cell.val = Sexp::Nil;
+                    cell
+                } else {
+                    panic!("cell pool exhausted");
+                }
+            }
+            _ => {
+                println!("it should raise 'invalid function call'");
+                let cell = mem.get_new();
+                if let Some(cell) = cell {
+                    cell.val = Sexp::None;
+                    cell
+                } else {
+                    panic!("cell pool exhausted");
                 }
             }
         },
@@ -301,11 +402,13 @@ fn eval(sexp: Arc<Mutex<Sexp>>) -> Arc<Mutex<Sexp>> {
 }
 
 fn main() {
-    let code = "12345 #\\1 () (1) \"hoge fuga\" (1 (2 (10 20 30) (3 4) 5)) 123 symbol :keyword".to_string();
+    let mut mem = Memory::new(1000);
+    let code = "12345 #\\1 () (1) \"hoge fuga\" (1 (2 (10 20 30) (3 4) 5)) 123 symbol :keyword"
+        .to_string();
     println!("code: {:?}", code);
-    let sexp_vec = cheap_read_all(code);
+    let sexp_vec = cheap_read_all(code, &mut mem);
     for sexp in sexp_vec {
-        cheap_print(eval(sexp));
+        cheap_print(eval(sexp, &mut mem));
         println!("");
     }
 }
@@ -322,17 +425,20 @@ mod tests {
 
     #[test]
     fn cheap_reader() {
-        let code = "12345";  // integer
+        let code = "12345"; // integer
         test_cheap_read(code, Sexp::Int(12345));
-        let code = "#\\1";  // charactor
+        let code = "#\\1"; // charactor
         test_cheap_read(code, Sexp::Char('1'));
 
         // lists
         let code = "()";
         test_cheap_read(code, Sexp::Nil);
         let code = "(1)";
-        let expected = Sexp::Cons(Arc::new(Mutex::new(Sexp::Int(1))),
-                                  Arc::new(Mutex::new(Sexp::Nil)));
+        let expected = Sexp::Cons(
+            Arc::new(Mutex::new(Sexp::Int(1))),
+            Arc::new(Mutex::new(Sexp::Nil)),
+        );
         test_cheap_read(code, expected);
+        p
     }
 }
