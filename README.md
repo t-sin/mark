@@ -10,10 +10,14 @@
 
 ## TODOs
 
-- [ ] Design Mark 01
-- [ ] Design Sciurus Lisp
-- [ ] Implement Sciurus Lisp
-- [ ] Implement Mark 01
+- data types & operations
+  - strings
+  - timestamps
+  - first-class functions
+- CL-like reader
+- multi-threading? (to interact with Mark)
+- (macro system?)
+- lifecycle of squirrels
 
 ## License
 
