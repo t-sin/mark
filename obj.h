@@ -44,3 +44,4 @@ typedef struct lis_obj {
 #define LIS_TAG1(o) ((LIS_OBJ(obj).tag & (0x01 << 1)) >> 1)
 #define LIS_TAG2(o) ((LIS_OBJ(obj).tag & (0x03 << 1)) >> 1)
 #define LIS_TAG3(o) ((LIS_OBJ(obj).tag & (0x07 << 1)) >> 1)
+#define LIS_TAG7(o) ((LIS_OBJ(obj).tag & (0x7f << 1)) >> 1)

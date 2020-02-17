@@ -39,11 +39,12 @@ void test_simple_malloc_and_free() {}
 
 void test() {
     LisObj obj;
-    obj.tag = 0x07;
+    obj.tag = 0xff;
     printf("gc_tag = %d\n", LIS_GC_TAG(obj));
-    printf("tag1 = %d\n", LIS_TAG1(obj));
-    printf("tag2 = %d\n", LIS_TAG2(obj));
-    printf("tag3 = %d\n", LIS_TAG3(obj));
+    printf("tag1 = %x\n", LIS_TAG1(obj));
+    printf("tag2 = %x\n", LIS_TAG2(obj));
+    printf("tag3 = %x\n", LIS_TAG3(obj));
+    printf("tag7 = %x\n", LIS_TAG7(obj));
 
     LIS_GC_FLIP(obj);
     if (LIS_GC_MARKEDP(obj)) {
