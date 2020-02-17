@@ -45,6 +45,15 @@ void test() {
     printf("tag2 = %d\n", LIS_TAG2(obj));
     printf("tag3 = %d\n", LIS_TAG3(obj));
 
+    LIS_GC_FLIP(obj);
+    if (LIS_GC_MARKEDP(obj)) {
+        puts("marked!");
+    }
+    LIS_GC_FLIP(obj);
+    if (LIS_GC_MARKEDP(obj)) {
+        puts("marked!");
+    }
+
     gc_init();
     puts("ok.");
 }

@@ -38,6 +38,9 @@ typedef struct lis_obj {
 #define LIS_WORD(obj) ((LisWord)(obj))
 
 #define LIS_GC_TAG(obj) (LIS_OBJ(obj).tag & 0x01)
+#define LIS_GC_MARKEDP(obj) (LIS_GC_TAG(obj) == 1)
+#define LIS_GC_FLIP(obj) (obj.tag ^= 0x01)
+
 #define LIS_TAG1(o) ((LIS_OBJ(obj).tag & (0x01 << 1)) >> 1)
 #define LIS_TAG2(o) ((LIS_OBJ(obj).tag & (0x03 << 1)) >> 1)
 #define LIS_TAG3(o) ((LIS_OBJ(obj).tag & (0x07 << 1)) >> 1)
