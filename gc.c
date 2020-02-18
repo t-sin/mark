@@ -38,23 +38,15 @@ void gc_add_root(void * start, void * end);
 void test_simple_malloc_and_free() {}
 
 void test() {
-    LisObj obj;
-    obj.tag = 0xff;
-    printf("gc_tag = %d\n", LIS_GC_TAG(obj));
-    printf("tag1 = %x\n", LIS_TAG1(obj));
-    printf("tag2 = %x\n", LIS_TAG2(obj));
-    printf("tag3 = %x\n", LIS_TAG3(obj));
-    printf("tag7 = %x\n", LIS_TAG7(obj));
-
-    LIS_GC_FLIP(obj);
-    if (LIS_GC_MARKEDP(obj)) {
-        puts("marked!");
+    lis_cell cell;
+    cell.tags = 0xff;
+    for (int i=0; i<10; i++) {
+        printf("#%d. cell = %d.\n", i, cell.tags);
+        if (LIS_GC_MARKEDP(cell)) {
+            printf("marked\n");
+        }
+        LIS_GC_FLIP(cell);
     }
-    LIS_GC_FLIP(obj);
-    if (LIS_GC_MARKEDP(obj)) {
-        puts("marked!");
-    }
-
     gc_init();
     puts("ok.");
 }

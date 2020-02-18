@@ -1,11 +1,4 @@
-#include<stdint.h>
-
-typedef intptr_t LisWord;
-typedef uint8_t LisByte;
-
-typedef struct lis_obj {
-  LisByte tag;
-} LisObj;
+#include <stdint.h>
 
 /* tags
  * 
@@ -15,8 +8,8 @@ typedef struct lis_obj {
  * 0000001g => int
  * 0000011g => char
  * xxx0101g => special values
- * xxx0111g => any heap-allocated data
- * 
+ * xxxx111g => built-in types
+ * 0000100g => other types
  * special values:
  * 
  * 0000101g => nil
@@ -24,24 +17,45 @@ typedef struct lis_obj {
  *
  * heap-allocated data
  * 
- * 0010111g => symbol
- * 0100111g => cons
- * 0110111g => function
- * 1000111g => closure
- * 1010111g => pakcage
- * 1100111g => timestamp
- * 1110111g => other classes?
- * 
+ * 0001111g => symbol
+ * 0010111g => cons
+ * 0011111g => function
+ * 0100111g => closure
+ * 0101111g => pakcage
+ * 0110111g => timestamp
+ * 0111111g => other classes?
+ *
  */
 
-#define LIS_OBJ(obj) ((LisObj)(obj))
-#define LIS_WORD(obj) ((LisWord)(obj))
+typedef uint8_t lis_byte;
+typedef int32_t lis_int;
+typedef int32_t lis_char;
+typedef uint32_t lis_tname;
 
-#define LIS_GC_TAG(obj) (LIS_OBJ(obj).tag & 0x01)
-#define LIS_GC_MARKEDP(obj) (LIS_GC_TAG(obj) == 1)
-#define LIS_GC_FLIP(obj) (obj.tag ^= 0x01)
+typedef struct {
+} lis_env;
 
-#define LIS_TAG1(o) ((LIS_OBJ(obj).tag & (0x01 << 1)) >> 1)
-#define LIS_TAG2(o) ((LIS_OBJ(obj).tag & (0x03 << 1)) >> 1)
-#define LIS_TAG3(o) ((LIS_OBJ(obj).tag & (0x07 << 1)) >> 1)
-#define LIS_TAG7(o) ((LIS_OBJ(obj).tag & (0x7f << 1)) >> 1)
+typedef struct {
+} lis_func;
+
+typedef struct {
+ lis_func f;
+ lis_env env;
+} lis_clos;
+
+typedef union {
+ lis_byte tags;
+ lis_char ch;
+ lis_int num;
+ lis_tname type;
+} lis_cell;
+
+#define LIS_GC_TAG(cell) (cell.tags & 0x01)
+#define LIS_GC_MARKEDP(cell) (LIS_GC_TAG(cell) == 1)
+#define LIS_GC_FLIP(cell) cell.tags ^= 0x01
+
+#define LIS_TAG(cell) (cell.tags >> 1)
+#define LIS_TAG1(o) (LIS_TAG(o) & 0x01)
+#define LIS_TAG2(o) (LIS_TAG(o) & 0x03)
+#define LIS_TAG3(o) (LIS_TAG(o) & 0x07)
+#define LIS_TAG7(o) (LIS_TAG(o) & 0x7f)
