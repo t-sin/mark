@@ -1,53 +1,93 @@
-#include <assert.h>
+#include <stdalign.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "obj.h"
 
-struct Header {
-    unsigned char flags;
-    size_t size;
+
+typedef struct Header {
     struct Header * next;
-};
-
-struct Heap {
-    struct Header * head;
     size_t size;
+} Header;
+
+#define HEAP_DEFAULT_SIZE 50000
+#define HEAP_MINIMUM_SIZE 1000
+static size_t alignment = alignof(Header);
+static unsigned char * gc_memory;
+static size_t gc_memory_size;
+static Header * free_list;
+
+void gc_init(void) {
+    gc_memory_size = HEAP_DEFAULT_SIZE;
+    gc_memory = malloc(gc_memory_size);  // くっそぉぉぉぉぉ
+
+    Header * header = (Header *)gc_memory;
+    header->next = header;
+    header->size = 0;
+    free_list = header;
 };
 
-#define HEADER_SIZE ((size_t) sizeof(struct Header))
-#define POINTER_SIZE ((size_t) sizeof(void *))
+void * gc_malloc(size_t size) {
+    size_t bs;
 
-#define HEAP_LIMIT 10000
-#define GC_ALLOC 0x1
-#define GC_MARKED 0x2
+    if (size < HEAP_MINIMUM_SIZE) {
+        bs = HEAP_MINIMUM_SIZE;
+    } else {
+        bs = size;
+    }
 
-struct Header * free_list;
+    if (free_list == free_list->next) {
+        Header * header = (Header *)&gc_memory[HEAP_DEFAULT_SIZE - 1 - sizeof(Header)];
+        header->size = bs;
+        header->next = free_list;
+        free_list->next = header;
+        return (void *)header - bs;
+    }
 
-static struct Header gc_heaps[HEAP_LIMIT];
+    Header * p;
+    for (p = free_list; p->next != free_list; p = p->next) {
+        void * start = p + 1;  // block start
+        void * end = p->next - 1;  // block end
+//        printf("%p, %p, %p\n", start, end, p);
+        // checks if exists a space between current header and next block
+        if ((sizeof(Header) + bs) < (end - p->size - start)) {
+            // もっとまんなかへんに位置とるとよい？
+            Header * nh = p->next - 1;
+            nh->next = p->next;
+            nh->size = bs;
+            p->next = nh;
+            return (void *)(nh) - bs;
+        }
+    }
 
-size_t gc_malloc(size_t size) {}
+    return NULL;
+}
 
-void gc_free(size_t ptr) {}
-
-void gc_init(void) {}
-
+void gc_free(size_t ptr);
 void gc_collect(void);
 void gc_add_root(void * start, void * end);
 
-void test_simple_malloc_and_free() {}
+
+
+#include <assert.h>
+#include <stdio.h>
 
 void test() {
-    lis_cell cell;
-    cell.tags = 0xff;
-    for (int i=0; i<10; i++) {
-        printf("#%d. cell = %d.\n", i, cell.tags);
-        if (LIS_GC_MARKEDP(cell)) {
-            printf("marked\n");
-        }
-        LIS_GC_FLIP(cell);
-    }
     gc_init();
+    for (int i=1; i<10; i++) {
+        void * ptr = gc_malloc(10);
+        printf("%d times malloced = %p\n", i, ptr);
+    }
+
+    for (Header * h = free_list; h->next != free_list; h = h->next) {
+        printf(" * %p, size = %ld\n", (void *)h, h->size);
+    }
+
+    for (int i=0; i<HEAP_DEFAULT_SIZE; i++) {
+        //printf("%x", gc_memory[i]);
+    }
+    puts("");
+
     puts("ok.");
 }
 
