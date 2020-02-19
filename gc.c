@@ -72,13 +72,20 @@ void gc_add_root(void * start, void * end);
 #include <assert.h>
 #include <stdio.h>
 
+void * gc_malloc1(size_t size) {
+    void * ptr = gc_malloc(size);
+    printf("malloced = %p\n", ptr);
+    return ptr;
+}
+
 void test() {
     gc_init();
     for (int i=1; i<10; i++) {
-        void * ptr = gc_malloc(10);
-        printf("%d times malloced = %p\n", i, ptr);
+        printf("[%d] ", i);
+        gc_malloc1(500 * i);
     }
 
+    printf("--- free_list ---\n");
     for (Header * h = free_list; h->next != free_list; h = h->next) {
         printf(" * %p, size = %ld\n", (void *)h, h->size);
     }
