@@ -20,14 +20,15 @@
  * built-in types
  * 
  * 0000101g => array
- * 0001101g => timestamp
- * 0010101g => symbol
- * 0011101g => cons
- * 0100101g => environment
- * 0101101g => function
- * 0110101g => closure
- * 0111101g => pakcage
- * 1000101g => stream
+ * 0001101g => string
+ * 0010101g => timestamp
+ * 0011101g => symbol
+ * 0100101g => cons
+ * 0101101g => environment
+ * 0110101g => function
+ * 0111101g => closure
+ * 1000101g => pakcage
+ * 1001101g => stream
  *
  * other types
  * 1000110g => other classes?
@@ -44,14 +45,15 @@
 #define LIS_TAG_TYPE_T   ~0x01
 
 #define LIS_TAG_TYPE_ARY  0x00
-#define LIS_TAG_TYPE_TS   0x01
-#define LIS_TAG_TYPE_SYM  0x02
-#define LIS_TAG_TYPE_CONS 0x03
-#define LIS_TAG_TYPE_ENV  0x04
-#define LIS_TAG_TYPE_FN   0x05
-#define LIS_TAG_TYPE_CLS  0x06
-#define LIS_TAG_TYPE_PKG  0x07
-#define LIS_TAG_TYPE_STRM  0x08
+#define LIS_TAG_TYPE_STR  0x01
+#define LIS_TAG_TYPE_TS   0x02
+#define LIS_TAG_TYPE_SYM  0x03
+#define LIS_TAG_TYPE_CONS 0x04
+#define LIS_TAG_TYPE_ENV  0x05
+#define LIS_TAG_TYPE_FN   0x06
+#define LIS_TAG_TYPE_CLS  0x07
+#define LIS_TAG_TYPE_PKG  0x08
+#define LIS_TAG_TYPE_STRM 0x09
 
 typedef uint8_t lis_byte;
 typedef int32_t lis_int;
@@ -59,6 +61,7 @@ typedef int32_t lis_char;
 typedef int32_t lis_ptr;
 
 struct lis_array;
+struct lis_string;
 struct lis_tstamp;
 struct lis_symbol;
 struct lis_cons;
@@ -74,6 +77,7 @@ typedef struct {
   lis_char ch;
   lis_ptr ptr;
   struct lis_array * array;
+  struct lis_string * str;
   struct lis_tstamp * ts;
   struct lis_symbol * sym;
   struct lis_cons * cons;
@@ -97,10 +101,14 @@ typedef struct {
 #define LIS_TAG_TYPE(o) (LIS_TAG(o) >> 3)
 
 typedef struct lis_array {
- lis_byte tags;
- lis_obj * arr;
+ lis_obj * body;
  lis_int size;
 } lis_array;
+
+typedef struct lis_string {
+ lis_char * body;
+ lis_int size;
+} lis_string;
 
 typedef struct lis_tstamp {
  lis_int year;

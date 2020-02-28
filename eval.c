@@ -36,8 +36,17 @@ lis_obj make_array() {
     arr.tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_ARY << 4;
     arr.data.array = malloc(sizeof(lis_array));
     arr.data.array->size = 0;
-    arr.data.array->arr = NULL;
+    arr.data.array->body = NULL;
     return arr;
+}
+
+lis_obj make_string() {
+    lis_obj str;
+    str.tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_STR << 4;
+    str.data.str = malloc(sizeof(lis_string));
+    str.data.str->size = 0;
+    str.data.str->body = NULL;
+    return str;
 }
 
 lis_obj * eval(lis_obj * obj) {
@@ -55,6 +64,8 @@ lis_obj * eval(lis_obj * obj) {
         // built-in types
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:
+            return obj;
+        case LIS_TAG_TYPE_STR:
             return obj;
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
@@ -87,23 +98,24 @@ void print(lis_obj * obj) {
         // built-in types
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:
-            if (LIS_TAG3(obj->data.array) == LIS_TAG3_CHAR) {  // strings
-                printf("\"");
-                for (size_t i=0; i < obj->data.array->size; i++) {
-                    printf("%c", obj->data.array->arr[i].data.ch);
+            printf("#(");
+            for (size_t i=0; i < obj->data.array->size; i++) {
+                print(&obj->data.array->body[i]);
+                if (i+1 < obj->data.array->size) {
+                    printf(" ");
                 }
-                printf("\"");
-            } else {  // other types
-                printf("#(");
-                for (size_t i=0; i < obj->data.array->size; i++) {
-                    print(&obj->data.array->arr[i]);
-                    if (i+1 < obj->data.array->size) {
-                        printf(" ");
-                    }
-                }
-                printf(")");
             }
+            printf(")");
             break;
+
+        case LIS_TAG_TYPE_STR:
+            printf("\"");
+            for (size_t i=0; i < obj->data.str->size; i++) {
+                printf("%c", obj->data.str->body[i]);
+            }
+            printf("\"");
+            break;
+
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
         case LIS_TAG_TYPE_CONS:

@@ -66,14 +66,13 @@ int main(int argc, char** argv) {
     }
 
     printf("Sciurus: %s\n", opt.lispath);
-    lis_obj obj = make_array();
-    lis_obj * arr = (lis_obj *)malloc(sizeof(lis_obj) * 3);
+    lis_obj obj = make_string();
+    lis_char * str = (lis_char *)malloc(sizeof(lis_char) * 3);
     obj.data.array->size = 3;
-    obj.data.array->arr = arr;
-    obj.data.array->tags = LIS_TAG3_CHAR << 1;
-    arr[0] = make_char('a');
-    arr[1] = make_char('b');
-    arr[2] = make_char('c');
+    obj.data.array->body = str;
+    str[0] = 'a';
+    str[1] = 'b';
+    str[2] = 'c';
 
     print(eval(&obj));
     printf("\n");
