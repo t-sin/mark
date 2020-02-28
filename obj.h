@@ -8,25 +8,28 @@
  * 0000000g => pointer
  * 0000001g => int
  * 0000011g => char
- * xxx0101g => special values
+ * xxxx101g => special values
  * xxxx100g => built-in types
- * 0000110g => other types
+ * 0000101g => other types
+ *
  * special values:
  * 
  * 0000101g => nil
  * 0010101g => t
  *
- * heap-allocated data
+ * built-in types
  * 
- * 0000110g => array
- * 0001110g => timestamp
- * 0010110g => symbol
- * 0011110g => cons
- * 0100110g => environment
- * 0101110g=> function
- * 0110110g => closure
- * 0111110g => pakcage
- * 1000110g => other classes?
+ * 0000100g => array
+ * 0001100g => timestamp
+ * 0010100g => symbol
+ * 0011100g => cons
+ * 0100100g => environment
+ * 0101100g => function
+ * 0110100g => closure
+ * 0111100g => pakcage
+ *
+ * other types
+ * 1000101g => other classes?
  */
 
 typedef uint8_t lis_byte;
@@ -70,11 +73,14 @@ typedef struct {
 #define LIS_TAG3(o) (LIS_TAG(o) & 0x07)
 #define LIS_TAG7(o) (LIS_TAG(o) & 0x7f)
 
-typedef struct {
+#define LIS_TAG_TYPE(o) (LIS_TAG(o) >> 3)
+
+typedef struct lis_array {
  lis_obj * arr;
+ lis_int size;
 } lis_array;
 
-typedef struct {
+typedef struct lis_tstamp {
  lis_int year;
  lis_byte month;
  lis_byte day;
@@ -84,28 +90,28 @@ typedef struct {
  lis_byte day_of_week;
 } lis_tstamp; 
 
-typedef struct {
+typedef struct lis_symbol {
  lis_obj * name;
 } lis_symbol;
 
-typedef struct {
+typedef struct lis_cons {
  lis_obj * car;
  lis_obj * cdr;
 } lis_cons;
 
-typedef struct env{
+typedef struct lis_env {
  struct env * parent;
  lis_obj * syms;
  lis_obj * vals;
 } lis_env;
 
-typedef struct {
+typedef struct lis_function {
 } lis_function;
 
-typedef struct {
+typedef struct lis_closure {
  lis_function fn;
  lis_env env;
 } lis_closure;
 
-typedef struct {
+typedef struct lis_package {
 } lis_package;
