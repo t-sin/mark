@@ -6,25 +6,19 @@
 
 
 typedef struct Header {
-    struct Header * next;
+    struct Header * next_free;
     size_t size;
 } Header;
 
 #define HEAP_DEFAULT_SIZE 50000
-#define HEAP_MINIMUM_SIZE 1000
-static size_t alignment = alignof(Header);
-static unsigned char * gc_memory;
+#define HEAP_MINIMUM_SIZE 30000
+static Header gc_memory[HEAP_DEFAULT_SIZE];
 static size_t gc_memory_size;
 static Header * free_list;
 
 void gc_init(void) {
     gc_memory_size = HEAP_DEFAULT_SIZE;
-    gc_memory = malloc(gc_memory_size);  // くっそぉぉぉぉぉ
-
-    Header * header = (Header *)gc_memory;
-    header->next = header;
-    header->size = 0;
-    free_list = header;
+    free_list = NULL;
 };
 
 void * gc_malloc(size_t size) {
@@ -36,28 +30,8 @@ void * gc_malloc(size_t size) {
         bs = size;
     }
 
-    if (free_list == free_list->next) {
-        Header * header = (Header *)&gc_memory[HEAP_DEFAULT_SIZE - 1 - sizeof(Header)];
-        header->size = bs;
-        header->next = free_list;
-        free_list->next = header;
-        return (void *)header - bs;
-    }
-
-    Header * p;
-    for (p = free_list; p->next != free_list; p = p->next) {
-        void * start = p + 1;  // block start
-        void * end = p->next - 1;  // block end
-//        printf("%p, %p, %p\n", start, end, p);
-        // checks if exists a space between current header and next block
-        if ((sizeof(Header) + bs) < (end - p->size - start)) {
-            // もっとまんなかへんに位置とるとよい？
-            Header * nh = p->next - 1;
-            nh->next = p->next;
-            nh->size = bs;
-            p->next = nh;
-            return (void *)(nh) - bs;
-        }
+    for (;;) {
+        return NULL;
     }
 
     return NULL;
@@ -86,7 +60,7 @@ void test() {
     }
 
     printf("--- free_list ---\n");
-    for (Header * h = free_list; h->next != free_list; h = h->next) {
+    for (Header * h = free_list; h->next_free != free_list; h = h->next_free) {
         printf(" * %p, size = %ld\n", (void *)h, h->size);
     }
 
