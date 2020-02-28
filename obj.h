@@ -34,56 +34,67 @@ typedef int32_t lis_int;
 typedef int32_t lis_char;
 typedef int32_t lis_ptr;
 
-typedef struct {
-    lis_byte tags;
-} lis_cell;
-
-
-#define LIS_GC_TAG(cell) ((cell).tags & 0x01)
-#define LIS_GC_MARKEDP(cell) (LIS_GC_TAG(cell) == 1)
-#define LIS_GC_FLIP(cell) (cell).tags ^= 0x01
-
-#define LIS_TAG(cell) ((cell).tags >> 1)
-#define LIS_TAG1(o) (LIS_TAG(o) & 0x01)
-#define LIS_TAG2(o) (LIS_TAG(o) & 0x03)
-#define LIS_TAG3(o) (LIS_TAG(o) & 0x07)
-#define LIS_TAG7(o) (LIS_TAG(o) & 0x7f)
+struct lis_array;
+struct lis_tstamp;
+struct lis_symbol;
+struct lis_cons;
+struct lis_env;
+struct lis_function;
+struct lis_closure;
+struct lis_package;
 
 typedef struct {
-    lis_cell * arr;
+ lis_byte tags;
+ union {
+  lis_int num;
+  lis_char ch;
+  lis_ptr ptr;
+  struct lis_array * array;
+  struct lis_tstamp * ts;
+  struct lis_symbol * sym;
+  struct lis_cons * cons;
+  struct lis_env * env;
+  struct lis_function * fn;
+  struct lis_closure * cls;
+  struct lis_package * pkg;
+ } data;
+} lis_obj;
+
+typedef struct {
+ lis_obj * arr;
 } lis_array;
 
 typedef struct {
-    lis_int year;
-    lis_byte month;
-    lis_byte day;
-    lis_byte hour;
-    lis_byte minute;
-    lis_byte second;
-    lis_byte day_of_week;
+ lis_int year;
+ lis_byte month;
+ lis_byte day;
+ lis_byte hour;
+ lis_byte minute;
+ lis_byte second;
+ lis_byte day_of_week;
 } lis_tstamp; 
 
 typedef struct {
-    lis_cell * name;
+ lis_obj * name;
 } lis_symbol;
 
 typedef struct {
-    lis_cell * car;
-    lis_cell * cdr;
+ lis_obj * car;
+ lis_obj * cdr;
 } lis_cons;
 
 typedef struct env{
-    struct env * parent;
-    lis_cell * syms;
-    lis_cell * vals;
+ struct env * parent;
+ lis_obj * syms;
+ lis_obj * vals;
 } lis_env;
 
 typedef struct {
 } lis_function;
 
 typedef struct {
-    lis_function fn;
-    lis_env env;
+ lis_function fn;
+ lis_env env;
 } lis_closure;
 
 typedef struct {
