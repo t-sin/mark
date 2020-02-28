@@ -3,6 +3,7 @@
 #include "obj.h"
 #include "eval.h"
 
-void eval() {
+lis_obj * eval(lis_obj * obj) {
     printf("eval dayo~~\n");
+    return obj;
 }

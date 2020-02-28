@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "obj.h"
 #include "eval.h"
 
 void print_usage() {
@@ -65,6 +66,7 @@ int main(int argc, char** argv) {
     }
 
     printf("Sciurus: %s\n", opt.lispath);
-    eval();
+    lis_obj obj;
+    eval(&obj);
     return 0;
 }

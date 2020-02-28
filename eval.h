@@ -1,1 +1,1 @@
-void eval();
+lis_obj * eval(lis_obj * obj);
