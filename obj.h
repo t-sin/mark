@@ -27,6 +27,7 @@
  * 0101101g => function
  * 0110101g => closure
  * 0111101g => pakcage
+ * 1000101g => stream
  *
  * other types
  * 1000110g => other classes?
@@ -50,6 +51,7 @@
 #define LIS_TAG_TYPE_FN   0x05
 #define LIS_TAG_TYPE_CLS  0x06
 #define LIS_TAG_TYPE_PKG  0x07
+#define LIS_TAG_TYPE_STRM  0x08
 
 typedef uint8_t lis_byte;
 typedef int32_t lis_int;
