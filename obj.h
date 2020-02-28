@@ -8,29 +8,48 @@
  * 0000000g => pointer
  * 0000001g => int
  * 0000011g => char
- * xxxx101g => special values
- * xxxx100g => built-in types
- * 0000101g => other types
+ * xxxx100g => special values
+ * xxxx101g => built-in types
+ * 0000110g => other types
  *
  * special values:
  * 
- * 0000101g => nil
- * 0010101g => t
+ * 1111100g => nil
+ * 1110100g => t
  *
  * built-in types
  * 
- * 0000100g => array
- * 0001100g => timestamp
- * 0010100g => symbol
- * 0011100g => cons
- * 0100100g => environment
- * 0101100g => function
- * 0110100g => closure
- * 0111100g => pakcage
+ * 0000101g => array
+ * 0001101g => timestamp
+ * 0010101g => symbol
+ * 0011101g => cons
+ * 0100101g => environment
+ * 0101101g => function
+ * 0110101g => closure
+ * 0111101g => pakcage
  *
  * other types
- * 1000101g => other classes?
+ * 1000110g => other classes?
  */
+
+#define LIS_TAG3_PTR      0x00
+#define LIS_TAG3_INT      0x01
+#define LIS_TAG3_CHAR     0x03
+#define LIS_TAG3_SPECIAL  0x05
+#define LIS_TAG3_BUILTIN  0x04
+#define LIS_TAG3_OTHER    0x06
+
+#define LIS_TAG_TYPE_NIL ~0x00
+#define LIS_TAG_TYPE_T   ~0x01
+
+#define LIS_TAG_TYPE_ARY  0x00
+#define LIS_TAG_TYPE_TS   0x01
+#define LIS_TAG_TYPE_SYM  0x02
+#define LIS_TAG_TYPE_CONS 0x03
+#define LIS_TAG_TYPE_ENV  0x04
+#define LIS_TAG_TYPE_FN   0x05
+#define LIS_TAG_TYPE_CLS  0x06
+#define LIS_TAG_TYPE_PKG  0x07
 
 typedef uint8_t lis_byte;
 typedef int32_t lis_int;
