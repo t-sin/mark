@@ -65,10 +65,14 @@ lis_obj * eval(lis_obj * obj) {
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:
             return obj;
+
         case LIS_TAG_TYPE_STR:
             return obj;
+
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
+            return obj;
+
         case LIS_TAG_TYPE_CONS:
         case LIS_TAG_TYPE_ENV:
         case LIS_TAG_TYPE_FN:
@@ -118,6 +122,9 @@ void print(lis_obj * obj) {
 
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
+            print(obj->data.sym->name);
+            break;
+
         case LIS_TAG_TYPE_CONS:
         case LIS_TAG_TYPE_ENV:
         case LIS_TAG_TYPE_FN:

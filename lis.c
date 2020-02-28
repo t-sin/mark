@@ -54,6 +54,8 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
     return true;
 }
 
+#include <stdlib.h>
+
 int main(int argc, char** argv) {
     struct Option opt = { "", false };
     if (!parse_option(argc, argv, &opt)) {
@@ -65,11 +67,10 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    printf("Sciurus: %s\n", opt.lispath);
-    lis_obj obj = make_string();
+    lis_obj name = make_string();
     lis_char * str = (lis_char *)malloc(sizeof(lis_char) * 3);
-    obj.data.array->size = 3;
-    obj.data.array->body = str;
+    name.data.str->size = 3;
+    name.data.str->body = str;
     str[0] = 'a';
     str[1] = 'b';
     str[2] = 'c';

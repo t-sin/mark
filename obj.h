@@ -122,6 +122,9 @@ typedef struct lis_tstamp {
 
 typedef struct lis_symbol {
  lis_obj * name;
+ lis_obj * value;
+ struct lis_package * package;
+// lis_function * fn;
 } lis_symbol;
 
 typedef struct lis_cons {
