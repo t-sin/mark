@@ -34,31 +34,26 @@ typedef int32_t lis_int;
 typedef int32_t lis_char;
 typedef int32_t lis_ptr;
 
-typedef union {
+typedef struct {
     lis_byte tags;
-    lis_char ch;
-    lis_int num;
-    lis_ptr * ptr;
 } lis_cell;
 
 
-#define LIS_GC_TAG(cell) (cell.tags & 0x01)
+#define LIS_GC_TAG(cell) ((cell).tags & 0x01)
 #define LIS_GC_MARKEDP(cell) (LIS_GC_TAG(cell) == 1)
-#define LIS_GC_FLIP(cell) cell.tags ^= 0x01
+#define LIS_GC_FLIP(cell) (cell).tags ^= 0x01
 
-#define LIS_TAG(cell) (cell.tags >> 1)
+#define LIS_TAG(cell) ((cell).tags >> 1)
 #define LIS_TAG1(o) (LIS_TAG(o) & 0x01)
 #define LIS_TAG2(o) (LIS_TAG(o) & 0x03)
 #define LIS_TAG3(o) (LIS_TAG(o) & 0x07)
 #define LIS_TAG7(o) (LIS_TAG(o) & 0x7f)
 
 typedef struct {
-    lis_byte tags;
     lis_cell * arr;
 } lis_array;
 
 typedef struct {
-    lis_byte tags;
     lis_int year;
     lis_byte month;
     lis_byte day;
@@ -69,33 +64,27 @@ typedef struct {
 } lis_tstamp; 
 
 typedef struct {
-    lis_byte tags;
     lis_cell * name;
 } lis_symbol;
 
 typedef struct {
-    lis_byte tags;
     lis_cell * car;
     lis_cell * cdr;
 } lis_cons;
 
 typedef struct env{
-    lis_byte tags;
     struct env * parent;
     lis_cell * syms;
     lis_cell * vals;
 } lis_env;
 
 typedef struct {
-    lis_byte tags;
 } lis_function;
 
 typedef struct {
-    lis_byte tags;
     lis_function fn;
     lis_env env;
 } lis_closure;
 
 typedef struct {
-    lis_byte tags;
 } lis_package;

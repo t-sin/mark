@@ -1,5 +1,5 @@
 project('mark', 'c',
 	default_options: ['c_std=c11'])
-#src = ['lis.c', 'eval.c']
-src = ['gc.c']
+src = ['eval.c', 'lis.c']
+#src = ['gc.c']
 executable('lis', sources: src)

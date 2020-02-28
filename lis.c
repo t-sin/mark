@@ -1,6 +1,8 @@
-#include<stdio.h>
-#include<stdbool.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+#include "eval.h"
 
 void print_usage() {
     printf("usage: lis LISPATH\n");
@@ -63,5 +65,6 @@ int main(int argc, char** argv) {
     }
 
     printf("Sciurus: %s\n", opt.lispath);
+    eval();
     return 0;
 }
