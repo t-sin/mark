@@ -87,14 +87,22 @@ void print(lis_obj * obj) {
         // built-in types
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:
-            printf("#(");
-            for (size_t i=0; i < obj->data.array->size; i++) {
-                print(&obj->data.array->arr[i]);
-                if (i+1 < obj->data.array->size) {
-                    printf(" ");
+            if (LIS_TAG3(obj->data.array) == LIS_TAG3_CHAR) {  // strings
+                printf("\"");
+                for (size_t i=0; i < obj->data.array->size; i++) {
+                    printf("%c", obj->data.array->arr[i].data.ch);
                 }
+                printf("\"");
+            } else {  // other types
+                printf("#(");
+                for (size_t i=0; i < obj->data.array->size; i++) {
+                    print(&obj->data.array->arr[i]);
+                    if (i+1 < obj->data.array->size) {
+                        printf(" ");
+                    }
+                }
+                printf(")");
             }
-            printf(")");
             break;
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:

@@ -95,6 +95,7 @@ typedef struct {
 #define LIS_TAG_TYPE(o) (LIS_TAG(o) >> 3)
 
 typedef struct lis_array {
+ lis_byte tags;
  lis_obj * arr;
  lis_int size;
 } lis_array;

@@ -70,9 +70,10 @@ int main(int argc, char** argv) {
     lis_obj * arr = (lis_obj *)malloc(sizeof(lis_obj) * 3);
     obj.data.array->size = 3;
     obj.data.array->arr = arr;
-    arr[0] = make_t();
-    arr[1] = make_char('a');
-    arr[2] = make_int(42);
+    obj.data.array->tags = LIS_TAG3_CHAR << 1;
+    arr[0] = make_char('a');
+    arr[1] = make_char('b');
+    arr[2] = make_char('c');
 
     print(eval(&obj));
     printf("\n");
