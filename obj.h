@@ -60,6 +60,16 @@ typedef struct {
  } data;
 } lis_obj;
 
+#define LIS_GC_TAG(o) ((o)->tags & 0x01)
+#define LIS_GC_MARKEDP(o) (LIS_GC_TAG(o) == 1)
+#define LIS_GC_FLIP(o) (o)->tags ^= 0x01
+
+#define LIS_TAG(o) ((o)->tags >> 1)
+#define LIS_TAG1(o) (LIS_TAG(o) & 0x01)
+#define LIS_TAG2(o) (LIS_TAG(o) & 0x03)
+#define LIS_TAG3(o) (LIS_TAG(o) & 0x07)
+#define LIS_TAG7(o) (LIS_TAG(o) & 0x7f)
+
 typedef struct {
  lis_obj * arr;
 } lis_array;

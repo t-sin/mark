@@ -66,7 +66,10 @@ int main(int argc, char** argv) {
     }
 
     printf("Sciurus: %s\n", opt.lispath);
-    lis_obj obj;
-    eval(&obj);
+    lis_obj obj = make_char('b');
+
+    print(eval(&obj));
+    printf("\n");
+
     return 0;
 }
