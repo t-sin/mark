@@ -1,5 +1,5 @@
 project('mark', 'c',
 	default_options: ['c_std=c11'])
-src = ['print.c', 'eval.c', 'lis.c']
-#src = ['gc.c']
-executable('lis', sources: src)
+subdir('src')
+
+run_target('lis', command: [lis])
