@@ -79,7 +79,7 @@ lis_obj * eval(lis_obj * obj) {
 
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
-            return obj;
+            return obj->data.sym->value;
 
         case LIS_TAG_TYPE_CONS:
         case LIS_TAG_TYPE_ENV:

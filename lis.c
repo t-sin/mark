@@ -67,6 +67,7 @@ int main(int argc, char** argv) {
         return 0;
     }
 
+    lis_obj num = make_int(42);
     lis_obj name = make_string();
     lis_char * str = (lis_char *)malloc(sizeof(lis_char) * 3);
     str[0] = 's';
@@ -75,6 +76,7 @@ int main(int argc, char** argv) {
     name.data.str->size = 3;
     name.data.str->body = str;
     lis_obj symbol = make_symbol(&name);
+    symbol.data.sym->value = &num;
     print(eval(&symbol));
     printf("\n");
 
