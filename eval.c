@@ -49,6 +49,14 @@ lis_obj make_string() {
     return str;
 }
 
+lis_obj make_symbol(lis_obj * name) {
+    lis_obj sym;
+    sym.tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_SYM << 4;
+    sym.data.sym = malloc(sizeof(lis_symbol));
+    sym.data.sym->name = name;
+    return sym;
+}
+
 lis_obj * eval(lis_obj * obj) {
     if (LIS_TAG3(obj) == LIS_TAG3_INT) {
         return obj;  // integer
@@ -85,6 +93,12 @@ lis_obj * eval(lis_obj * obj) {
     }
 }
 
+void print_string(lis_obj * str) {
+    for (size_t i=0; i < str->data.str->size; i++) {
+        printf("%c", str->data.str->body[i]);
+    }
+}
+
 void print(lis_obj * obj) {
     if (LIS_TAG3(obj) == LIS_TAG3_INT) {
         printf("%d", obj->data.num);
@@ -114,15 +128,13 @@ void print(lis_obj * obj) {
 
         case LIS_TAG_TYPE_STR:
             printf("\"");
-            for (size_t i=0; i < obj->data.str->size; i++) {
-                printf("%c", obj->data.str->body[i]);
-            }
+            print_string(obj);
             printf("\"");
             break;
 
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
-            print(obj->data.sym->name);
+            print_string(obj->data.sym->name);
             break;
 
         case LIS_TAG_TYPE_CONS:

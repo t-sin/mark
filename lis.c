@@ -69,13 +69,13 @@ int main(int argc, char** argv) {
 
     lis_obj name = make_string();
     lis_char * str = (lis_char *)malloc(sizeof(lis_char) * 3);
+    str[0] = 's';
+    str[1] = 'y';
+    str[2] = 'm';
     name.data.str->size = 3;
     name.data.str->body = str;
-    str[0] = 'a';
-    str[1] = 'b';
-    str[2] = 'c';
-
-    print(eval(&obj));
+    lis_obj symbol = make_symbol(&name);
+    print(eval(&symbol));
     printf("\n");
 
     return 0;
