@@ -4,6 +4,7 @@
 
 #include "obj.h"
 #include "eval.h"
+#include "print.h"
 
 void print_usage() {
     printf("usage: lis LISPATH\n");

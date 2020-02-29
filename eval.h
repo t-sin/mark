@@ -9,4 +9,3 @@ lis_obj make_symbol(lis_obj * name);
 lis_obj make_cons();
 
 lis_obj * eval(lis_obj * obj);
-void print(lis_obj * obj);
