@@ -80,5 +80,12 @@ int main(int argc, char** argv) {
     print(eval(&symbol));
     printf("\n");
 
+    printf("------------\n");
+    lis_obj cons = make_cons();
+    cons.data.cons->car = &num;
+    cons.data.cons->cdr = &symbol;
+    print(eval(&cons));
+    printf("\n");
+
     return 0;
 }
