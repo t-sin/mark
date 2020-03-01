@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include "stream.h"
+
 /* tags
  * 
  * least significant bit 'g' is a GC-bit
@@ -85,6 +87,7 @@ typedef struct {
   struct lis_function * fn;
   struct lis_closure * cls;
   struct lis_package * pkg;
+  struct lis_stream * stream;
  } data;
 } lis_obj;
 
