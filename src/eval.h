@@ -1,3 +1,7 @@
+#ifndef __lis_eval
+#define __lis_eval
+
+#include "obj.h"
 
 lis_obj make_nil();
 lis_obj make_t();
@@ -9,3 +13,5 @@ lis_obj make_symbol(lis_obj * name);
 lis_obj make_cons();
 
 lis_obj * eval(lis_obj * obj);
+
+#endif
