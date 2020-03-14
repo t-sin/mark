@@ -31,4 +31,5 @@ bool stream_listen_p(lis_stream * stream);
 uint8_t stream_read_elem(lis_stream * stream);
 bool stream_write_elem(lis_stream * stream, uint8_t elem);
 bool stream_unread_elem(lis_stream * stream, uint8_t elem);
+void stream_free_read_buffer(lis_stream * stream);
 void stream_close(lis_stream * stream);
