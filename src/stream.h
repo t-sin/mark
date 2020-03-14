@@ -1,35 +1,20 @@
+#ifndef __lis_stream
+#define __lis_stream
+
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef enum stream_direction_type {
-    LIS_STREAM_IN, LIS_STREAM_OUTPUT, LIS_STREAM_INOUT,
-} stream_direction_type;
+#include "byte_stream.h"
+#include "obj.h"
 
-typedef enum stream_element_type {
-    LIS_STREAM_CHAR, LIS_STREAM_BINARY,
-} stream_element_type;
+lis_stream * make_lis_stream(size_t buf_size);
 
-typedef struct stream_pos {
-    size_t array_idx;
-    size_t elem_idx;
-} stream_pos;
+bool stream_read_byte(lis_stream * stream, lis_byte * out);
+bool stream_write_byte(lis_stream * stream, lis_byte b);
 
-typedef struct lis_stream {
-    stream_direction_type direction;
-    stream_element_type element_type;
-    uint8_t ** buffer;
-    size_t buffer_size;
-    size_t buffer_array_size;
-    stream_pos head;
-    stream_pos tail;
-    bool readable;
-} lis_stream;
+bool stream_peek_char(lis_stream * stream, lis_char * out);
+bool stream_read_char(lis_stream * stream, lis_char * out);
+bool stream_unread_char(lis_stream * stream, uint8_t elem);
+bool stream_write_char(lis_stream * stream, lis_char ch);
 
-lis_stream make_stream(stream_direction_type dir, stream_element_type etype, size_t buf_size);
-
-bool stream_listen_p(lis_stream * stream);
-uint8_t stream_read_elem(lis_stream * stream);
-bool stream_write_elem(lis_stream * stream, uint8_t elem);
-bool stream_unread_elem(lis_stream * stream, uint8_t elem);
-void stream_free_read_buffer(lis_stream * stream);
-void stream_close(lis_stream * stream);
+#endif

@@ -1,6 +1,9 @@
+#ifndef __lis_obj
+#define __lis_obj
+
 #include <stdint.h>
 
-#include "stream.h"
+#include "byte_stream.h"
 
 /* tags
  * 
@@ -151,3 +154,19 @@ typedef struct lis_closure {
 
 typedef struct lis_package {
 } lis_package;
+
+typedef enum lis_stream_direction_type {
+    LIS_STREAM_IN, LIS_STREAM_OUTPUT, LIS_STREAM_INOUT,
+} lis_stream_direction_type;
+
+typedef enum lis_stream_element_type {
+    LIS_STREAM_CHAR, LIS_STREAM_BINARY,
+} lis_stream_element_type;
+
+typedef struct lis_stream {
+    _stream stream;
+    lis_stream_direction_type direction;
+    lis_stream_element_type element_type;
+} lis_stream;
+
+#endif
