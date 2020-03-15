@@ -45,6 +45,7 @@ void _stream_extend_buffer(_stream * stream) {
         pos = (pos + 1) % stream->buffer_size;
     }
 
+    stream->buffer_size = new_buffer_size;
     stream->buffer = new_buffer;
     stream->head = new_pos;
     stream->tail = 0;
@@ -56,11 +57,11 @@ bool _stream_listen_p(_stream * stream) {
     return stream->tail < stream->head;
 }
 
-bool _stream_read_elem(_stream * stream, uint8_t * out, bool peek) {
+bool _stream_read_byte(_stream * stream, uint8_t * out, bool peek) {
     assert(stream != NULL);
 
-    if (stream->tail >= stream->head) {
-        return true;  // EOF
+    if (stream->head == stream->tail) {
+        return false;  // EOF
     }
 
     *out = stream->buffer[stream->tail];
@@ -70,10 +71,10 @@ bool _stream_read_elem(_stream * stream, uint8_t * out, bool peek) {
         stream->unreadable = true;
     }
 
-    return false;
+    return true;
 }
 
-bool _stream_write_elem(_stream * stream, uint8_t elem) {
+bool _stream_write_byte(_stream * stream, uint8_t byte) {
     assert(stream != NULL);
 
     if (_stream_filled(stream) >= stream->buffer_size - 4) {
@@ -81,17 +82,17 @@ bool _stream_write_elem(_stream * stream, uint8_t elem) {
         _stream_extend_buffer(stream);
     }
 
-    stream->buffer[stream->head] = elem;
+    stream->buffer[stream->head] = byte;
     stream->head = (stream->head + 1) % stream->buffer_size;
 
     return true;
 }
 
-bool _stream_unread_elem(_stream * stream, uint8_t elem) {
+bool _stream_unread_byte(_stream * stream, uint8_t byte) {
     assert(stream != NULL);
 
     size_t prev = (stream->tail - 1) % stream->buffer_size;
-    if (prev != stream->head && stream->buffer[prev] == elem) {
+    if (prev != stream->head && stream->buffer[prev] == byte) {
         stream->tail = prev;
         stream->unreadable = false;
         return true;
