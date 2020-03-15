@@ -2,8 +2,9 @@
 #include <string.h>
 
 #include "byte_stream.h"
-#include "obj.h"
 #include "utf8.h"
+#include "obj.h"
+#include "stream.h"
 
 lis_stream * make_lis_stream(size_t buf_size,
                              lis_stream_direction_type direction,
@@ -35,7 +36,18 @@ bool stream_read_byte(lis_stream * stream, lis_byte * out) {
         return false;
     }
 
-    return _stream_read_byte(stream->stream, out);
+    if (stream->fin != NULL &&
+        stream->stream->tail == stream->stream->head) {
+        for (int i=0; i<stream->stream->buffer_size/2; i++) {
+            int ch = fgetc(stream->fin);
+            if (ch == EOF) {
+                break;
+            }
+            _stream_write_byte(stream->stream, (lis_byte)ch);
+        }
+    }
+
+    return _stream_read_byte(stream->stream, out, false);
 }
 
 bool stream_write_byte(lis_stream * stream, lis_byte b) {
@@ -48,7 +60,18 @@ bool stream_write_byte(lis_stream * stream, lis_byte b) {
         return false;
     }
 
-    return _stream_read_byte(stream->stream, b);
+    if (stream->fout != NULL &&
+        _stream_filled(stream->stream) > stream->stream->buffer_size/2) {
+        lis_byte b;
+        while (true) {
+            if (!_stream_read_byte(stream->stream, &b, false)) {
+                break;
+            }
+            fputc((char)b, stream->fout);
+        }
+    }
+
+    return _stream_write_byte(stream->stream, b);
 }
 
 bool stream_peek_char(lis_stream * stream, lis_char * out) {

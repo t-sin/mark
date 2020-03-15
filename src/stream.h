@@ -19,4 +19,6 @@ bool stream_read_char(lis_stream * stream, lis_char * out);
 bool stream_unread_char(lis_stream * stream, uint8_t elem);
 bool stream_write_char(lis_stream * stream, lis_char ch);
 
+void stream_flush(lis_stream * stream);
+
 #endif
