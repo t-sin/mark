@@ -105,31 +105,6 @@ int utf8_encode_codepoint(int32_t cp, uint8_t * out) {
         out[3] = (cp & 0b00111111) | 0b10000000;
         return 4;
     }
-}
 
-void main() {
-    utf8_decoding_state * state = make_utf8_decoding_state();
-
-    char s[256];
-    uint8_t c[4];
-    int32_t cp;
-
-    fgets(s, 255, stdin);
-    for (int i=0; i<255; i++) {
-
-        utf8_decoding_status status = utf8_decode_byte(state, s[i], &cp);
-        if (status == UTF8_DECODED) {
-            printf("cp=%x ", cp);
-            reset_utf8_decoding_state(state);
-
-            int len = utf8_encode_codepoint(cp, c);
-            for (int j=0; j<len; j++) {
-                printf("%c", c[j]);
-            }
-            printf("\n");
-        }
-
-        if (s[i] == 0) break;
-    }
-    return;
+    return 0;
 }
