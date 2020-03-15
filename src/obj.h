@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "byte_stream.h"
+#include "utf8.h"
 
 /* tags
  * 
@@ -160,11 +161,12 @@ typedef enum lis_stream_direction_type {
 } lis_stream_direction_type;
 
 typedef enum lis_stream_element_type {
-    LIS_STREAM_CHAR, LIS_STREAM_BINARY,
+    LIS_STREAM_TEXT, LIS_STREAM_BINARY,
 } lis_stream_element_type;
 
 typedef struct lis_stream {
     _stream stream;
+    utf8_decoding_state decode_state;
     lis_stream_direction_type direction;
     lis_stream_element_type element_type;
 } lis_stream;
