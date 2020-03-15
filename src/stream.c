@@ -27,7 +27,7 @@ lis_stream * make_lis_stream(size_t buf_size,
 }
 
 bool stream_read_byte(lis_stream * stream, lis_byte * out) {
-    if (stream->direction != LIS_STREAM_IN ||
+    if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
@@ -51,7 +51,7 @@ bool stream_read_byte(lis_stream * stream, lis_byte * out) {
 }
 
 bool stream_write_byte(lis_stream * stream, lis_byte b) {
-    if (stream->direction != LIS_STREAM_OUT ||
+    if (stream->direction != LIS_STREAM_OUT &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
@@ -75,7 +75,7 @@ bool stream_write_byte(lis_stream * stream, lis_byte b) {
 }
 
 bool stream_peek_char(lis_stream * stream, lis_char * out) {
-    if (stream->direction != LIS_STREAM_IN ||
+    if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
@@ -87,7 +87,7 @@ bool stream_peek_char(lis_stream * stream, lis_char * out) {
 }
 
 bool stream_read_char(lis_stream * stream, lis_char * out) {
-    if (stream->direction != LIS_STREAM_IN ||
+    if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
@@ -99,7 +99,7 @@ bool stream_read_char(lis_stream * stream, lis_char * out) {
 }
 
 bool stream_unread_char(lis_stream * stream, uint8_t elem) {
-    if (stream->direction != LIS_STREAM_IN ||
+    if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
