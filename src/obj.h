@@ -1,6 +1,7 @@
 #ifndef __lis_obj
 #define __lis_obj
 
+#include <stdio.h>
 #include <stdint.h>
 
 #include "byte_stream.h"
@@ -168,6 +169,8 @@ struct utf8_decoding_state;
 
 typedef struct lis_stream {
     _stream stream;
+    FILE * fin;
+    FILE * fout;
     struct utf8_decoding_state * decode_state;
     lis_stream_direction_type direction;
     lis_stream_element_type element_type;

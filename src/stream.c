@@ -11,6 +11,8 @@ lis_stream * make_lis_stream(size_t buf_size,
     lis_stream * stream;
     stream = (lis_stream *)malloc(sizeof(lis_stream));
     stream->stream = _make_stream(buf_size);
+    stream->fin = NULL;
+    stream->fout = NULL;
     stream->direction = direction;
     stream->element_type = etype;
 
