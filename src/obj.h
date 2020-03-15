@@ -164,9 +164,11 @@ typedef enum lis_stream_element_type {
     LIS_STREAM_TEXT, LIS_STREAM_BINARY,
 } lis_stream_element_type;
 
+struct utf8_decoding_state;
+
 typedef struct lis_stream {
     _stream stream;
-    utf8_decoding_state decode_state;
+    struct utf8_decoding_state * decode_state;
     lis_stream_direction_type direction;
     lis_stream_element_type element_type;
 } lis_stream;
