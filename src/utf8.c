@@ -1,6 +1,7 @@
 #include<stdio.h>
 
 #include <assert.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -18,7 +19,7 @@ void reset_utf8_decoding_state(utf8_decoding_state * state) {
 }
 
 void decode_first_byte(utf8_decoding_state * state) {
-    lis_byte byte = state->bytes[state->n];
+    uint8_t byte = state->bytes[state->n];
 
     if (byte >> 5 == 0b110) {          // 2-bytes sequence
         state->cp = byte & 0b11111;
@@ -46,7 +47,7 @@ void decode_first_byte(utf8_decoding_state * state) {
 }
 
 void decode_successor_byte(utf8_decoding_state * state) {
-    lis_byte byte = state->bytes[state->n];
+    uint8_t byte = state->bytes[state->n];
 
     if (byte >> 6 == 0b10) {
         state->cp = state->cp << 6 | byte & 0x3f;
@@ -60,7 +61,7 @@ void decode_successor_byte(utf8_decoding_state * state) {
     }
 }
 
-utf8_decoding_status utf8_decode_byte(utf8_decoding_state * state, lis_byte byte, lis_char * out) {
+utf8_decoding_status utf8_decode_byte(utf8_decoding_state * state, uint8_t byte, int32_t * out) {
     assert(state->n >= 0 && state->n < 4);
 
     state->bytes[state->n] = byte;
@@ -79,13 +80,13 @@ utf8_decoding_status utf8_decode_byte(utf8_decoding_state * state, lis_byte byte
     return state->status;
 }
 
-int utf8_encode_codepoint(lis_char cp, lis_byte * out) {
+int utf8_encode_codepoint(int32_t cp, uint8_t * out) {
     if (cp < 0 || cp > 0x10FFFF) {
         return 0;
     }
 
     if (cp <= 0x007F) {
-        out[0] = (lis_byte)cp;
+        out[0] = (uint8_t)cp;
         return 1;
     } else if (cp >= 0x0080 && cp < 0x07FF) {
         out[0] = cp >> 6 | 0b11000000;
@@ -109,8 +110,8 @@ void main() {
     utf8_decoding_state * state = make_utf8_decoding_state();
 
     char s[256];
-    lis_byte c[4];
-    lis_char cp;
+    uint8_t c[4];
+    int32_t cp;
 
     fgets(s, 255, stdin);
     for (int i=0; i<255; i++) {
