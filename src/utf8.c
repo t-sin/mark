@@ -50,7 +50,7 @@ void decode_successor_byte(utf8_decoding_state * state) {
     uint8_t byte = state->bytes[state->n];
 
     if (byte >> 6 == 0b10) {
-        state->cp = state->cp << 6 | byte & 0x3f;
+        state->cp = state->cp << 6 | (byte & 0x3f);
         if (state->n + 1 == state->seq_len) {
             state->status = UTF8_DECODED;
         } else {
@@ -90,18 +90,18 @@ int utf8_encode_codepoint(int32_t cp, uint8_t * out) {
         return 1;
     } else if (cp >= 0x0080 && cp < 0x07FF) {
         out[0] = cp >> 6 | 0b11000000;
-        out[1] = cp & 0b00111111 | 0b10000000;
+        out[1] = (cp & 0b00111111) | 0b10000000;
         return 2;
     } else if (cp >=0x0800 && cp < 0xFFFF) {
         out[0] = cp >> (6 + 6) | 0b11100000;
-        out[1] = cp >> 6 & 0b00111111 | 0b10000000;
-        out[2] = cp & 0b00111111 | 0b10000000;
+        out[1] = ((cp >> 6) & 0b00111111) | 0b10000000;
+        out[2] = (cp & 0b00111111) | 0b10000000;
         return 3;
     } else if (cp >= 0x010000 && cp < 0x10FFFF) {
         out[0] = cp >> (6 + 6 + 6) | 0b11110000;
-        out[1] = cp >> (6 + 6) & 0b00111111 | 0b10000000;
-        out[2] = cp >> 6 & 0b00111111 | 0b10000000;
-        out[3] = cp & 0b00111111 | 0b10000000;
+        out[1] = (cp >> (6 + 6) & 0b00111111) | 0b10000000;
+        out[2] = (cp >> 6 & 0b00111111) | 0b10000000;
+        out[3] = (cp & 0b00111111) | 0b10000000;
         return 4;
     }
 }
