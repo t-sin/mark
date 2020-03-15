@@ -1,6 +1,7 @@
 #ifndef __utf8
 #define __utf8
 
+#include <stddef.h>
 #include <stdint.h>
 
 typedef enum utf8_decoding_status {
