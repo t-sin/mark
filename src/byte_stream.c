@@ -72,7 +72,8 @@ bool _stream_write_elem(_stream * stream, uint8_t elem) {
         filled_length = stream->head - stream->tail;
     }
 
-    if (filled_length >= stream->buffer_size) {
+    if (filled_length >= stream->buffer_size - 4) {
+        // to read back when invalid UTF-8 bytes
         stream_extend_buffer(stream);
     }
 
