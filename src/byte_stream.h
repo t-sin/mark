@@ -14,6 +14,8 @@ typedef struct _stream {
 
 _stream * _make_stream(size_t buf_size);
 
+size_t _stream_filled(_stream * stream);
+
 bool _stream_listen_p(_stream * stream);
 void _stream_extend_buffer(_stream * stream);
 void _stream_close(_stream * stream);

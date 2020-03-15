@@ -21,6 +21,17 @@ _stream * _make_stream(size_t buf_size) {
     return stream;
 }
 
+size_t _stream_filled(_stream * stream) {
+   size_t filled_length;
+    if (stream->head < stream->tail) {
+        filled_length = stream->head + (stream->buffer_size - stream->tail);
+    } else {
+        filled_length = stream->head - stream->tail;
+    }
+
+    return filled_length;
+}
+
 void _stream_extend_buffer(_stream * stream) {
     size_t new_buffer_size = stream->buffer_size * 2;
     uint8_t * new_buffer;
@@ -65,14 +76,7 @@ bool _stream_read_elem(_stream * stream, uint8_t * out, bool peek) {
 bool _stream_write_elem(_stream * stream, uint8_t elem) {
     assert(stream != NULL);
 
-    size_t filled_length;
-    if (stream->head < stream->tail) {
-        filled_length = stream->head + (stream->buffer_size - stream->tail);
-    } else {
-        filled_length = stream->head - stream->tail;
-    }
-
-    if (filled_length >= stream->buffer_size - 4) {
+    if (_stream_filled(stream) >= stream->buffer_size - 4) {
         // to read back when invalid UTF-8 bytes
         stream_extend_buffer(stream);
     }
