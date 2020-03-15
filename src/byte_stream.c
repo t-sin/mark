@@ -15,7 +15,7 @@ _stream * _make_stream(size_t buf_size) {
     stream->unreadable = false;
 
     uint8_t * buffer = (uint8_t *)malloc(sizeof(uint8_t) * buf_size);
-    memset(buffer, NULL, sizeof(uint8_t) * buf_size);
+    memset(buffer, 0, sizeof(uint8_t) * buf_size);
     stream->buffer = buffer;
 
     return stream;
@@ -35,14 +35,14 @@ size_t _stream_filled(_stream * stream) {
 void _stream_extend_buffer(_stream * stream) {
     size_t new_buffer_size = stream->buffer_size * 2;
     uint8_t * new_buffer;
-    new_buffer = (uin8_t *)malloc(sizeof(uint8_t) * new_buffer_size);
+    new_buffer = (uint8_t *)malloc(sizeof(uint8_t) * new_buffer_size);
 
     size_t pos = stream->tail;
     size_t new_pos = 0;
-    while (pos == head - 1) {
+    while (pos == stream->head - 1) {
         new_buffer[new_pos] = stream->buffer[pos];
         new_pos++;
-        pos == (pos + 1) % stream->buffer_size;
+        pos = (pos + 1) % stream->buffer_size;
     }
 
     stream->buffer = new_buffer;
@@ -53,7 +53,7 @@ void _stream_extend_buffer(_stream * stream) {
 bool _stream_listen_p(_stream * stream) {
     assert(stream != NULL);
 
-    return stream->tail < stream->head);
+    return stream->tail < stream->head;
 }
 
 bool _stream_read_elem(_stream * stream, uint8_t * out, bool peek) {
@@ -67,7 +67,7 @@ bool _stream_read_elem(_stream * stream, uint8_t * out, bool peek) {
 
     if (!peek) {
         stream->tail = (stream->tail + 1) % stream->buffer_size;
-        stream->unredable = true;
+        stream->unreadable = true;
     }
 
     return false;
@@ -78,7 +78,7 @@ bool _stream_write_elem(_stream * stream, uint8_t elem) {
 
     if (_stream_filled(stream) >= stream->buffer_size - 4) {
         // to read back when invalid UTF-8 bytes
-        stream_extend_buffer(stream);
+        _stream_extend_buffer(stream);
     }
 
     stream->buffer[stream->head] = elem;
