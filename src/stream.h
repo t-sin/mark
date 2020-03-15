@@ -7,7 +7,9 @@
 #include "byte_stream.h"
 #include "obj.h"
 
-lis_stream * make_lis_stream(size_t buf_size);
+lis_stream * make_lis_stream(size_t buf_size,
+                             lis_stream_direction_type direction,
+                             lis_stream_element_type etype);
 
 bool stream_read_byte(lis_stream * stream, lis_byte * out);
 bool stream_write_byte(lis_stream * stream, lis_byte b);

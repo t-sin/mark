@@ -158,7 +158,7 @@ typedef struct lis_package {
 } lis_package;
 
 typedef enum lis_stream_direction_type {
-    LIS_STREAM_IN, LIS_STREAM_OUTPUT, LIS_STREAM_INOUT,
+    LIS_STREAM_IN, LIS_STREAM_OUT, LIS_STREAM_INOUT,
 } lis_stream_direction_type;
 
 typedef enum lis_stream_element_type {
@@ -168,7 +168,7 @@ typedef enum lis_stream_element_type {
 struct utf8_decoding_state;
 
 typedef struct lis_stream {
-    _stream stream;
+    _stream * stream;
     FILE * fin;
     FILE * fout;
     struct utf8_decoding_state * decode_state;
