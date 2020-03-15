@@ -190,6 +190,43 @@ void test_read_after_buffer_extention() {
     assert(b = 4);
 }
 
+void test_unread_empty_stream() {
+    _stream * stream = _make_stream(5);
+    bool ret;
+
+    ret = _stream_unread_byte(stream, 0);
+    assert(ret == false);
+}
+
+void test_unread_once() {
+    _stream * stream = _make_stream(5);
+    bool ret;
+    uint8_t b;
+
+    _stream_write_byte(stream, 42);
+
+    assert(stream->head == 1);
+    assert(stream->tail == 0);
+
+    ret = _stream_read_byte(stream, &b, true);
+    assert(ret == true);
+    assert(stream->head == 1);
+    assert(stream->tail == 1);
+    assert(stream->unreadable == true);
+
+    ret = _stream_unread_byte(stream, 40);
+    assert(ret == false);
+    assert(stream->head == 1);
+    assert(stream->tail == 1);
+    assert(stream->unreadable == true);
+
+    ret = _stream_unread_byte(stream, 42);
+    assert(ret == true);
+    assert(stream->head == 1);
+    assert(stream->tail == 0);
+    assert(stream->unreadable == false);
+}
+
 int main() {
     test_make_stream();
     test_count_filled();
