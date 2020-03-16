@@ -64,7 +64,12 @@ bool _stream_peek_byte(_stream * stream, uint8_t * out, size_t n) {
         return false;  // EOF
     }
 
-    *out = stream->buffer[stream->tail + n];
+    size_t pos = (stream->tail + n) % stream->buffer_size;
+    if (pos >= stream->head) {
+        return false;
+    }
+
+    *out = stream->buffer[pos];
 
     return true;
 }

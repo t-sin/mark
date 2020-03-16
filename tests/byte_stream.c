@@ -111,6 +111,32 @@ void test_read_once() {
     assert(stream->tail == 1);
 }
 
+void test_peek() {
+    _stream * stream = _make_stream(5);
+    bool ret;
+    uint8_t b;
+
+    _stream_write_byte(stream, 42);
+    _stream_write_byte(stream, 43);
+
+    ret = _stream_peek_byte(stream, &b, 0);
+    assert(ret == true);
+    assert(b == 42);
+
+    ret = _stream_peek_byte(stream, &b, 1);
+    assert(ret == true);
+    assert(b == 43);
+
+    ret = _stream_peek_byte(stream, &b, 2);
+    assert(ret == false);
+
+    _stream_write_byte(stream, 44);
+
+    ret = _stream_peek_byte(stream, &b, 2);
+    assert(ret == true);
+    assert(b == 44);
+}
+
 void test_ring_wraps_pointer_of_buffer_pointer() {
     _stream * stream = _make_stream(3);
     bool ret;
@@ -237,6 +263,7 @@ int main() {
     test_write_once();
     test_peek_once();
     test_read_once();
+    test_peek();
 
     test_ring_wraps_pointer_of_buffer_pointer();
     test_buffer_extention();
