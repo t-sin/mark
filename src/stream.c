@@ -84,6 +84,27 @@ bool stream_peek_char(lis_stream * stream, lis_char * out) {
         return false;
     }
 
+    lis_byte b;
+    lis_char cp;
+    size_t peek_n = 0;
+
+    while (true) {
+        if (!_stream_peek_byte(stream->stream, &b, peek_n)) {
+            return false;
+        }
+
+        utf8_decoding_status status = utf8_decode_byte(stream->decode_state, b, &cp);
+        if (status == UTF8_INVALID_BYTE) {
+            return false;
+        } else if (status == UTF8_DECODED) {
+            reset_utf8_decoding_state(stream->decode_state);
+            fprintf(stderr, "%x\n", cp);
+            *out = cp;
+            return true;
+        }
+
+        peek_n++;
+    }
 }
 
 bool stream_read_char(lis_stream * stream, lis_char * out) {
@@ -96,6 +117,27 @@ bool stream_read_char(lis_stream * stream, lis_char * out) {
         return false;
     }
 
+    lis_byte b;
+    lis_char cp;
+    size_t peek_n = 0;
+
+    while (true) {
+        if (!_stream_peek_byte(stream->stream, &b, peek_n++)) {
+            return false;
+        }
+
+        utf8_decoding_status status = utf8_decode_byte(stream->decode_state, b, &cp);
+        if (status == UTF8_INVALID_BYTE) {
+            return false;
+        } else if (status == UTF8_DECODED) {
+            *out = cp;
+            reset_utf8_decoding_state(stream->decode_state);
+            for (; peek_n>0; peek_n--) {
+                _stream_read_byte(stream->stream, &b);
+            }
+            return true;
+        }
+    }
 }
 
 bool stream_unread_char(lis_stream * stream, uint8_t elem) {

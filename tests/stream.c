@@ -40,8 +40,56 @@ void test_read_write_bytes() {
     assert(ret == true);
     assert(b == 72);
 }
+#include <stdio.h>
+void test_peek_and_read_char() {
+    lis_stream * stream = make_lis_stream(20, LIS_STREAM_IN, LIS_STREAM_TEXT);
+    bool ret;
+    lis_char cp;
+
+    // prepare
+    char s[] = u8"abcあいう";
+    for (int i=0; i<sizeof(s)-1; i++) {  // avoid null character
+        _stream_write_byte(stream->stream, s[i]);
+    }
+
+    ret = stream_peek_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 'a');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 'a');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 'b');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 'c');
+
+    ret = stream_peek_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 0x3042);  // あ
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 0x3042);  // あ
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 0x3044);  // い
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 0x3046);  // う
+
+    ret = stream_peek_char(stream, &cp);
+    assert(ret == false);
+}
 
 int main() {
     test_read_write_bytes();
+    test_peek_and_read_char();
     return 0;
 }
