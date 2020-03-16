@@ -37,7 +37,7 @@ bool stream_read_byte(lis_stream * stream, lis_byte * out) {
     }
 
     if (stream->fin != NULL &&
-        stream->stream->tail == stream->stream->head) {
+        _stream_filled(stream->stream) <= 0) {
         for (int i=0; i<stream->stream->buffer_size/2; i++) {
             int ch = fgetc(stream->fin);
             if (ch == EOF) {
