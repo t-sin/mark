@@ -3,6 +3,8 @@
 #include <string.h>
 
 #include "obj.h"
+#include "utf8.h"
+#include "stream.h"
 #include "eval.h"
 #include "print.h"
 
@@ -67,6 +69,18 @@ int main(int argc, char** argv) {
         print_usage();
         return 0;
     }
+
+    lis_stream * stream = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
+    stream->fin = stdin;
+    while (true) {
+        lis_char cp;
+        lis_byte bytes[4];
+        if (!stream_read_char(stream, &cp)) break;
+        int len = utf8_encode_codepoint(cp, bytes);
+        if (len <= 0) break;
+        for (int i=0; i<len; i++) printf("%c", bytes[i]);
+    }
+    printf("\n");
 
     lis_obj num = make_int(42);
     lis_obj name = make_string();
