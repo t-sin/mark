@@ -24,8 +24,8 @@ void test_count_filled() {
 
     assert(_stream_filled(stream) == 3);
 
-    _stream_read_byte(stream, &b, false);
-    _stream_read_byte(stream, &b, false);
+    _stream_read_byte(stream, &b);
+    _stream_read_byte(stream, &b);
 
     assert(_stream_filled(stream) == 1);
 }
@@ -52,7 +52,7 @@ void test_peek_empty_stream() {
     assert(stream->head == 0);
     assert(stream->tail == 0);
 
-    ret = _stream_read_byte(stream, &b, true);
+    ret = _stream_peek_byte(stream, &b, 0);
 
     assert(ret == false);
     assert(stream->head == 0);
@@ -67,7 +67,7 @@ void test_read_empty_stream() {
     assert(stream->head == 0);
     assert(stream->tail == 0);
 
-    ret = _stream_read_byte(stream, &b, false);
+    ret = _stream_read_byte(stream, &b);
 
     assert(ret == false);
     assert(stream->head == 0);
@@ -85,7 +85,7 @@ void test_peek_once() {
     assert(stream->head == 1);
     assert(stream->tail == 0);
 
-    _stream_read_byte(stream, &b, true);
+    _stream_peek_byte(stream, &b, 0);
 
     assert(ret == true);
     assert(stream->head == 1);
@@ -103,7 +103,7 @@ void test_read_once() {
     assert(stream->head == 1);
     assert(stream->tail == 0);
 
-    _stream_read_byte(stream, &b, false);
+    _stream_read_byte(stream, &b);
 
     assert(ret == true);
     assert(b == 42);
@@ -117,16 +117,16 @@ void test_ring_wraps_pointer_of_buffer_pointer() {
     uint8_t b;
 
     _stream_write_byte(stream, 1);
-    _stream_read_byte(stream, &b, false);
+    _stream_read_byte(stream, &b);
     _stream_write_byte(stream, 2);
-    _stream_read_byte(stream, &b, false);
+    _stream_read_byte(stream, &b);
 
     ret = _stream_write_byte(stream, 3);
     assert(ret == true);
     assert(stream->head == 0);
     assert(stream->tail == 2);
 
-    ret = _stream_read_byte(stream, &b, false);
+    ret = _stream_read_byte(stream, &b);
     assert(ret == true);
     assert(stream->head == 0);
     assert(stream->tail == 0);
@@ -137,7 +137,7 @@ void test_ring_wraps_pointer_of_buffer_pointer() {
     assert(stream->head == 1);
     assert(stream->tail == 0);
 
-    ret = _stream_read_byte(stream, &b, false);
+    ret = _stream_read_byte(stream, &b);
     assert(ret == true);
     assert(stream->head == 1);
     assert(stream->tail == 1);
@@ -173,19 +173,19 @@ void test_read_after_buffer_extention() {
     _stream_write_byte(stream, 3);
     _stream_write_byte(stream, 4);
 
-    ret = _stream_read_byte(stream, &b, false);
+    ret = _stream_read_byte(stream, &b);
     assert(ret == true);
     assert(b = 1);
 
-    ret = _stream_read_byte(stream, &b, false);
+    ret = _stream_read_byte(stream, &b);
     assert(ret == true);
     assert(b = 2);
 
-    ret = _stream_read_byte(stream, &b, false);
+    ret = _stream_read_byte(stream, &b);
     assert(ret == true);
     assert(b = 3);
 
-    ret = _stream_read_byte(stream, &b, false);
+    ret = _stream_read_byte(stream, &b);
     assert(ret == true);
     assert(b = 4);
 }
@@ -208,7 +208,7 @@ void test_unread_once() {
     assert(stream->head == 1);
     assert(stream->tail == 0);
 
-    ret = _stream_read_byte(stream, &b, true);
+    ret = _stream_read_byte(stream, &b);
     assert(ret == true);
     assert(stream->head == 1);
     assert(stream->tail == 1);

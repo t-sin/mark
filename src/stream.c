@@ -47,7 +47,7 @@ bool stream_read_byte(lis_stream * stream, lis_byte * out) {
         }
     }
 
-    return _stream_read_byte(stream->stream, out, false);
+    return _stream_read_byte(stream->stream, out);
 }
 
 bool stream_write_byte(lis_stream * stream, lis_byte b) {
@@ -64,7 +64,7 @@ bool stream_write_byte(lis_stream * stream, lis_byte b) {
         _stream_filled(stream->stream) > stream->stream->buffer_size/2) {
         lis_byte b;
         while (true) {
-            if (!_stream_read_byte(stream->stream, &b, false)) {
+            if (!_stream_read_byte(stream->stream, &b)) {
                 break;
             }
             fputc((char)b, stream->fout);

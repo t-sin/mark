@@ -20,7 +20,8 @@ bool _stream_listen_p(_stream * stream);
 void _stream_extend_buffer(_stream * stream);
 void _stream_close(_stream * stream);
 
-bool _stream_read_byte(_stream * stream, uint8_t * out, bool peek);
+bool _stream_peek_byte(_stream * stream, uint8_t * out, size_t n);
+bool _stream_read_byte(_stream * stream, uint8_t * out);
 bool _stream_unread_byte(_stream * stream, uint8_t byte);
 bool _stream_write_byte(_stream * stream, uint8_t elem);
 

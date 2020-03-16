@@ -57,7 +57,19 @@ bool _stream_listen_p(_stream * stream) {
     return stream->tail < stream->head;
 }
 
-bool _stream_read_byte(_stream * stream, uint8_t * out, bool peek) {
+bool _stream_peek_byte(_stream * stream, uint8_t * out, size_t n) {
+    assert(stream != NULL);
+
+    if (stream->head == stream->tail) {
+        return false;  // EOF
+    }
+
+    *out = stream->buffer[stream->tail + n];
+
+    return true;
+}
+
+bool _stream_read_byte(_stream * stream, uint8_t * out) {
     assert(stream != NULL);
 
     if (stream->head == stream->tail) {
@@ -66,10 +78,8 @@ bool _stream_read_byte(_stream * stream, uint8_t * out, bool peek) {
 
     *out = stream->buffer[stream->tail];
 
-    if (!peek) {
-        stream->tail = (stream->tail + 1) % stream->buffer_size;
-        stream->unreadable = true;
-    }
+    stream->tail = (stream->tail + 1) % stream->buffer_size;
+    stream->unreadable = true;
 
     return true;
 }
