@@ -40,7 +40,7 @@ void test_read_write_bytes() {
     assert(ret == true);
     assert(b == 72);
 }
-#include <stdio.h>
+
 void test_peek_and_read_char() {
     lis_stream * stream = make_lis_stream(20, LIS_STREAM_IN, LIS_STREAM_TEXT);
     bool ret;
@@ -88,8 +88,55 @@ void test_peek_and_read_char() {
     assert(ret == false);
 }
 
+void test_read_and_write_chars() {
+    lis_stream * stream = make_lis_stream(20, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    bool ret;
+    lis_char cp;
+
+    ret = stream_write_char(stream, 'a');
+    assert(ret == true);
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == 'a');
+
+    int32_t ch_a = 0x3042;  // あ
+    ret = stream_write_char(stream, ch_a);
+    assert(ret == true);
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == ch_a);
+
+    ret = stream_write_char(stream, '1');
+    ret = stream_write_char(stream, '2');
+    ret = stream_write_char(stream, '3');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == '1');
+
+    ret = stream_write_char(stream, '4');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == '2');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == '3');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == true);
+    assert(cp == '4');
+
+    ret = stream_read_char(stream, &cp);
+    assert(ret == false);
+}
+
 int main() {
     test_read_write_bytes();
     test_peek_and_read_char();
+    test_read_and_write_chars();
     return 0;
 }

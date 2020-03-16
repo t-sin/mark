@@ -98,7 +98,6 @@ bool stream_peek_char(lis_stream * stream, lis_char * out) {
             return false;
         } else if (status == UTF8_DECODED) {
             reset_utf8_decoding_state(stream->decode_state);
-            fprintf(stderr, "%x\n", cp);
             *out = cp;
             return true;
         }
@@ -152,7 +151,7 @@ bool stream_unread_char(lis_stream * stream, uint8_t elem) {
 }
 
 bool stream_write_char(lis_stream * stream, lis_char ch) {
-    if (stream->direction != LIS_STREAM_IN ||
+    if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
@@ -160,4 +159,22 @@ bool stream_write_char(lis_stream * stream, lis_char ch) {
     if (stream->element_type != LIS_STREAM_TEXT) {
         return false;
     }
+
+    uint8_t bytes[4];
+    int len = utf8_encode_codepoint(ch, bytes);
+
+    fprintf(stderr, "%x ", ch);
+    fprintf(stderr, "len:%d\n", len);
+    if (len == 0) {
+        return false;
+    }
+
+
+    for (int i=0; i<len; i++) {
+        if (!_stream_write_byte(stream->stream, bytes[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
