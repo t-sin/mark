@@ -26,13 +26,29 @@ lis_stream * make_lis_stream(size_t buf_size,
     return stream;
 }
 
-bool stream_read_byte(lis_stream * stream, lis_byte * out) {
+bool stream_peek_byte(lis_stream * stream, lis_byte * out, size_t n) {
     if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
 
-    if (stream->element_type != LIS_STREAM_BINARY) {
+    if (stream->fin != NULL &&
+        _stream_filled(stream->stream) <= 0) {
+        for (int i=0; i<stream->stream->buffer_size/2; i++) {
+            int ch = fgetc(stream->fin);
+            if (ch == EOF) {
+                break;
+            }
+            _stream_write_byte(stream->stream, (lis_byte)ch);
+        }
+    }
+
+    return _stream_peek_byte(stream->stream, out, n);
+}
+
+bool stream_read_byte(lis_stream * stream, lis_byte * out) {
+    if (stream->direction != LIS_STREAM_IN &&
+        stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
 
@@ -89,7 +105,7 @@ bool stream_peek_char(lis_stream * stream, lis_char * out) {
     size_t peek_n = 0;
 
     while (true) {
-        if (!_stream_peek_byte(stream->stream, &b, peek_n)) {
+        if (!stream_peek_byte(stream, &b, peek_n)) {
             return false;
         }
 
@@ -121,7 +137,7 @@ bool stream_read_char(lis_stream * stream, lis_char * out) {
     size_t peek_n = 0;
 
     while (true) {
-        if (!_stream_peek_byte(stream->stream, &b, peek_n++)) {
+        if (!stream_peek_byte(stream, &b, peek_n++)) {
             return false;
         }
 
