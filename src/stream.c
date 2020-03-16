@@ -72,10 +72,6 @@ bool stream_write_byte(lis_stream * stream, lis_byte b) {
         return false;
     }
 
-    if (stream->element_type != LIS_STREAM_BINARY) {
-        return false;
-    }
-
     if (stream->fout != NULL &&
         _stream_filled(stream->stream) > stream->stream->buffer_size/2) {
         lis_byte b;
@@ -187,7 +183,7 @@ bool stream_write_char(lis_stream * stream, lis_char ch) {
 
 
     for (int i=0; i<len; i++) {
-        if (!_stream_write_byte(stream->stream, bytes[i])) {
+        if (!stream_write_byte(stream, bytes[i])) {
             return false;
         }
     }
