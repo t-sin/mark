@@ -238,19 +238,92 @@ void test_unread_once() {
     assert(ret == true);
     assert(stream->head == 1);
     assert(stream->tail == 1);
-    assert(stream->unreadable == true);
+    assert(stream->unread_tail == 0);
 
     ret = _stream_unread_byte(stream, 40);
     assert(ret == false);
     assert(stream->head == 1);
     assert(stream->tail == 1);
-    assert(stream->unreadable == true);
+    assert(stream->unread_tail == 0);
 
     ret = _stream_unread_byte(stream, 42);
     assert(ret == true);
     assert(stream->head == 1);
     assert(stream->tail == 0);
-    assert(stream->unreadable == false);
+    assert(stream->unread_tail == 0);
+}
+
+void test_unread() {
+    _stream * stream = _make_stream(5);
+    bool ret;
+    uint8_t b;
+
+    _stream_write_byte(stream, 42);
+    _stream_read_byte(stream, &b);
+
+    assert(stream->head == 1);
+    assert(stream->tail == 1);
+    assert(stream->unread_tail == 0);  // no moves
+
+    _stream_write_byte(stream, 52);
+    _stream_read_byte(stream, &b);
+
+    assert(stream->head == 2);
+    assert(stream->tail == 2);
+    assert(stream->unread_tail == 0);
+
+    _stream_write_byte(stream, 62);
+    _stream_read_byte(stream, &b);
+
+    assert(stream->head == 3);
+    assert(stream->tail == 3);
+    assert(stream->unread_tail == 0);
+
+    _stream_write_byte(stream, 72);
+    _stream_read_byte(stream, &b);
+
+    assert(stream->head == 4);
+    assert(stream->tail == 4);
+    assert(stream->unread_tail == 0);
+
+    _stream_write_byte(stream, 82);
+    _stream_read_byte(stream, &b);
+
+    assert(stream->head == 0);
+    assert(stream->tail == 0);
+    assert(stream->unread_tail == 1);  // move by writing ring buffer
+
+    // can unread because unread_tail is not overwritten by head
+    ret = _stream_unread_byte(stream, 82);
+    assert(ret == true);
+    assert(stream->head == 0);
+    assert(stream->tail == 4);
+    assert(stream->unread_tail == 1);
+
+    ret = _stream_unread_byte(stream, 72);
+    assert(ret == true);
+    assert(stream->head == 0);
+    assert(stream->tail == 3);
+    assert(stream->unread_tail == 1);
+
+    ret = _stream_unread_byte(stream, 62);
+    assert(ret == true);
+    assert(stream->head == 0);
+    assert(stream->tail == 2);
+    assert(stream->unread_tail == 1);
+
+    ret = _stream_unread_byte(stream, 52);
+    assert(ret == true);
+    assert(stream->head == 0);
+    assert(stream->tail == 1);
+    assert(stream->unread_tail == 1);
+
+    // cannot unread because unread_tail is overwritten by head
+    ret = _stream_unread_byte(stream, 42);
+    assert(ret == false);
+    assert(stream->head == 0);
+    assert(stream->tail == 1);
+    assert(stream->unread_tail == 1);
 }
 
 int main() {
@@ -268,6 +341,10 @@ int main() {
     test_ring_wraps_pointer_of_buffer_pointer();
     test_buffer_extention();
     test_read_after_buffer_extention();
+
+    test_unread_empty_stream();
+    test_unread_once();
+    test_unread();
 
     return 0;
 }

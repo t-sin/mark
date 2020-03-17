@@ -9,7 +9,7 @@ typedef struct _stream {
     size_t buffer_size;
     size_t head;
     size_t tail;
-    bool unreadable;
+    size_t unread_tail;
 } _stream;
 
 _stream * _make_stream(size_t buf_size);

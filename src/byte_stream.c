@@ -12,7 +12,7 @@ _stream * _make_stream(size_t buf_size) {
     stream->buffer_size = buf_size;
     stream->head = 0;
     stream->tail = 0;
-    stream->unreadable = false;
+    stream->unread_tail = 0;
 
     uint8_t * buffer = (uint8_t *)malloc(sizeof(uint8_t) * buf_size);
     memset(buffer, 0, sizeof(uint8_t) * buf_size);
@@ -82,9 +82,7 @@ bool _stream_read_byte(_stream * stream, uint8_t * out) {
     }
 
     *out = stream->buffer[stream->tail];
-
     stream->tail = (stream->tail + 1) % stream->buffer_size;
-    stream->unreadable = true;
 
     return true;
 }
@@ -99,17 +97,27 @@ bool _stream_write_byte(_stream * stream, uint8_t byte) {
 
     stream->buffer[stream->head] = byte;
     stream->head = (stream->head + 1) % stream->buffer_size;
+    if (stream->head == stream->unread_tail) {
+        stream->unread_tail++;
+    }
 
     return true;
 }
-
+#include <stdio.h>
 bool _stream_unread_byte(_stream * stream, uint8_t byte) {
     assert(stream != NULL);
 
-    size_t prev = (stream->tail - 1) % stream->buffer_size;
-    if (prev != stream->head && stream->buffer[prev] == byte) {
+    if (stream->unread_tail == stream->tail) {
+        return false;
+    }
+
+    int prev = stream->tail - 1;
+    if (prev < 0) {
+        prev += stream->buffer_size;
+    }
+
+    if (stream->buffer[prev] == byte) {
         stream->tail = prev;
-        stream->unreadable = false;
         return true;
     }
 
