@@ -134,9 +134,39 @@ void test_read_and_write_chars() {
     assert(ret == false);
 }
 
+void test_unread_char() {
+    lis_stream * stream = make_lis_stream(20, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    bool ret;
+    lis_char cp;
+
+    stream_write_char(stream, '1');
+    stream_write_char(stream, '2');
+    stream_write_char(stream, '3');
+    stream_write_char(stream, '4');
+
+    ret = stream_unread_char(stream, '1');
+    assert(ret == false);
+
+    stream_read_char(stream, &cp);  // 1
+    stream_read_char(stream, &cp);  // 2
+    ret = stream_read_char(stream, &cp);  // 3
+    assert(ret == true);
+    assert(cp == '3');
+
+    ret = stream_unread_char(stream, '3');
+    assert(ret == true);
+    ret = stream_unread_char(stream, '2');
+    assert(ret == true);
+    ret = stream_unread_char(stream, '1');
+    assert(ret == true);
+    ret = stream_unread_char(stream, '4');
+    assert(ret == false);
+}
+
 int main() {
     test_read_write_bytes();
     test_peek_and_read_char();
     test_read_and_write_chars();
+    test_unread_char();
     return 0;
 }

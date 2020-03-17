@@ -151,7 +151,7 @@ bool stream_read_char(lis_stream * stream, lis_char * out) {
     }
 }
 
-bool stream_unread_char(lis_stream * stream, uint8_t elem) {
+bool stream_unread_char(lis_stream * stream, lis_char ch) {
     if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
@@ -160,6 +160,26 @@ bool stream_unread_char(lis_stream * stream, uint8_t elem) {
     if (stream->element_type != LIS_STREAM_TEXT) {
         return false;
     }
+
+    uint8_t bytes[4];
+    int len = utf8_encode_codepoint(ch, bytes);
+
+    if (len == 0) {
+        return false;
+    }
+
+    int i;
+    lis_byte _b;
+    for (i=0; i<len; i++) {
+        if (!_stream_unread_byte(stream->stream, bytes[i])) {
+            for (; i>0; i--) {
+                _stream_read_byte(stream->stream, &_b);
+            }
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool stream_write_char(lis_stream * stream, lis_char ch) {
