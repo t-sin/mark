@@ -195,8 +195,6 @@ bool stream_write_char(lis_stream * stream, lis_char ch) {
     uint8_t bytes[4];
     int len = utf8_encode_codepoint(ch, bytes);
 
-    fprintf(stderr, "%x ", ch);
-    fprintf(stderr, "len:%d\n", len);
     if (len == 0) {
         return false;
     }
