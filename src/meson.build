@@ -1,6 +1,7 @@
 src = [
   'utf8.c',
   'byte_stream.c',
+  'obj.c',
   'stream.c',
   'print.c',
   'eval.c',
