@@ -23,6 +23,11 @@ void print_cons(lis_obj * car, lis_obj * cdr) {
 }
 
 void print(lis_obj * obj) {
+    if (obj == NULL) {
+        printf("NULL!!\n");
+        return;
+    }
+
     if (LIS_TAG3(obj) == LIS_TAG3_INT) {
         printf("%d", obj->data.num);
     } else if (LIS_TAG3(obj) == LIS_TAG3_CHAR) {
