@@ -82,24 +82,24 @@ int main(int argc, char** argv) {
     }
     printf("\n");
 
-    lis_obj num = make_int(42);
-    lis_obj name = make_string();
+    lis_obj * num = make_int(42);
+    lis_obj * name = make_string();
     lis_char * str = (lis_char *)malloc(sizeof(lis_char) * 3);
     str[0] = 's';
     str[1] = 'y';
     str[2] = 'm';
-    name.data.str->size = 3;
-    name.data.str->body = str;
-    lis_obj symbol = make_symbol(&name);
-    symbol.data.sym->value = &num;
-    print(eval(&symbol));
+    name->data.str->size = 3;
+    name->data.str->body = str;
+    lis_obj * symbol = make_symbol(name);
+    symbol->data.sym->value = num;
+    print(eval(symbol));
     printf("\n");
 
     printf("------------\n");
-    lis_obj cons = make_cons();
-    cons.data.cons->car = &num;
-    cons.data.cons->cdr = &symbol;
-    print(eval(&cons));
+    lis_obj * cons = make_cons();
+    cons->data.cons->car = num;
+    cons->data.cons->cdr = symbol;
+    print(eval(cons));
     printf("\n");
 
     return 0;
