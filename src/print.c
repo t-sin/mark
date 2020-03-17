@@ -73,6 +73,6 @@ void print(lis_obj * obj) {
             break;
         }
     } else {
-        printf("unknown object: %d\n", obj->tags);
+        printf("unknown object: %x\n", obj->tags);
     }
 }
