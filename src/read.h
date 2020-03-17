@@ -4,6 +4,7 @@
 #include "obj.h"
 #include "stream.h"
 
+void skip_whitespaces(lis_stream * stream);
 lis_obj * read(lis_stream * stream);
 
 #endif
