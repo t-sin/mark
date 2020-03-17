@@ -26,23 +26,39 @@ lis_stream * make_lis_stream(size_t buf_size,
     return stream;
 }
 
+void stream_fill_buffer(lis_stream * stream) {
+    char buffer[256];
+
+    if (stream->fin == NULL) {
+        return;
+    }
+
+    if (_stream_filled(stream->stream) > 0) {
+        return;
+    }
+
+    while (true) {
+        fflush(stdin);
+        if (fgets(buffer, sizeof(buffer), stream->fin) == NULL) {
+            return;
+        }
+
+        for (int i=0; i<sizeof(buffer); i++) {
+            if (buffer[i] == '\0' || buffer[i] == '\n') {
+                break;
+            }
+            _stream_write_byte(stream->stream, (lis_byte)buffer[i]);
+        }
+    }
+}
+
 bool stream_peek_byte(lis_stream * stream, lis_byte * out, size_t n) {
     if (stream->direction != LIS_STREAM_IN &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
 
-    if (stream->fin != NULL &&
-        _stream_filled(stream->stream) <= 0) {
-        for (int i=0; i<stream->stream->buffer_size/2; i++) {
-            int ch = fgetc(stream->fin);
-            if (ch == EOF) {
-                break;
-            }
-            _stream_write_byte(stream->stream, (lis_byte)ch);
-        }
-    }
-
+    stream_fill_buffer(stream);
     return _stream_peek_byte(stream->stream, out, n);
 }
 
@@ -52,17 +68,7 @@ bool stream_read_byte(lis_stream * stream, lis_byte * out) {
         return false;
     }
 
-    if (stream->fin != NULL &&
-        _stream_filled(stream->stream) <= 0) {
-        for (int i=0; i<stream->stream->buffer_size/2; i++) {
-            int ch = fgetc(stream->fin);
-            if (ch == EOF) {
-                break;
-            }
-            _stream_write_byte(stream->stream, (lis_byte)ch);
-        }
-    }
-
+    stream_fill_buffer(stream);
     return _stream_read_byte(stream->stream, out);
 }
 
