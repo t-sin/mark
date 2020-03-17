@@ -4,6 +4,14 @@
 #include "obj.h"
 #include "stream.h"
 
+bool is_newline(lis_char ch) {
+    return ch == '\n';
+}
+
+bool is_whitespace(lis_char ch) {
+    return ch == ' ' || ch == '\t' || ch == '\n';
+}
+
 void skip_whitespaces(lis_stream * stream) {
     lis_char ch;
     bool is_comment = false;
@@ -17,13 +25,10 @@ void skip_whitespaces(lis_stream * stream) {
             is_comment = true;
             stream_read_char(stream, &ch);
 
-        } else if (!is_comment &&
-                   (ch == ' ' ||
-                    ch == '\t' ||
-                    ch == '\n')) {
+        } else if (!is_comment && is_whitespace(ch)) {
             stream_read_char(stream, &ch);
 
-        } else if (is_comment && ch == '\n') {
+        } else if (is_comment && is_newline(ch)) {
             stream_read_char(stream, &ch);
             return;
 
