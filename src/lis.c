@@ -7,6 +7,7 @@
 #include "stream.h"
 #include "eval.h"
 #include "print.h"
+#include "read.h"
 
 void print_usage() {
     printf("usage: lis LISPATH\n");
@@ -72,35 +73,20 @@ int main(int argc, char** argv) {
 
     lis_stream * stream = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
     stream->fin = stdin;
+
     while (true) {
-        lis_char cp;
-        lis_byte bytes[4];
-        if (!stream_read_char(stream, &cp)) break;
-        int len = utf8_encode_codepoint(cp, bytes);
-        if (len <= 0) break;
-        for (int i=0; i<len; i++) printf("%c", bytes[i]);
+        fprintf(stdout, "? ");
+        fflush(stdout);
+
+        lis_char _ch;
+        stream_peek_char(stream, &_ch);
+        if (_stream_filled(stream->stream) == 0) {
+            break;
+        }
+        lis_obj * obj = read(stream);
+        print(obj);
+        fprintf(stdout, "\n");
     }
-    printf("\n");
-
-    lis_obj * num = make_int(42);
-    lis_obj * name = make_string();
-    lis_char * str = (lis_char *)malloc(sizeof(lis_char) * 3);
-    str[0] = 's';
-    str[1] = 'y';
-    str[2] = 'm';
-    name->data.str->size = 3;
-    name->data.str->body = str;
-    lis_obj * symbol = make_symbol(name);
-    symbol->data.sym->value = num;
-    print(eval(symbol));
-    printf("\n");
-
-    printf("------------\n");
-    lis_obj * cons = make_cons();
-    cons->data.cons->car = num;
-    cons->data.cons->cdr = symbol;
-    print(eval(cons));
-    printf("\n");
 
     return 0;
 }
