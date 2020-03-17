@@ -59,6 +59,7 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
 }
 
 #include <stdlib.h>
+#include <stdio.h>
 
 int main(int argc, char** argv) {
     struct Option opt = { "", false };
@@ -71,19 +72,19 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    lis_stream * stream = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
-    stream->fin = stdin;
+    lis_stream * stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
+    lis_stream * stream_read = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    stream_stdin->fin = stdin;
 
     while (true) {
         fprintf(stdout, "? ");
         fflush(stdout);
 
-        lis_char _ch;
-        stream_peek_char(stream, &_ch);
-        if (_stream_filled(stream->stream) == 0) {
-            break;
-        }
-        lis_obj * obj = read(stream);
+        lis_char ch;
+        fflush(stream_stdin->fin);
+        stream_peek_char(stream_stdin, &ch);
+
+        lis_obj * obj = read(stream_stdin);
         print(obj);
         fprintf(stdout, "\n");
     }
