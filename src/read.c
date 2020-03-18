@@ -5,6 +5,24 @@
 #include "obj.h"
 #include "stream.h"
 
+bool is_cons_open_delimiter(lis_char ch) {
+    return ch == '(';
+}
+
+bool is_cons_close_delimiter(lis_char ch) {
+    return ch == ')';
+}
+
+bool is_cons_delimiter(lis_char ch) {
+    return ch == '.';
+}
+
+bool is_cons_delimiters(lis_char ch) {
+    return (is_cons_delimiter(ch) ||
+            is_cons_open_delimiter(ch) ||
+            is_cons_close_delimiter(ch));
+}
+
 bool is_string_delimiter(lis_char ch) {
     return ch == '"';
 }
@@ -54,6 +72,8 @@ int skip_whitespaces(lis_stream * stream) {
         }
     }
 }
+
+lis_obj * read(lis_stream * stream);
 
 lis_obj * read_integer(lis_stream * stream) {
     lis_char ch;
@@ -115,7 +135,8 @@ lis_obj * read_character(lis_stream * stream) {
     while (true) {
         if (!stream_peek_char(stream, &ch) ||
             is_whitespace(ch) ||
-            is_string_delimiter(ch)) {
+            is_string_delimiter(ch) ||
+            is_cons_delimiters(ch)) {
 
             if (size == 1) {
                 stream_read_char(buffer, &ch);
@@ -205,7 +226,9 @@ lis_obj * read_symbol(lis_stream * stream) {
     while (true) {
         if (!stream_peek_char(stream, &ch) ||
             is_whitespace(ch) ||
-            is_newline(ch)) {
+            is_newline(ch) ||
+            is_string_delimiter(ch) ||
+            is_cons_delimiters(ch)) {
 
             lis_obj * name = make_string();
             lis_obj * sym = make_symbol(name);
@@ -227,6 +250,53 @@ lis_obj * read_symbol(lis_stream * stream) {
     }
 
     return NULL;
+}
+
+lis_obj * read_cons(lis_stream * stream) {
+    lis_obj * head = make_cons();
+    lis_obj * current = head;
+    lis_obj * prev_current = NULL;
+    lis_char ch;
+
+    while (true) {
+        if (stream_peek_char(stream, &ch) && is_cons_close_delimiter(ch)) {
+            stream_read_char(stream, &ch);
+            if (current != head) {
+                prev_current->data.cons->cdr = make_nil();
+            } else {
+                head = make_nil();
+            }
+            break;
+
+        } else {
+            current->data.cons->car = read(stream);
+            skip_whitespaces(stream);
+
+            if (stream_peek_char(stream, &ch) && is_cons_delimiter(ch)) {
+                // cons
+                stream_read_char(stream, &ch);
+                current->data.cons->cdr = read(stream);
+
+                skip_whitespaces(stream);
+                stream_peek_char(stream, &ch);
+                if (!is_cons_close_delimiter(ch)) {
+                    return NULL;
+                } else {
+                    stream_read_char(stream, &ch);
+                    break;
+                }
+
+            } else {
+                // list
+                lis_obj * cdr = make_cons();
+                current->data.cons->cdr = cdr;
+                prev_current = current;
+                current = cdr;
+            }
+        }
+    }
+
+    return head;
 }
 
 lis_obj * read(lis_stream * stream) {
@@ -251,6 +321,10 @@ lis_obj * read(lis_stream * stream) {
     } else if (is_string_delimiter(ch)) {
         stream_read_char(stream, &ch);
         obj = read_string(stream);
+
+    } else if (is_cons_open_delimiter(ch)) {
+        stream_read_char(stream, &ch);
+        obj = read_cons(stream);
 
     } else {
         obj = read_symbol(stream);
