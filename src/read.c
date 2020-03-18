@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "obj.h"
 #include "stream.h"
@@ -10,6 +11,11 @@ bool is_newline(lis_char ch) {
 
 bool is_whitespace(lis_char ch) {
     return ch == ' ' || ch == '\t' || ch == '\n';
+}
+
+static const char NUMERIC_CHARS[] = "0123456789";
+bool is_numeric(lis_char ch) {
+    return strchr(NUMERIC_CHARS, ch) != NULL;
 }
 
 int skip_whitespaces(lis_stream * stream) {
@@ -41,10 +47,36 @@ int skip_whitespaces(lis_stream * stream) {
     }
 }
 
+lis_obj * read_integer(lis_stream * stream) {
+    lis_char ch;
+    size_t size = 0;
+    lis_stream * buffer = make_lis_stream(10, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    while (true) {
+        if (!stream_peek_char(stream, &ch) || !is_numeric(ch)) {
+            char * s = (char *)malloc(sizeof(char) * size + 1);
+            memset(s, 0, size);
+
+            for (int i=0; i<size; i++) {
+                stream_read_char(buffer, &ch);
+                s[i] = ch;
+            }
+
+            lis_obj * integer = make_int(atoi(s));
+            return integer;
+
+        } else {
+            stream_read_char(stream, &ch);
+            stream_write_char(buffer, ch);
+            size++;
+        }
+    }
+}
+
 lis_obj * read_string(lis_stream * stream) {
     lis_char ch;
     size_t size = 0;
-    lis_stream * buffer = make_lis_stream(1000, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    lis_stream * buffer = make_lis_stream(100, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
 
     while (true) {
         if (!stream_peek_char(stream, &ch) || ch == '"') {
@@ -113,6 +145,9 @@ lis_obj * read(lis_stream * stream) {
 
     if (!stream_peek_char(stream, &ch)) {
         obj = NULL;
+
+    } else if (is_numeric(ch)) {
+        obj = read_integer(stream);
 
     } else if (ch == '"') {
         stream_read_char(stream, &ch);
