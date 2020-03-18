@@ -8,12 +8,42 @@
 * Understanting Mark
 * Understanting Toh Enjoe
 
+## Requirements
+
+Nothing yet
+
+## Build
+
+To build, first, install [meson](https://mesonbuild.com/) and [ninja](https://ninja-build.org/). And type this:
+
+```sh
+$ cd /path/to/mark
+$ meson build/
+$ ninja -C build/
+```
+
+So executable `lis` will be created at `build/lis`. To run `lis`, type
+
+```sh
+$ ./build/src/lis
+```
+
+or
+
+```sh
+ninja -C build/ lis
+```
+
 ## TODOs
 
-- [ ] Design Mark 01
-- [ ] Design Sciurus Lisp
-- [ ] Implement Sciurus Lisp
-- [ ] Implement Mark 01
+- data types & operations
+  - strings
+  - timestamps
+  - first-class functions
+- CL-like reader
+- multi-threading? (to interact with Mark)
+- (macro system?)
+- lifecycle of squirrels
 
 ## License
 
