@@ -5,6 +5,14 @@
 #include "obj.h"
 #include "stream.h"
 
+bool is_string_delimiter(lis_char ch) {
+    return ch == '"';
+}
+
+bool is_sharpmacro(lis_char ch) {
+    return ch == '#';
+}
+
 bool is_newline(lis_char ch) {
     return ch == '\n';
 }
@@ -73,13 +81,99 @@ lis_obj * read_integer(lis_stream * stream) {
     }
 }
 
+#define NUMBER_OF_CHAR_NAMES 3
+const char * CHAR_NAME_TABLE[NUMBER_OF_CHAR_NAMES][2] = {
+    {"tab", "\t"},
+    {"newline", "\n"},
+    {"space", " "},
+};
+
+int get_char_from_name(lis_char * name, size_t size) {
+    for (int n=0; n<NUMBER_OF_CHAR_NAMES; n++) {
+        bool flag_acc = true;
+
+        for (int i=0; i<size; i++) {
+            char ch = CHAR_NAME_TABLE[n][0][i];
+            flag_acc &= (ch == name[i]);
+            if (!flag_acc || ch == '\0') {
+                break;
+            }
+        }
+
+        if (flag_acc) {
+            return CHAR_NAME_TABLE[n][1][0];
+        }
+    }
+    return EOF;
+}
+
+lis_obj * read_character(lis_stream * stream) {
+    lis_char ch;
+    size_t size = 0;
+    lis_stream * buffer = make_lis_stream(10, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    while (true) {
+        if (!stream_peek_char(stream, &ch) ||
+            is_whitespace(ch) ||
+            is_string_delimiter(ch)) {
+
+            if (size == 1) {
+                stream_read_char(buffer, &ch);
+
+            } else {
+                lis_char * name = (lis_char *)malloc(sizeof(lis_char) * size);
+                for (int i=0; i<size; i++) {
+                    stream_read_char(buffer, &ch);
+                    name[i] = ch;
+                }
+
+                ch = get_char_from_name(name, size);
+            }
+
+            if (ch == EOF) {
+                return NULL;
+            } else {
+                return make_char(ch);
+            }
+
+        } else {
+            stream_read_char(stream, &ch);
+            stream_write_char(buffer, ch);
+            size++;
+        }
+    }
+}
+
+lis_obj * read_array(lis_stream * stream) {
+    return NULL;
+}
+
+lis_obj * read_sharpmacro(lis_stream * stream) {
+    lis_char ch;
+    if (!stream_peek_char(stream, &ch)) {
+        return NULL;
+    }
+
+    switch (ch) {
+    case '\\':
+        stream_read_char(stream, &ch);
+        return read_character(stream);
+    case '(':
+        stream_read_char(stream, &ch);
+        return read_array(stream);
+    default:
+        stream_read_char(stream, &ch);
+        return NULL;
+    }
+}
+
 lis_obj * read_string(lis_stream * stream) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(100, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
 
     while (true) {
-        if (!stream_peek_char(stream, &ch) || ch == '"') {
+        if (!stream_peek_char(stream, &ch) || is_string_delimiter(ch)) {
             stream_read_char(stream, &ch);
 
             lis_obj * str = make_string();
@@ -142,14 +236,19 @@ lis_obj * read(lis_stream * stream) {
 
     lis_obj * obj;
     lis_char ch;
+    bool ret = stream_peek_char(stream, &ch);
 
-    if (!stream_peek_char(stream, &ch)) {
+    if (!ret) {
         obj = NULL;
 
     } else if (is_numeric(ch)) {
         obj = read_integer(stream);
 
-    } else if (ch == '"') {
+    } else if (is_sharpmacro(ch)) {
+        stream_read_char(stream, &ch);
+        obj = read_sharpmacro(stream);
+
+    } else if (is_string_delimiter(ch)) {
         stream_read_char(stream, &ch);
         obj = read_string(stream);
 
