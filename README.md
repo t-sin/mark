@@ -8,6 +8,41 @@
 * Understanting Mark
 * Understanting Toh Enjoe
 
+## TODOs
+
+- [x] fundamentals
+  - [x] byte streams
+  - [x] UTF-8 encode/decode
+  - [x] object layout
+- [x] primitive types
+  - [x] characters and strings
+  - [x] integers
+  - [x] symbols (without packages)
+  - [x] streams
+  - [x] conses and lists
+  - [ ] environments
+  - [ ] function objects
+  - [ ] lexical closures
+  - [ ] packages
+  - [ ] timestamps
+- [ ] operations
+  - [ ] arithmatic operations for integers
+  - [ ] string operations
+  - [ ] cons operations
+- [ ] REPL
+  - [ ] cheap reader
+  - [ ] eval
+  - [ ] print
+  - [ ] reader with readtable
+- [ ] advanced features
+  - [ ] garbage collection
+  - [ ] multi-threading? (to interact with Mark)
+  - [ ] macro system?
+- [ ] building Mark
+  - [ ] lifecycle of Mark
+  - [ ] DSL for Mark
+  - [ ] implement Mark
+
 ## Requirements
 
 Nothing yet
@@ -34,16 +69,11 @@ or
 ninja -C build/ lis
 ```
 
-## TODOs
+Some basic tests can be run with those command:
 
-- data types & operations
-  - strings
-  - timestamps
-  - first-class functions
-- CL-like reader
-- multi-threading? (to interact with Mark)
-- (macro system?)
-- lifecycle of squirrels
+```sh
+ninja -C ./build test
+```
 
 ## License
 
