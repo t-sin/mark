@@ -84,12 +84,15 @@ int main(int argc, char** argv) {
 
         lis_obj * obj;
         obj = read(stream);
+
+        if (obj == NULL) {
+            fprintf(stdout, "\n");
+            break;
+        }
+
         print(obj);
         fprintf(stdout, "\n");
 
-        if (obj == NULL) {
-            break;
-        }
     }
 
     return 0;
