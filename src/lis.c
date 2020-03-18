@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "obj.h"
@@ -57,9 +58,6 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
 
     return true;
 }
-
-#include <stdlib.h>
-#include <stdio.h>
 
 int main(int argc, char** argv) {
     struct Option opt = { "", false };
