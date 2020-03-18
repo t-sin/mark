@@ -31,10 +31,6 @@ void stream_fill_buffer(lis_stream * stream) {
         return;
     }
 
-    if (_stream_filled(stream->stream) > 0) {
-        return;
-    }
-
     for (int i=0; i<stream->stream->buffer_size/2; i++) {
         int ch = fgetc(stream->fin);
         if (ch == EOF) {
@@ -54,7 +50,9 @@ bool stream_peek_byte(lis_stream * stream, lis_byte * out, size_t n) {
         return false;
     }
 
-    stream_fill_buffer(stream);
+    if (_stream_filled(stream->stream) == 0) {
+        stream_fill_buffer(stream);
+    }
     return _stream_peek_byte(stream->stream, out, n);
 }
 
@@ -64,8 +62,24 @@ bool stream_read_byte(lis_stream * stream, lis_byte * out) {
         return false;
     }
 
-    stream_fill_buffer(stream);
+    if (_stream_filled(stream->stream) == 0) {
+        stream_fill_buffer(stream);
+    }
     return _stream_read_byte(stream->stream, out);
+}
+
+void stream_flush_buffer(lis_stream * stream) {
+    if (stream->fout == NULL) {
+        return;
+    }
+
+    lis_byte b;
+    while (true) {
+        if (!_stream_read_byte(stream->stream, &b)) {
+            break;
+        }
+        fputc((char)b, stream->fout);
+    }
 }
 
 bool stream_write_byte(lis_stream * stream, lis_byte b) {
@@ -74,15 +88,8 @@ bool stream_write_byte(lis_stream * stream, lis_byte b) {
         return false;
     }
 
-    if (stream->fout != NULL &&
-        _stream_filled(stream->stream) > stream->stream->buffer_size/2) {
-        lis_byte b;
-        while (true) {
-            if (!_stream_read_byte(stream->stream, &b)) {
-                break;
-            }
-            fputc((char)b, stream->fout);
-        }
+    if (_stream_filled(stream->stream) > stream->stream->buffer_size/2) {
+        stream_flush_buffer(stream);
     }
 
     return _stream_write_byte(stream->stream, b);
@@ -209,4 +216,9 @@ bool stream_write_char(lis_stream * stream, lis_char ch) {
     }
 
     return true;
+}
+
+void stream_flush(lis_stream * stream) {
+    //stream_fill_buffer(stream);
+    stream_flush_buffer(stream);
 }
