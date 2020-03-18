@@ -72,18 +72,18 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    lis_stream * stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
-    lis_stream * stream_read = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-    stream_stdin->fin = stdin;
+    lis_stream * stream = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
+    stream->fin = stdin;
 
     while (true) {
         fprintf(stdout, "? ");
         fflush(stdout);
 
         lis_char ch;
-        fflush(stream_stdin->fin);
+        fflush(stream->fin);
 
-        lis_obj * obj = read(stream_stdin);
+        lis_obj * obj;
+        obj = read(stream);
         print(obj);
         fprintf(stdout, "\n");
 
