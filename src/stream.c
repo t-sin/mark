@@ -27,8 +27,6 @@ lis_stream * make_lis_stream(size_t buf_size,
 }
 
 void stream_fill_buffer(lis_stream * stream) {
-    char buffer[256];
-
     if (stream->fin == NULL) {
         return;
     }
@@ -37,18 +35,13 @@ void stream_fill_buffer(lis_stream * stream) {
         return;
     }
 
-    while (true) {
-        fflush(stdin);
-        if (fgets(buffer, sizeof(buffer), stream->fin) == NULL) {
-            return;
+    for (int i=0; i<stream->stream->buffer_size/2; i++) {
+        int ch = fgetc(stream->fin);
+        if (ch == EOF || ch == '\n') {
+            break;
         }
 
-        for (int i=0; i<sizeof(buffer); i++) {
-            if (buffer[i] == '\0' || buffer[i] == '\n') {
-                break;
-            }
-            _stream_write_byte(stream->stream, (lis_byte)buffer[i]);
-        }
+        _stream_write_byte(stream->stream, (lis_byte)ch);
     }
 }
 
