@@ -3,6 +3,6 @@
 
 #include "obj.h"
 
-void print(lis_obj * obj);
+void print(lis_stream * stream, lis_obj * obj);
 
 #endif
