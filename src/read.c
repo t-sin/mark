@@ -12,13 +12,14 @@ bool is_whitespace(lis_char ch) {
     return ch == ' ' || ch == '\t' || ch == '\n';
 }
 
-void skip_whitespaces(lis_stream * stream) {
+int skip_whitespaces(lis_stream * stream) {
     lis_char ch;
+    int n = 0;
     bool is_comment = false;
 
     while (true) {
         if (!stream_peek_char(stream, &ch)) {
-            return;
+            return EOF;
         }
 
         if (!is_comment && ch == ';') {
@@ -26,14 +27,16 @@ void skip_whitespaces(lis_stream * stream) {
             stream_read_char(stream, &ch);
 
         } else if (!is_comment && is_whitespace(ch)) {
+            n++;
             stream_read_char(stream, &ch);
 
         } else if (is_comment && is_newline(ch)) {
+            n++;
             stream_read_char(stream, &ch);
-            return;
+            return n;
 
         } else {
-            return;
+            return n;
         }
     }
 }
@@ -101,7 +104,9 @@ lis_obj * read_symbol(lis_stream * stream) {
 }
 
 lis_obj * read(lis_stream * stream) {
-    skip_whitespaces(stream);
+    if (skip_whitespaces(stream) == EOF) {
+        return NULL;
+    }
 
     lis_obj * obj;
     lis_char ch;
