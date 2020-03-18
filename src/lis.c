@@ -82,11 +82,14 @@ int main(int argc, char** argv) {
 
         lis_char ch;
         fflush(stream_stdin->fin);
-        stream_peek_char(stream_stdin, &ch);
 
         lis_obj * obj = read(stream_stdin);
         print(obj);
         fprintf(stdout, "\n");
+
+        if (obj == NULL) {
+            break;
+        }
     }
 
     return 0;
