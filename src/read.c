@@ -110,11 +110,14 @@ lis_obj * read(lis_stream * stream) {
 
     lis_obj * obj;
     lis_char ch;
+
     if (!stream_peek_char(stream, &ch)) {
         obj = NULL;
+
     } else if (ch == '"') {
         stream_read_char(stream, &ch);
         obj = read_string(stream);
+
     } else {
         obj = read_symbol(stream);
     }
