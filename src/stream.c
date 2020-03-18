@@ -37,7 +37,10 @@ void stream_fill_buffer(lis_stream * stream) {
 
     for (int i=0; i<stream->stream->buffer_size/2; i++) {
         int ch = fgetc(stream->fin);
-        if (ch == EOF || ch == '\n') {
+        if (ch == EOF) {
+            break;
+        } else if (ch == '\n') {
+            _stream_write_byte(stream->stream, (lis_byte)ch);
             break;
         }
 
