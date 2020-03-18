@@ -48,8 +48,8 @@
 #define LIS_TAG3_BUILTIN  0x04
 #define LIS_TAG3_OTHER    0x06
 
-#define LIS_TAG_TYPE_NIL ~0x00
-#define LIS_TAG_TYPE_T   ~0x01
+#define LIS_TAG_TYPE_NIL  0x0F
+#define LIS_TAG_TYPE_T    0x0E
 
 #define LIS_TAG_TYPE_ARY  0x00
 #define LIS_TAG_TYPE_STR  0x01
