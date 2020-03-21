@@ -2,9 +2,9 @@
 
 #include "utf8.h"
 #include "obj.h"
-#include "string.h"
+#include "lstring.h"
 
-lis_string * to_string_from_cstr(const char * cstr, size_t cstr_size) {
+lis_string * to_lstring_from_cstr(const char * cstr, size_t cstr_size) {
     lis_string * str = (lis_string *)malloc(sizeof(lis_string));
     size_t size = 0;
     lis_char ch;
