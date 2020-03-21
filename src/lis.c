@@ -5,6 +5,7 @@
 
 #include "obj.h"
 #include "utf8.h"
+#include "lstring.h"
 #include "stream.h"
 #include "runtime.h"
 #include "eval.h"
@@ -66,10 +67,11 @@ void repl(lis_runtime * runtime) {
     stream_stdin->fin = stdin;
     stream_stdout->fout = stdout;
 
+    char _prompt[] = u8"? ";
+    lis_string * prompt = to_lstring_from_cstr(_prompt, sizeof(_prompt));
     while (true) {
         stream_write_string(stream_stdout, runtime->current_package->data.pkg->name);
-        stream_write_char(stream_stdout, '?');
-        stream_write_char(stream_stdout, ' ');
+        stream_write_string(stream_stdout, prompt);
         stream_flush(stream_stdout);
 
         lis_obj * obj;
