@@ -67,7 +67,7 @@ lis_obj * make_cons() {
 lis_obj * make_package(lis_string * name) {
     lis_obj * pkg = (lis_obj *)malloc(sizeof(lis_obj));
     pkg->tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_PKG << 4;
-    pkg->data.cons = malloc(sizeof(lis_package));
+    pkg->data.pkg = (lis_package *)malloc(sizeof(lis_package));
     pkg->data.pkg->name = name;
     return pkg;
 }
