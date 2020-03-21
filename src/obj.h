@@ -155,6 +155,8 @@ typedef struct lis_closure {
 } lis_closure;
 
 typedef struct lis_package {
+ lis_string * name;
+ lis_symbol * symbols;
 } lis_package;
 
 typedef enum lis_stream_direction_type {
@@ -176,6 +178,7 @@ typedef struct lis_stream {
     lis_stream_element_type element_type;
 } lis_stream;
 
+
 lis_obj * make_nil();
 lis_obj * make_t();
 lis_obj * make_int(lis_int n);
@@ -184,5 +187,6 @@ lis_obj * make_array();
 lis_obj * make_string();
 lis_obj * make_symbol(lis_obj * name);
 lis_obj * make_cons();
+lis_obj * make_package(lis_string * name);
 
 #endif
