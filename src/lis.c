@@ -6,6 +6,7 @@
 #include "obj.h"
 #include "utf8.h"
 #include "stream.h"
+#include "runtime.h"
 #include "eval.h"
 #include "print.h"
 #include "read.h"
@@ -59,13 +60,14 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
     return true;
 }
 
-void repl() {
+void repl(lis_runtime * runtime) {
     lis_stream * stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
     lis_stream * stream_stdout = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
     stream_stdin->fin = stdin;
     stream_stdout->fout = stdout;
 
     while (true) {
+        stream_write_string(stream_stdout, runtime->current_package->data.pkg->name);
         stream_write_char(stream_stdout, '?');
         stream_write_char(stream_stdout, ' ');
         stream_flush(stream_stdout);
@@ -98,7 +100,8 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    repl();
+    lis_runtime * runtime = init_runtime();
+    repl(runtime);
 
     return 0;
 }

@@ -3,6 +3,8 @@ src = [
   'byte_stream.c',
   'obj.c',
   'stream.c',
+  'lstring.c',
+  'runtime.c',
   'read.c',
   'print.c',
   'eval.c',
