@@ -59,20 +59,10 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
     return true;
 }
 
-int main(int argc, char** argv) {
-    struct Option opt = { "", false };
-    if (!parse_option(argc, argv, &opt)) {
-        return 1;
-    }
-
-    if (opt.help) {
-        print_usage();
-        return 0;
-    }
-
+void repl() {
     lis_stream * stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
-    stream_stdin->fin = stdin;
     lis_stream * stream_stdout = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    stream_stdin->fin = stdin;
     stream_stdout->fout = stdout;
 
     while (true) {
@@ -89,11 +79,26 @@ int main(int argc, char** argv) {
             break;
         }
 
+        obj = eval(obj);
         print(stream_stdout, obj);
         stream_write_char(stream_stdout, '\n');
         stream_flush(stream_stdout);
 
     }
+}
+
+int main(int argc, char** argv) {
+    struct Option opt = { "", false };
+    if (!parse_option(argc, argv, &opt)) {
+        return 1;
+    }
+
+    if (opt.help) {
+        print_usage();
+        return 0;
+    }
+
+    repl();
 
     return 0;
 }
