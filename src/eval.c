@@ -4,6 +4,10 @@
 #include "obj.h"
 #include "eval.h"
 
+lis_obj * apply(lis_obj * obj, lis_obj * args) {
+    return NULL;
+}
+
 lis_obj * eval(lis_obj * obj) {
     if (LIS_TAG3(obj) == LIS_TAG3_INT) {
         return obj;  // integer
