@@ -218,6 +218,15 @@ bool stream_write_char(lis_stream * stream, lis_char ch) {
     return true;
 }
 
+bool stream_write_string(lis_stream * stream, lis_string * str) {
+    for (int i=0; i<str->size; i++) {
+        if (!stream_write_char(stream, str->body[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void stream_flush(lis_stream * stream) {
     //stream_fill_buffer(stream);
     stream_flush_buffer(stream);
