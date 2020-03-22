@@ -57,5 +57,9 @@ package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym) 
             *sym = pkg->symbols[i];
             return PKG_INTERNAL;  // TODO: INTERNAL, EXTERNAL or INHERITED
         }
-     }
+    }
+
+    *sym = _make_symbol(name);
+    add_symbol(package, *sym);
+    return PKG_INTERNAL;
 }
