@@ -29,5 +29,14 @@ lis_runtime * init_runtime() {
     assert(add_symbol(pkg_lis, sym_nil) != NULL);
     runtime->symbol_nil = sym_nil;
 
+    char t_cstr[] = u8"t";
+    lis_obj * tname = to_lstring_from_cstr(t_cstr, sizeof(t_cstr));
+    lis_obj * sym_t = _make_symbol(tname);
+    sym_t->data.sym->constant_p = true;
+    sym_t->data.sym->package = pkg_lis;
+    sym_t->data.sym->value = sym_t;
+    assert(add_symbol(pkg_lis, sym_t) != NULL);
+    runtime->symbol_t = sym_t;
+
     return runtime;
 }
