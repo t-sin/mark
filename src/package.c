@@ -3,37 +3,59 @@
 #include <string.h>
 
 #include "obj.h"
+#include "lstring.h"
+#include "package.h"
 
-lis_obj * add_symbol(lis_package * package, lis_obj * symbol) {
+lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
+    assert(LIS_TAG3(package) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);
+
     assert(LIS_TAG3(symbol) == LIS_TAG3_BUILTIN);
     assert(LIS_TAG_TYPE(symbol) == LIS_TAG_TYPE_SYM);
 
-    if (package->num > package->size) {
-        size_t new_size = package->size * 2;
-        lis_obj ** new_symbols = (lis_obj *)malloc(sizeof(lis_obj) * new_size);
+    lis_package * pkg = package->data.pkg;
+
+    if (pkg->num > pkg->size) {
+        size_t new_size = pkg->size * 2;
+        lis_obj ** new_symbols = (lis_obj **)malloc(sizeof(lis_obj *) * new_size);
         memset(new_symbols, 0, new_size);
 
-        for (int i=0; i<package->num; i++) {
-            new_symbols[i] = package->symbols[i];
+        for (int i=0; i<pkg->num; i++) {
+            new_symbols[i] = pkg->symbols[i];
         }
-        free(package->symbols);
-        package->symbols = new_symbols;
-        package->size = new_size;
+        free(pkg->symbols);
+        pkg->symbols = new_symbols;
+        pkg->size = new_size;
     }
 
     size_t i = 0;
-    while (i<package->size) {
-        if (package->symbols[i] == NULL) {
+    while (i<pkg->size) {
+        if (pkg->symbols[i] == NULL) {
             break;
         }
         i++;
     }
 
-    package->symbols[i] = symbol;
-    package->num++;
+    pkg->symbols[i] = symbol;
+    pkg->num++;
 
     return symbol;
 }
 
-lis_obj * intern(lis_package * package, lis_string * name) {
+package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym) {
+    assert(LIS_TAG3(package) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);
+
+    assert(LIS_TAG3(name) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR);
+
+    lis_package * pkg = package->data.pkg;
+
+    for (int i=0; i<pkg->num; i++) {
+        if (pkg->symbols[i] != NULL &&
+            string_equal(pkg->symbols[i]->data.str, name->data.str)) {
+            *sym = pkg->symbols[i];
+            return PKG_INTERNAL;  // TODO: INTERNAL, EXTERNAL or INHERITED
+        }
+     }
 }

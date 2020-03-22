@@ -24,7 +24,7 @@ lis_runtime * init_runtime() {
     lis_obj * nil_sym = _make_symbol(nilname);
     nil_sym->data.sym->constant_p = true;
     nil_sym->data.sym->package = pkg_lis;
-    add_symbol(pkg_lis->data.pkg, nil_sym);
+    add_symbol(pkg_lis, nil_sym);
 
     return runtime;
 }
