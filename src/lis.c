@@ -75,7 +75,7 @@ void repl(lis_runtime * runtime) {
         stream_flush(stream_stdout);
 
         lis_obj * obj;
-        obj = read(stream_stdin);
+        obj = read(stream_stdin, runtime);
 
         if (obj == NULL) {
             stream_write_char(stream_stdout, '\n');

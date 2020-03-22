@@ -4,6 +4,7 @@
 
 #include "obj.h"
 #include "stream.h"
+#include "runtime.h"
 
 bool is_cons_open_delimiter(lis_char ch) {
     return ch == '(';
@@ -73,7 +74,7 @@ int skip_whitespaces(lis_stream * stream) {
     }
 }
 
-lis_obj * read(lis_stream * stream);
+lis_obj * read(lis_stream * stream, lis_runtime * runtime);
 
 lis_obj * read_integer(lis_stream * stream) {
     lis_char ch;
@@ -218,7 +219,7 @@ lis_obj * read_string(lis_stream * stream) {
     return NULL;
 }
 
-lis_obj * read_symbol(lis_stream * stream) {
+lis_obj * read_symbol(lis_stream * stream, lis_runtime * runtime) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(1000, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -231,6 +232,7 @@ lis_obj * read_symbol(lis_stream * stream) {
             is_cons_delimiters(ch)) {
 
             lis_obj * name = _make_string();
+            // intern
             lis_obj * sym = _make_symbol(name);
             name->data.str->size = size;
             name->data.str->body = (lis_char *)malloc(sizeof(lis_char) * size);
@@ -252,7 +254,7 @@ lis_obj * read_symbol(lis_stream * stream) {
     return NULL;
 }
 
-lis_obj * read_cons(lis_stream * stream) {
+lis_obj * read_cons(lis_stream * stream, lis_runtime * runtime) {
     lis_obj * head = _make_cons();
     lis_obj * current = head;
     lis_obj * prev_current = NULL;
@@ -269,13 +271,13 @@ lis_obj * read_cons(lis_stream * stream) {
             break;
 
         } else {
-            current->data.cons->car = read(stream);
+            current->data.cons->car = read(stream, runtime);
             skip_whitespaces(stream);
 
             if (stream_peek_char(stream, &ch) && is_cons_delimiter(ch)) {
                 // cons
                 stream_read_char(stream, &ch);
-                current->data.cons->cdr = read(stream);
+                current->data.cons->cdr = read(stream, runtime);
 
                 skip_whitespaces(stream);
                 stream_peek_char(stream, &ch);
@@ -299,7 +301,7 @@ lis_obj * read_cons(lis_stream * stream) {
     return head;
 }
 
-lis_obj * read(lis_stream * stream) {
+lis_obj * read(lis_stream * stream, lis_runtime * runtime) {
     if (skip_whitespaces(stream) == EOF) {
         return NULL;
     }
@@ -324,10 +326,10 @@ lis_obj * read(lis_stream * stream) {
 
     } else if (is_cons_open_delimiter(ch)) {
         stream_read_char(stream, &ch);
-        obj = read_cons(stream);
+        obj = read_cons(stream, runtime);
 
     } else {
-        obj = read_symbol(stream);
+        obj = read_symbol(stream, runtime);
     }
 
     return obj;
