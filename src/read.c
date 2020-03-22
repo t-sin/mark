@@ -90,7 +90,7 @@ lis_obj * read_integer(lis_stream * stream) {
                 s[i] = ch;
             }
 
-            lis_obj * integer = make_int(atoi(s));
+            lis_obj * integer = _make_int(atoi(s));
             return integer;
 
         } else {
@@ -154,7 +154,7 @@ lis_obj * read_character(lis_stream * stream) {
             if (ch == EOF) {
                 return NULL;
             } else {
-                return make_char(ch);
+                return _make_char(ch);
             }
 
         } else {
@@ -197,7 +197,7 @@ lis_obj * read_string(lis_stream * stream) {
         if (!stream_peek_char(stream, &ch) || is_string_delimiter(ch)) {
             stream_read_char(stream, &ch);
 
-            lis_obj * str = make_string();
+            lis_obj * str = _make_string();
             str->data.str->size = size;
             str->data.str->body = (lis_char *)malloc(sizeof(lis_char) * size);
 
@@ -230,8 +230,8 @@ lis_obj * read_symbol(lis_stream * stream) {
             is_string_delimiter(ch) ||
             is_cons_delimiters(ch)) {
 
-            lis_obj * name = make_string();
-            lis_obj * sym = make_symbol(name);
+            lis_obj * name = _make_string();
+            lis_obj * sym = _make_symbol(name);
             name->data.str->size = size;
             name->data.str->body = (lis_char *)malloc(sizeof(lis_char) * size);
 
@@ -253,7 +253,7 @@ lis_obj * read_symbol(lis_stream * stream) {
 }
 
 lis_obj * read_cons(lis_stream * stream) {
-    lis_obj * head = make_cons();
+    lis_obj * head = _make_cons();
     lis_obj * current = head;
     lis_obj * prev_current = NULL;
     lis_char ch;
@@ -262,9 +262,9 @@ lis_obj * read_cons(lis_stream * stream) {
         if (stream_peek_char(stream, &ch) && is_cons_close_delimiter(ch)) {
             stream_read_char(stream, &ch);
             if (current != head) {
-                prev_current->data.cons->cdr = make_nil();
+                prev_current->data.cons->cdr = _make_nil();
             } else {
-                head = make_nil();
+                head = _make_nil();
             }
             break;
 
@@ -288,7 +288,7 @@ lis_obj * read_cons(lis_stream * stream) {
 
             } else {
                 // list
-                lis_obj * cdr = make_cons();
+                lis_obj * cdr = _make_cons();
                 current->data.cons->cdr = cdr;
                 prev_current = current;
                 current = cdr;
