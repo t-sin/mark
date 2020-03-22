@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "utf8.h"
@@ -28,4 +29,18 @@ lis_obj * to_lstring_from_cstr(const char * cstr, size_t cstr_size) {
     str->data.str = _str;
 
     return str;
+}
+
+bool string_equal(lis_string * s1, lis_string * s2) {
+    if (s1->size != s2->size) {
+        return false;
+    }
+
+    for (int i=0; i<s1->size; i++) {
+        if (s1->body[i] != s2->body[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
