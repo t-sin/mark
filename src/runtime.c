@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -21,10 +22,12 @@ lis_runtime * init_runtime() {
 
     char nil_cstr[] = u8"nil";
     lis_obj * nilname = to_lstring_from_cstr(nil_cstr, sizeof(nil_cstr));
-    lis_obj * nil_sym = _make_symbol(nilname);
-    nil_sym->data.sym->constant_p = true;
-    nil_sym->data.sym->package = pkg_lis;
-    add_symbol(pkg_lis, nil_sym);
+    lis_obj * sym_nil = _make_symbol(nilname);
+    sym_nil->data.sym->constant_p = true;
+    sym_nil->data.sym->package = pkg_lis;
+    sym_nil->data.sym->value = sym_nil;
+    assert(add_symbol(pkg_lis, sym_nil) != NULL);
+    runtime->symbol_nil = sym_nil;
 
     return runtime;
 }
