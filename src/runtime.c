@@ -14,8 +14,8 @@ lis_runtime * init_runtime() {
     // runtime->package_table = 
 
     char name_cstr[] = u8"lis";
-    lis_string * pkgname = to_lstring_from_cstr(name_cstr, sizeof(name_cstr));
-    lis_obj * pkg_lis = make_package(pkgname);
+    lis_obj * pkgname = to_lstring_from_cstr(name_cstr, sizeof(name_cstr));
+    lis_obj * pkg_lis = _make_package(pkgname);
     runtime->current_package = pkg_lis;
 
     return runtime;

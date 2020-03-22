@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -218,9 +219,12 @@ bool stream_write_char(lis_stream * stream, lis_char ch) {
     return true;
 }
 
-bool stream_write_string(lis_stream * stream, lis_string * str) {
-    for (int i=0; i<str->size; i++) {
-        if (!stream_write_char(stream, str->body[i])) {
+bool stream_write_string(lis_stream * stream, lis_obj * str) {
+    assert(LIS_TAG3(str) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_TYPE(str) == LIS_TAG_TYPE_STR);
+
+    for (int i=0; i<str->data.str->size; i++) {
+        if (!stream_write_char(stream, str->data.str->body[i])) {
             return false;
         }
     }

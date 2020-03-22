@@ -155,7 +155,7 @@ typedef struct lis_closure {
 } lis_closure;
 
 typedef struct lis_package {
- lis_string * name;
+ lis_obj * name;
  lis_symbol * symbols;
 } lis_package;
 
