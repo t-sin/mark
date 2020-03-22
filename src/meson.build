@@ -4,6 +4,7 @@ src = [
   'obj.c',
   'stream.c',
   'lstring.c',
+  'package.c',
   'runtime.c',
   'read.c',
   'print.c',

@@ -52,6 +52,7 @@ lis_obj * _make_symbol(lis_obj * name) {
     sym->tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_SYM << 4;
     sym->data.sym = malloc(sizeof(lis_symbol));
     sym->data.sym->name = name;
+    sym->data.sym->constant_p = false;
     return sym;
 }
 
@@ -64,11 +65,15 @@ lis_obj * _make_cons() {
     return cons;
 }
 
+#define DEFAULT_PACKAGE_LEN 256
 lis_obj * _make_package(lis_obj * name) {
     lis_obj * pkg = (lis_obj *)malloc(sizeof(lis_obj));
     pkg->tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_PKG << 4;
     pkg->data.pkg = (lis_package *)malloc(sizeof(lis_package));
     pkg->data.pkg->name = name;
+    pkg->data.pkg->num = 0;
+    pkg->data.pkg->size = DEFAULT_PACKAGE_LEN;
+    pkg->data.pkg->symbols = (lis_obj *)malloc(sizeof(lis_obj) * DEFAULT_PACKAGE_LEN);
     return pkg;
 }
 

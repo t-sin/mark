@@ -131,7 +131,8 @@ typedef struct lis_tstamp {
 typedef struct lis_symbol {
  lis_obj * name;
  lis_obj * value;
- struct lis_package * package;
+ bool constant_p;
+ lis_obj * package;
 // lis_function * fn;
 } lis_symbol;
 
@@ -156,7 +157,9 @@ typedef struct lis_closure {
 
 typedef struct lis_package {
  lis_obj * name;
- lis_symbol * symbols;
+ lis_obj ** symbols;
+ size_t num;
+ size_t size;
 } lis_package;
 
 typedef enum lis_stream_direction_type {

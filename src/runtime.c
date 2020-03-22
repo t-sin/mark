@@ -3,6 +3,7 @@
 
 #include "obj.h"
 #include "lstring.h"
+#include "package.h"
 #include "runtime.h"
 
 lis_runtime * init_runtime() {
@@ -17,6 +18,13 @@ lis_runtime * init_runtime() {
     lis_obj * pkgname = to_lstring_from_cstr(name_cstr, sizeof(name_cstr));
     lis_obj * pkg_lis = _make_package(pkgname);
     runtime->current_package = pkg_lis;
+
+    char nil_cstr[] = u8"nil";
+    lis_obj * nilname = to_lstring_from_cstr(nil_cstr, sizeof(nil_cstr));
+    lis_obj * nil_sym = _make_symbol(nilname);
+    nil_sym->data.sym->constant_p = true;
+    nil_sym->data.sym->package = pkg_lis;
+    add_symbol(pkg_lis->data.pkg, nil_sym);
 
     return runtime;
 }
