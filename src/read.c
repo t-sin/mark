@@ -4,6 +4,7 @@
 
 #include "obj.h"
 #include "stream.h"
+#include "package.h"
 #include "runtime.h"
 
 bool is_cons_open_delimiter(lis_char ch) {
@@ -232,15 +233,15 @@ lis_obj * read_symbol(lis_stream * stream, lis_runtime * runtime) {
             is_cons_delimiters(ch)) {
 
             lis_obj * name = _make_string();
-            // intern
-            lis_obj * sym = _make_symbol(name);
             name->data.str->size = size;
             name->data.str->body = (lis_char *)malloc(sizeof(lis_char) * size);
-
             for (int i=0; i<size; i++) {
                 stream_read_char(buffer, &ch);
                 name->data.str->body[i] = ch;
             }
+
+            lis_obj * sym;
+            intern(runtime->current_package, name, &sym);
 
             return sym;
 
