@@ -21,7 +21,21 @@ lis_obj * eval_cons(lis_runtime * runtime, lis_obj * cons) {
         return NULL;
     }
 
-    return cons;
+    if (name == runtime->special_forms[LIS_SPECIAL_FORM_QUOTE]) {
+        // TODO: length check = 1
+        if (LIS_TAG3(args) == LIS_TAG3_BUILTIN &&
+            LIS_TAG_TYPE(args) == LIS_TAG_TYPE_CONS) {
+            return args->data.cons->car;
+
+        } else {
+            printf("invalid argument\n");
+            return NULL;
+        }
+
+    } else {
+        printf("unknown special operator\n");
+        return NULL;
+    }
 }
 
 lis_obj * eval(lis_runtime * runtime, lis_obj * obj) {

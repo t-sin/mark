@@ -7,6 +7,20 @@
 #include "package.h"
 #include "runtime.h"
 
+
+void intern_special_form_names(lis_runtime * runtime) {
+    lis_obj ** special_forms = (lis_obj *)malloc(sizeof(lis_obj *) * NUMBER_OF_LIS_SPECIAL_FORM);
+    runtime->special_forms = special_forms;
+
+    char quote_cstr[] = u8"quote";
+    lis_obj * quote_name = to_lstring_from_cstr(quote_cstr, sizeof(quote_cstr));
+    lis_obj * sym_quote = _make_symbol(quote_name);
+    sym_quote->data.sym->package = runtime->current_package;
+    sym_quote->data.sym->value = sym_quote;
+    assert(add_symbol(runtime->current_package, sym_quote) != NULL);
+    runtime->special_forms[LIS_SPECIAL_FORM_QUOTE] = sym_quote;
+}
+
 lis_runtime * init_runtime() {
     lis_runtime * runtime;
     runtime = (lis_runtime *)malloc(sizeof(lis_runtime));
@@ -37,6 +51,8 @@ lis_runtime * init_runtime() {
     sym_t->data.sym->value = sym_t;
     assert(add_symbol(pkg_lis, sym_t) != NULL);
     runtime->symbol_t = sym_t;
+
+    intern_special_form_names(runtime);
 
     return runtime;
 }
