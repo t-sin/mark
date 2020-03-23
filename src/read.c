@@ -265,9 +265,9 @@ lis_obj * read_cons(lis_stream * stream, lis_runtime * runtime) {
         if (stream_peek_char(stream, &ch) && is_cons_close_delimiter(ch)) {
             stream_read_char(stream, &ch);
             if (current != head) {
-                prev_current->data.cons->cdr = _make_nil();
+                prev_current->data.cons->cdr = runtime->symbol_nil;
             } else {
-                head = _make_nil();
+                head = runtime->symbol_nil;
             }
             break;
 

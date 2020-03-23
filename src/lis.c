@@ -84,7 +84,7 @@ void repl(lis_runtime * runtime) {
         }
 
         obj = eval(obj);
-        print(stream_stdout, obj);
+        print(stream_stdout, runtime, obj);
         stream_write_char(stream_stdout, '\n');
         stream_flush(stream_stdout);
 

@@ -3,6 +3,7 @@
 #include "obj.h"
 #include "print.h"
 #include "stream.h"
+#include "runtime.h"
 
 void print_string(lis_stream * stream, lis_obj * str) {
     for (size_t i=0; i < str->data.str->size; i++) {
@@ -10,23 +11,23 @@ void print_string(lis_stream * stream, lis_obj * str) {
     }
 }
 
-void print_cons(lis_stream * stream, lis_obj * car, lis_obj * cdr) {
-    print(stream, car);
+void print_cons(lis_stream * stream, lis_runtime * runtime, lis_obj * car, lis_obj * cdr) {
+    print(stream, runtime, car);
     if (LIS_TAG3(cdr) == LIS_TAG3_BUILTIN && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS) {
         stream_write_char(stream, ' ');
-        print_cons(stream, cdr->data.cons->car, cdr->data.cons->cdr);
-    } else if (LIS_TAG3(cdr) == LIS_TAG3_SPECIAL && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_NIL) {
+        print_cons(stream, runtime, cdr->data.cons->car, cdr->data.cons->cdr);
+    } else if (cdr == runtime->symbol_nil) {
         ;
     } else {
         stream_write_char(stream, ' ');
         stream_write_char(stream, '.');
         stream_write_char(stream, ' ');
-        print(stream, cdr);
+        print(stream, runtime, cdr);
     }
 }
 
 #define BUF_SIZE 256
-void print(lis_stream * stream, lis_obj * obj) {
+void print(lis_stream * stream, lis_runtime * runtime, lis_obj * obj) {
     if (obj == NULL) {
         printf("NULL!!\n");
         return;
@@ -66,7 +67,7 @@ void print(lis_stream * stream, lis_obj * obj) {
             stream_write_char(stream, '#');
             stream_write_char(stream, '(');
             for (size_t i=0; i < obj->data.array->size; i++) {
-                print(stream, &obj->data.array->body[i]);
+                print(stream, runtime, &obj->data.array->body[i]);
                 if (i+1 < obj->data.array->size) {
                     stream_write_char(stream, ' ');
                 }
@@ -87,7 +88,7 @@ void print(lis_stream * stream, lis_obj * obj) {
 
         case LIS_TAG_TYPE_CONS:
             stream_write_char(stream, '(');
-            print_cons(stream, obj->data.cons->car, obj->data.cons->cdr);
+            print_cons(stream, runtime, obj->data.cons->car, obj->data.cons->cdr);
             stream_write_char(stream, ')');
             break;
 
