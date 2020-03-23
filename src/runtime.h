@@ -15,8 +15,8 @@ typedef struct lis_runtime {
     lis_package_table * package_table;
     lis_obj * current_package;
     lis_obj * keyword_package;
-    lis_symbol * symbol_t;
-    lis_symbol * symbol_nil;
+    lis_obj * symbol_t;
+    lis_obj * symbol_nil;
 } lis_runtime;
 
 lis_runtime * init_runtime();
