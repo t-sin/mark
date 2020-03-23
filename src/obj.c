@@ -2,19 +2,6 @@
 
 #include "obj.h"
 
-lis_obj * _make_nil() {
-    lis_obj * nil = (lis_obj *)malloc(sizeof(lis_obj));
-    nil->tags = LIS_TAG3_SPECIAL << 1 | LIS_TAG_TYPE_NIL << 4;
-    return nil;
-}
-
-lis_obj * _make_t() {
-    lis_obj * t = (lis_obj *)malloc(sizeof(lis_obj));
-    t->tags = LIS_TAG3_SPECIAL << 1 | LIS_TAG_TYPE_T << 4;
-    return t;
-}
-
-
 lis_obj * _make_int(lis_int n) {
     lis_obj * num = (lis_obj *)malloc(sizeof(lis_obj));
     num->tags = LIS_TAG3_INT << 1;

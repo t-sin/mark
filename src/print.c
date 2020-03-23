@@ -47,19 +47,6 @@ void print(lis_stream * stream, lis_runtime * runtime, lis_obj * obj) {
         stream_write_char(stream, '\\');
         stream_write_char(stream, obj->data.ch);
 
-    } else if (LIS_TAG3(obj) == LIS_TAG3_SPECIAL) {
-        if (LIS_TAG_TYPE(obj) == LIS_TAG_TYPE_T) {
-            stream_write_char(stream, 't');
-
-        } else if (LIS_TAG_TYPE(obj) == LIS_TAG_TYPE_NIL) {
-            stream_write_char(stream, 'n');
-            stream_write_char(stream, 'i');
-            stream_write_char(stream, 'l');
-
-        } else {
-            printf("unknown special value: %d\n", obj->tags);
-        }
-
     } else if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN) {
         // built-in types
         switch (LIS_TAG_TYPE(obj)) {

@@ -15,14 +15,14 @@
  * 0000000g => pointer
  * 0000001g => int
  * 0000011g => char
- * xxxx100g => special values
+ * xxxx100g => special values (NOT USED)
  * xxxx101g => built-in types
  * 0000110g => other types
  *
- * special values:
- * 
- * 1111100g => nil
- * 1110100g => t
+ * // special values (NOT USED):
+ * // 
+ * // 1111100g => nil
+ * // 1110100g => t
  *
  * built-in types
  * 
@@ -44,12 +44,9 @@
 #define LIS_TAG3_PTR      0x00
 #define LIS_TAG3_INT      0x01
 #define LIS_TAG3_CHAR     0x03
-#define LIS_TAG3_SPECIAL  0x05
+#define LIS_TAG3_SPECIAL  0x05  // NOT USED
 #define LIS_TAG3_BUILTIN  0x04
 #define LIS_TAG3_OTHER    0x06
-
-#define LIS_TAG_TYPE_NIL  0x0F
-#define LIS_TAG_TYPE_T    0x0E
 
 #define LIS_TAG_TYPE_ARY  0x00
 #define LIS_TAG_TYPE_STR  0x01
@@ -182,8 +179,6 @@ typedef struct lis_stream {
 } lis_stream;
 
 
-lis_obj * _make_nil();
-lis_obj * _make_t();
 lis_obj * _make_int(lis_int n);
 lis_obj * _make_char(lis_int ch);
 lis_obj * _make_array();

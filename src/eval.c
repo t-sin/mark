@@ -13,12 +13,7 @@ lis_obj * eval(lis_obj * obj) {
         return obj;  // integer
     } else if (LIS_TAG3(obj) == LIS_TAG3_CHAR) {
         return obj;  // char
-    } else if (LIS_TAG3(obj) == LIS_TAG3_SPECIAL) {
-        if (LIS_TAG_TYPE(obj) == LIS_TAG_TYPE_T) {
-            return obj;  // t
-        } else if (LIS_TAG_TYPE(obj) == LIS_TAG_TYPE_NIL) {
-            return obj;  // nil
-        }
+
     } else if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN) {
         // built-in types
         switch (LIS_TAG_TYPE(obj)) {
