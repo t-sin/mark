@@ -3,4 +3,4 @@ project('mark', 'c',
 subdir('src')
 subdir('tests')
 
-run_target('lis', command: [lis])
+run_target('start', command: [lis])

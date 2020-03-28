@@ -66,7 +66,7 @@ $ ./build/src/lis
 or
 
 ```sh
-ninja -C build/ lis
+ninja -C build/ start
 ```
 
 Some basic tests can be run with those command:
