@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -21,19 +22,17 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
         return NULL;
     }
 
-    if (name == genv->data.env->env.global->special_forms[LIS_SPECIAL_FORM_QUOTE]) {
-        // TODO: length check = 1
-        if (LIS_TAG3(args) == LIS_TAG3_BUILTIN &&
-            LIS_TAG_TYPE(args) == LIS_TAG_TYPE_CONS) {
-            return args->data.cons->car;
+    if (name->data.sym->fn != NULL) {
+        lis_obj * fn = name->data.sym->fn;
+        assert(LIS_TAG3(fn) == LIS_TAG3_BUILTIN);
+        assert(LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN);
 
-        } else {
-            printf("invalid argument\n");
-            return NULL;
-        }
+        // do check lambda list
+
+        // do applly
 
     } else {
-        printf("unknown special operator\n");
+        printf("unknown operator\n");
         return NULL;
     }
 }
