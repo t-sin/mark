@@ -83,3 +83,10 @@ lis_obj * _make_raw_function(lis_obj * (*raw_fn)(lis_obj *, lis_obj *)) {
     fn->data.fn->raw_body = raw_fn;
     return fn;
 }
+
+lis_obj * _make_lis_stream(lis_stream * s) {
+    lis_obj * stream = (lis_obj *)malloc(sizeof(lis_obj));
+    stream->tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_STRM << 4;
+    stream->data.stream = s;
+    return stream;
+}

@@ -224,5 +224,6 @@ lis_obj * _make_cons();
 lis_obj * _make_package(lis_obj * name);
 lis_obj * _make_env();
 lis_obj * _make_raw_function();
+lis_obj * _make_lis_stream(lis_stream * s);
 
 #endif
