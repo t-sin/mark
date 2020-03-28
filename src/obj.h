@@ -209,6 +209,7 @@ typedef enum lis_stream_element_type {
 struct utf8_decoding_state;
 
 typedef struct lis_stream {
+    lis_obj * name;
     _stream * stream;
     FILE * fin;
     FILE * fout;

@@ -3,6 +3,7 @@
 
 #include "obj.h"
 #include "print.h"
+#include "lstring.h"
 #include "stream.h"
 #include "environment.h"
 
@@ -88,6 +89,16 @@ void print(lis_stream * stream, lis_obj * genv, lis_obj * obj) {
         case LIS_TAG_TYPE_FN:
         case LIS_TAG_TYPE_CLS:
         case LIS_TAG_TYPE_PKG:
+            break;
+
+        case LIS_TAG_TYPE_STRM:
+            stream_write_char(stream, '#');
+            stream_write_char(stream, '<');
+            char type_name_cstr[] = u8"STREAM: ";
+            lis_obj * type_name = to_lstring_from_cstr(type_name_cstr, sizeof(type_name_cstr));
+            stream_write_string(stream, type_name);
+            stream_write_string(stream, obj->data.stream->name);
+            stream_write_char(stream, '>');
             break;
         }
     } else {

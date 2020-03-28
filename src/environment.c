@@ -23,10 +23,11 @@ void init_special_forms(lis_global_env * genv) {
 
 void init_streams(lis_global_env * genv) {
     char stdin_cstr[] = u8"*stdin*";
+    lis_obj * stdin_name = to_lstring_from_cstr(stdin_cstr, sizeof(stdin_cstr));
     lis_stream * _stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
+    _stream_stdin->name = stdin_name;
     _stream_stdin->fin = stdin;
     lis_obj * stream_stdin = _make_lis_stream(_stream_stdin);
-    lis_obj * stdin_name = to_lstring_from_cstr(stdin_cstr, sizeof(stdin_cstr));
     lis_obj * sym_stdin = _make_symbol(stdin_name);
     sym_stdin->data.sym->constant_p = true;
     sym_stdin->data.sym->dynamic_p = true;
@@ -36,10 +37,11 @@ void init_streams(lis_global_env * genv) {
     genv->stream_stdin = stream_stdin;
 
     char stdout_cstr[] = u8"*stdout*";
+    lis_obj * stdout_name = to_lstring_from_cstr(stdout_cstr, sizeof(stdout_cstr));
     lis_stream * _stream_stdout = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    _stream_stdout->name = stdout_name;
     _stream_stdout->fout = stdout;
     lis_obj * stream_stdout = _make_lis_stream(_stream_stdout);
-    lis_obj * stdout_name = to_lstring_from_cstr(stdout_cstr, sizeof(stdout_cstr));
     lis_obj * sym_stdout = _make_symbol(stdout_name);
     sym_stdout->data.sym->constant_p = true;
     sym_stdout->data.sym->dynamic_p = true;
@@ -49,10 +51,11 @@ void init_streams(lis_global_env * genv) {
     genv->stream_stdout = stream_stdout;
 
     char stderr_cstr[] = u8"*stderr*";
+    lis_obj * stderr_name = to_lstring_from_cstr(stderr_cstr, sizeof(stderr_cstr));
     lis_stream * _stream_stderr = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    _stream_stderr->name = stderr_name;
     _stream_stderr->fout = stderr;
     lis_obj * stream_stderr = _make_lis_stream(_stream_stderr);
-    lis_obj * stderr_name = to_lstring_from_cstr(stderr_cstr, sizeof(stderr_cstr));
     lis_obj * sym_stderr = _make_symbol(stderr_name);
     sym_stderr->data.sym->constant_p = true;
     sym_stderr->data.sym->dynamic_p = true;
