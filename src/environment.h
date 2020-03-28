@@ -14,7 +14,6 @@ typedef struct lis_global_environment {
     lis_obj * keyword_package;
     lis_obj * symbol_t;
     lis_obj * symbol_nil;
-    lis_obj ** special_forms;
 } lis_global_environment;
 
 lis_obj * init_global_env();
