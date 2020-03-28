@@ -223,5 +223,6 @@ lis_obj * _make_symbol(lis_obj * name);
 lis_obj * _make_cons();
 lis_obj * _make_package(lis_obj * name);
 lis_obj * _make_env();
+lis_obj * _make_raw_function();
 
 #endif
