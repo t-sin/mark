@@ -5,7 +5,7 @@ src = [
   'stream.c',
   'lstring.c',
   'package.c',
-  'runtime.c',
+  'environment.c',
   'read.c',
   'print.c',
   'eval.c',

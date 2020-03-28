@@ -1,9 +1,10 @@
+#include <assert.h>
 #include <stdio.h>
 
 #include "obj.h"
 #include "print.h"
 #include "stream.h"
-#include "runtime.h"
+#include "environment.h"
 
 void print_string(lis_stream * stream, lis_obj * str) {
     for (size_t i=0; i < str->data.str->size; i++) {
@@ -11,23 +12,27 @@ void print_string(lis_stream * stream, lis_obj * str) {
     }
 }
 
-void print_cons(lis_stream * stream, lis_runtime * runtime, lis_obj * car, lis_obj * cdr) {
-    print(stream, runtime, car);
+void print_cons(lis_stream * stream, lis_obj * genv, lis_obj * car, lis_obj * cdr) {
+    print(stream, genv, car);
     if (LIS_TAG3(cdr) == LIS_TAG3_BUILTIN && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS) {
         stream_write_char(stream, ' ');
-        print_cons(stream, runtime, cdr->data.cons->car, cdr->data.cons->cdr);
-    } else if (cdr == runtime->symbol_nil) {
+        print_cons(stream, genv, cdr->data.cons->car, cdr->data.cons->cdr);
+    } else if (cdr == genv->data.env->env.global->symbol_nil) {
         ;
     } else {
         stream_write_char(stream, ' ');
         stream_write_char(stream, '.');
         stream_write_char(stream, ' ');
-        print(stream, runtime, cdr);
+        print(stream, genv, cdr);
     }
 }
 
 #define BUF_SIZE 256
-void print(lis_stream * stream, lis_runtime * runtime, lis_obj * obj) {
+void print(lis_stream * stream, lis_obj * genv, lis_obj * obj) {
+    assert(LIS_TAG3(genv) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
+    assert(genv->data.env->type == LIS_ENV_GLOBAL);
+
     if (obj == NULL) {
         printf("NULL!!\n");
         return;
@@ -54,7 +59,7 @@ void print(lis_stream * stream, lis_runtime * runtime, lis_obj * obj) {
             stream_write_char(stream, '#');
             stream_write_char(stream, '(');
             for (size_t i=0; i < obj->data.array->size; i++) {
-                print(stream, runtime, &obj->data.array->body[i]);
+                print(stream, genv, &obj->data.array->body[i]);
                 if (i+1 < obj->data.array->size) {
                     stream_write_char(stream, ' ');
                 }
@@ -75,7 +80,7 @@ void print(lis_stream * stream, lis_runtime * runtime, lis_obj * obj) {
 
         case LIS_TAG_TYPE_CONS:
             stream_write_char(stream, '(');
-            print_cons(stream, runtime, obj->data.cons->car, obj->data.cons->cdr);
+            print_cons(stream, genv, obj->data.cons->car, obj->data.cons->cdr);
             stream_write_char(stream, ')');
             break;
 

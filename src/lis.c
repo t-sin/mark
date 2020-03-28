@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -7,7 +8,7 @@
 #include "utf8.h"
 #include "lstring.h"
 #include "stream.h"
-#include "runtime.h"
+#include "environment.h"
 #include "eval.h"
 #include "print.h"
 #include "read.h"
@@ -61,7 +62,11 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
     return true;
 }
 
-void repl(lis_runtime * runtime) {
+void repl(lis_obj * genv) {
+    assert(LIS_TAG3(genv) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
+    assert(genv->data.env->type == LIS_ENV_GLOBAL);
+
     lis_stream * stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
     lis_stream * stream_stdout = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
     stream_stdin->fin = stdin;
@@ -70,12 +75,12 @@ void repl(lis_runtime * runtime) {
     char _prompt[] = u8"? ";
     lis_obj * prompt = to_lstring_from_cstr(_prompt, sizeof(_prompt));
     while (true) {
-        stream_write_string(stream_stdout, runtime->current_package->data.pkg->name);
+        stream_write_string(stream_stdout, genv->data.env->env.global->current_package->data.pkg->name);
         stream_write_string(stream_stdout, prompt);
         stream_flush(stream_stdout);
 
         lis_obj * obj;
-        obj = read(stream_stdin, runtime);
+        obj = read(stream_stdin, genv);
 
         if (obj == NULL) {
             stream_write_char(stream_stdout, '\n');
@@ -83,8 +88,8 @@ void repl(lis_runtime * runtime) {
             break;
         }
 
-        obj = eval(runtime, obj);
-        print(stream_stdout, runtime, obj);
+        obj = eval(genv, obj);
+        print(stream_stdout, genv, obj);
         stream_write_char(stream_stdout, '\n');
         stream_flush(stream_stdout);
 
@@ -102,8 +107,8 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    lis_runtime * runtime = init_runtime();
-    repl(runtime);
+    lis_obj * genv = init_global_env();
+    repl(genv);
 
     return 0;
 }

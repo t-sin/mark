@@ -138,10 +138,45 @@ typedef struct lis_cons {
  lis_obj * cdr;
 } lis_cons;
 
+typedef struct lis_package {
+ lis_obj * name;
+ lis_obj ** symbols;
+ size_t num;
+ size_t size;
+} lis_package;
+
+typedef struct lis_package_table {
+    lis_package * packages;
+    size_t size;
+} lis_package_table;
+
+typedef enum env_type {
+    LIS_ENV_GLOBAL, LIS_ENV_DYNAMIC, LIS_ENV_LEXICAL,
+} env_type;
+
+typedef struct lis_global_env {
+    lis_package_table * package_table;
+    lis_obj * current_package;
+    lis_obj * keyword_package;
+    lis_obj * symbol_t;
+    lis_obj * symbol_nil;
+    lis_obj ** special_forms;
+} lis_global_env;
+
+typedef struct lis_dynamic_env {
+} lis_dynamic_env;
+
+typedef struct lis_lexical_env {
+} lis_lexical_env;
+
 typedef struct lis_env {
- struct env * parent;
- lis_obj * syms;
- lis_obj * vals;
+ env_type type;
+ struct lis_env * parent;
+ union {
+  lis_global_env * global;
+  lis_dynamic_env * dynamic;
+  lis_lexical_env * lexical;
+ } env;
 } lis_env;
 
 typedef struct lis_function {
@@ -151,13 +186,6 @@ typedef struct lis_closure {
  lis_function fn;
  lis_env env;
 } lis_closure;
-
-typedef struct lis_package {
- lis_obj * name;
- lis_obj ** symbols;
- size_t num;
- size_t size;
-} lis_package;
 
 typedef enum lis_stream_direction_type {
     LIS_STREAM_IN, LIS_STREAM_OUT, LIS_STREAM_INOUT,
@@ -186,5 +214,6 @@ lis_obj * _make_string();
 lis_obj * _make_symbol(lis_obj * name);
 lis_obj * _make_cons();
 lis_obj * _make_package(lis_obj * name);
+lis_obj * _make_env();
 
 #endif

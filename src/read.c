@@ -5,7 +5,7 @@
 #include "obj.h"
 #include "stream.h"
 #include "package.h"
-#include "runtime.h"
+#include "environment.h"
 
 bool is_cons_open_delimiter(lis_char ch) {
     return ch == '(';
@@ -75,7 +75,7 @@ int skip_whitespaces(lis_stream * stream) {
     }
 }
 
-lis_obj * read(lis_stream * stream, lis_runtime * runtime);
+lis_obj * read(lis_stream * stream, lis_obj * genv);
 
 lis_obj * read_integer(lis_stream * stream) {
     lis_char ch;
@@ -220,7 +220,7 @@ lis_obj * read_string(lis_stream * stream) {
     return NULL;
 }
 
-lis_obj * read_symbol(lis_stream * stream, lis_runtime * runtime) {
+lis_obj * read_symbol(lis_stream * stream, lis_obj * genv) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(1000, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -241,7 +241,7 @@ lis_obj * read_symbol(lis_stream * stream, lis_runtime * runtime) {
             }
 
             lis_obj * sym;
-            intern(runtime->current_package, name, &sym);
+            intern(genv->data.env->env.global->current_package, name, &sym);
 
             return sym;
 
@@ -255,7 +255,7 @@ lis_obj * read_symbol(lis_stream * stream, lis_runtime * runtime) {
     return NULL;
 }
 
-lis_obj * read_cons(lis_stream * stream, lis_runtime * runtime) {
+lis_obj * read_cons(lis_stream * stream, lis_obj * genv) {
     lis_obj * head = _make_cons();
     lis_obj * current = head;
     lis_obj * prev_current = NULL;
@@ -265,20 +265,20 @@ lis_obj * read_cons(lis_stream * stream, lis_runtime * runtime) {
         if (stream_peek_char(stream, &ch) && is_cons_close_delimiter(ch)) {
             stream_read_char(stream, &ch);
             if (current != head) {
-                prev_current->data.cons->cdr = runtime->symbol_nil;
+                prev_current->data.cons->cdr = genv->data.env->env.global->symbol_nil;
             } else {
-                head = runtime->symbol_nil;
+                head = genv->data.env->env.global->symbol_nil;
             }
             break;
 
         } else {
-            current->data.cons->car = read(stream, runtime);
+            current->data.cons->car = read(stream, genv);
             skip_whitespaces(stream);
 
             if (stream_peek_char(stream, &ch) && is_cons_delimiter(ch)) {
                 // cons
                 stream_read_char(stream, &ch);
-                current->data.cons->cdr = read(stream, runtime);
+                current->data.cons->cdr = read(stream, genv);
 
                 skip_whitespaces(stream);
                 stream_peek_char(stream, &ch);
@@ -302,7 +302,7 @@ lis_obj * read_cons(lis_stream * stream, lis_runtime * runtime) {
     return head;
 }
 
-lis_obj * read(lis_stream * stream, lis_runtime * runtime) {
+lis_obj * read(lis_stream * stream, lis_obj * genv) {
     if (skip_whitespaces(stream) == EOF) {
         return NULL;
     }
@@ -327,10 +327,10 @@ lis_obj * read(lis_stream * stream, lis_runtime * runtime) {
 
     } else if (is_cons_open_delimiter(ch)) {
         stream_read_char(stream, &ch);
-        obj = read_cons(stream, runtime);
+        obj = read_cons(stream, genv);
 
     } else {
-        obj = read_symbol(stream, runtime);
+        obj = read_symbol(stream, genv);
     }
 
     return obj;

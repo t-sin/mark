@@ -3,14 +3,14 @@
 
 #include "obj.h"
 #include "lstring.h"
-#include "runtime.h"
+#include "environment.h"
 #include "eval.h"
 
 lis_obj * apply(lis_obj * obj, lis_obj * args) {
     return NULL;
 }
 
-lis_obj * eval_cons(lis_runtime * runtime, lis_obj * cons) {
+lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
     // TODO: apply
     lis_obj * name = cons->data.cons->car;
     lis_obj * args = cons->data.cons->cdr;
@@ -21,7 +21,7 @@ lis_obj * eval_cons(lis_runtime * runtime, lis_obj * cons) {
         return NULL;
     }
 
-    if (name == runtime->special_forms[LIS_SPECIAL_FORM_QUOTE]) {
+    if (name == genv->data.env->env.global->special_forms[LIS_SPECIAL_FORM_QUOTE]) {
         // TODO: length check = 1
         if (LIS_TAG3(args) == LIS_TAG3_BUILTIN &&
             LIS_TAG_TYPE(args) == LIS_TAG_TYPE_CONS) {
@@ -38,7 +38,7 @@ lis_obj * eval_cons(lis_runtime * runtime, lis_obj * cons) {
     }
 }
 
-lis_obj * eval(lis_runtime * runtime, lis_obj * obj) {
+lis_obj * eval(lis_obj * genv, lis_obj * obj) {
     if (LIS_TAG3(obj) == LIS_TAG3_INT) {
         return obj;  // integer
     } else if (LIS_TAG3(obj) == LIS_TAG3_CHAR) {
@@ -58,7 +58,7 @@ lis_obj * eval(lis_runtime * runtime, lis_obj * obj) {
             return obj->data.sym->value;
 
         case LIS_TAG_TYPE_CONS:
-            return eval_cons(runtime, obj);
+            return eval_cons(genv, obj);
 
         case LIS_TAG_TYPE_ENV:
         case LIS_TAG_TYPE_FN:

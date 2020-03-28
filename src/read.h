@@ -3,8 +3,9 @@
 
 #include "obj.h"
 #include "stream.h"
+#include "environment.h"
 
 int skip_whitespaces(lis_stream * stream);
-lis_obj * read(lis_stream * stream, lis_runtime * runtime);
+lis_obj * read(lis_stream * stream, lis_obj * genv);
 
 #endif
