@@ -161,7 +161,9 @@ typedef struct lis_global_env {
     lis_obj * keyword_package;
     lis_obj * symbol_t;
     lis_obj * symbol_nil;
-    lis_obj ** special_forms;
+    lis_obj * stream_stdin;
+    lis_obj * stream_stdout;
+    lis_obj * stream_stderr;
 } lis_global_env;
 
 typedef struct lis_dynamic_env {

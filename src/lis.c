@@ -67,13 +67,11 @@ void repl(lis_obj * genv) {
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
     assert(genv->data.env->type == LIS_ENV_GLOBAL);
 
-    lis_stream * stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
-    lis_stream * stream_stdout = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-    stream_stdin->fin = stdin;
-    stream_stdout->fout = stdout;
-
     char _prompt[] = u8"? ";
     lis_obj * prompt = to_lstring_from_cstr(_prompt, sizeof(_prompt));
+    lis_stream * stream_stdin = genv->data.env->env.global->stream_stdin->data.stream;
+    lis_stream * stream_stdout = genv->data.env->env.global->stream_stdout->data.stream;
+
     while (true) {
         stream_write_string(stream_stdout, genv->data.env->env.global->current_package->data.pkg->name);
         stream_write_string(stream_stdout, prompt);
