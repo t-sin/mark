@@ -130,7 +130,7 @@ typedef struct lis_symbol {
  lis_obj * value;
  bool constant_p;
  lis_obj * package;
- struct lis_function * fn;
+ lis_obj * fn;
 } lis_symbol;
 
 typedef struct lis_cons {
