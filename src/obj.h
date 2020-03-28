@@ -179,7 +179,12 @@ typedef struct lis_env {
  } env;
 } lis_env;
 
+typedef enum lis_function_type {
+ LIS_FUNC_NORMAL, LIS_FUNC_SPECIAL_FORM, LIS_FUNC_MACRO
+} lis_function_type;
+
 typedef struct lis_function {
+ lis_function_type type;
  lis_obj * lambdalist;
  lis_obj * body;
  lis_obj * (* raw_body)(lis_obj *, lis_obj *);
