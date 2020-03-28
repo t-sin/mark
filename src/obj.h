@@ -130,7 +130,7 @@ typedef struct lis_symbol {
  lis_obj * value;
  bool constant_p;
  lis_obj * package;
-// lis_function * fn;
+ struct lis_function * fn;
 } lis_symbol;
 
 typedef struct lis_cons {
@@ -180,6 +180,9 @@ typedef struct lis_env {
 } lis_env;
 
 typedef struct lis_function {
+ lis_obj * lambdalist;
+ lis_obj * body;
+ lis_obj * (* raw_body)(lis_obj *, lis_obj *);
 } lis_function;
 
 typedef struct lis_closure {
