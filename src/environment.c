@@ -10,9 +10,6 @@
 
 
 void init_special_forms(lis_global_env * genv) {
-    lis_obj ** special_forms = (lis_obj **)malloc(sizeof(lis_obj *) * NUMBER_OF_LIS_SPECIAL_FORM);
-    genv->special_forms = special_forms;
-
     char quote_cstr[] = u8"quote";
     lis_obj * quote_name = to_lstring_from_cstr(quote_cstr, sizeof(quote_cstr));
     lis_obj * sym_quote = _make_symbol(quote_name);
