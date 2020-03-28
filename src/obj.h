@@ -129,6 +129,7 @@ typedef struct lis_symbol {
  lis_obj * name;
  lis_obj * value;
  bool constant_p;
+ bool dynamic_p;
  lis_obj * package;
  lis_obj * fn;
 } lis_symbol;
