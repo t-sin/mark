@@ -16,7 +16,6 @@ void intern_special_form_names(lis_global_env * genv) {
     lis_obj * quote_name = to_lstring_from_cstr(quote_cstr, sizeof(quote_cstr));
     lis_obj * sym_quote = _make_symbol(quote_name);
     sym_quote->data.sym->package = genv->current_package;
-    sym_quote->data.sym->value = sym_quote;
     assert(add_symbol(genv->current_package, sym_quote) != NULL);
     genv->special_forms[LIS_SPECIAL_FORM_QUOTE] = sym_quote;
 }
