@@ -6,9 +6,10 @@
 #include "lstring.h"
 #include "environment.h"
 #include "package.h"
+#include "eval.h"
 
 
-void intern_special_form_names(lis_global_env * genv) {
+void init_special_forms(lis_global_env * genv) {
     lis_obj ** special_forms = (lis_obj **)malloc(sizeof(lis_obj *) * NUMBER_OF_LIS_SPECIAL_FORM);
     genv->special_forms = special_forms;
 
@@ -16,6 +17,9 @@ void intern_special_form_names(lis_global_env * genv) {
     lis_obj * quote_name = to_lstring_from_cstr(quote_cstr, sizeof(quote_cstr));
     lis_obj * sym_quote = _make_symbol(quote_name);
     sym_quote->data.sym->package = genv->current_package;
+    sym_quote->data.sym->fn = _make_raw_function(eval_quote);
+    sym_quote->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
+    sym_quote->data.sym->fn->data.fn->raw_body = eval_quote;
     assert(add_symbol(genv->current_package, sym_quote) != NULL);
     genv->special_forms[LIS_SPECIAL_FORM_QUOTE] = sym_quote;
 }
@@ -48,7 +52,7 @@ lis_obj * init_global_env() {
     assert(add_symbol(pkg_lis, sym_t) != NULL);
     genv->symbol_t = sym_t;
 
-    intern_special_form_names(genv);
+    init_special_forms(genv);
 
     lis_obj * env = _make_env(LIS_ENV_GLOBAL);
     env->data.env->env.global = genv;

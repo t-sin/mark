@@ -11,10 +11,15 @@ lis_obj * apply(lis_obj * obj, lis_obj * args) {
     return NULL;
 }
 
+lis_obj * eval_quote(lis_obj * genv, lis_obj * args) {
+    return args;
+}
+
+
 lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
     // TODO: apply
     lis_obj * name = cons->data.cons->car;
-    lis_obj * args = cons->data.cons->cdr;
+    lis_obj * cdr = cons->data.cons->cdr;
 
     if (LIS_TAG3(name) != LIS_TAG3_BUILTIN ||
         LIS_TAG_TYPE(name) != LIS_TAG_TYPE_SYM) {
@@ -22,14 +27,35 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
         return NULL;
     }
 
+    if (LIS_TAG3(cdr) != LIS_TAG3_BUILTIN ||
+        LIS_TAG_TYPE(cdr) != LIS_TAG_TYPE_CONS) {
+        printf("args is not a list\n");
+        return NULL;
+    }
+
+    lis_obj * args = cdr->data.cons->car;
+
     if (name->data.sym->fn != NULL) {
         lis_obj * fn = name->data.sym->fn;
         assert(LIS_TAG3(fn) == LIS_TAG3_BUILTIN);
         assert(LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN);
 
-        // do check lambda list
+        switch (fn->data.fn->type) {
+        case LIS_FUNC_NORMAL:
+            // do check lambda list
+            // do applly
+            break;
+        case LIS_FUNC_SPECIAL_FORM:
+            return fn->data.fn->raw_body(genv, args);
+        case LIS_FUNC_MACRO:
+            break;
+        default:
+            printf("invalid function\n");
+            assert(false);
+            break;
+        }
 
-        // do applly
+        return NULL;
 
     } else {
         printf("unknown operator\n");
