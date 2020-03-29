@@ -36,7 +36,6 @@ void print(lis_stream * stream, lis_obj * genv, lis_obj * obj) {
     assert(genv->data.env->type == LIS_ENV_GLOBAL);
 
     if (obj == NULL) {
-        printf("NULL!!\n");
         return;
     }
 
