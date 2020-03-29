@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <uchar.h>
 
 #include "obj.h"
 #include "print.h"
@@ -92,11 +93,7 @@ void print(lis_stream * stream, lis_obj * genv, lis_obj * obj) {
             break;
 
         case LIS_TAG_TYPE_STRM:
-            stream_write_char(stream, '#');
-            stream_write_char(stream, '<');
-            char type_name_cstr[] = u8"STREAM: ";
-            lis_obj * type_name = to_lstring_from_cstr(type_name_cstr, sizeof(type_name_cstr));
-            stream_write_string(stream, type_name);
+            stream_write_string(stream, LSTR(U"#<STREAM: "));
             stream_write_string(stream, obj->data.stream->name);
             stream_write_char(stream, '>');
             break;

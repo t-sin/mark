@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <uchar.h>
 
 #include "obj.h"
 #include "lstring.h"
@@ -12,18 +13,13 @@
 #include "special_form.h"
 
 void init_special_forms(lis_global_env * genv) {
-    char quote_cstr[] = u8"quote";
-    lis_obj * quote_name = to_lstring_from_cstr(quote_cstr, sizeof(quote_cstr));
-    lis_obj * sym_quote = _make_symbol(quote_name);
+    lis_obj * sym_quote = _make_symbol(LSTR(U"quote"));
     sym_quote->data.sym->package = genv->current_package;
     sym_quote->data.sym->fn = _make_raw_function(lis_sf_quote);
     sym_quote->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
     assert(add_symbol(genv->current_package, sym_quote) != NULL);
 
-    // function
-    char function_cstr[] = u8"function";
-    lis_obj * function_name = to_lstring_from_cstr(function_cstr, sizeof(function_cstr));
-    lis_obj * sym_function = _make_symbol(function_name);
+    lis_obj * sym_function = _make_symbol(LSTR(U"function"));
     sym_function->data.sym->package = genv->current_package;
     sym_function->data.sym->fn = _make_raw_function(lis_sf_function);
     sym_function->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
@@ -37,8 +33,7 @@ void init_special_forms(lis_global_env * genv) {
 }
 
 void init_streams(lis_global_env * genv) {
-    char stdin_cstr[] = u8"*stdin*";
-    lis_obj * stdin_name = to_lstring_from_cstr(stdin_cstr, sizeof(stdin_cstr));
+    lis_obj * stdin_name = LSTR(U"*stdin*");
     lis_stream * _stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
     _stream_stdin->name = stdin_name;
     _stream_stdin->fin = stdin;
@@ -51,8 +46,7 @@ void init_streams(lis_global_env * genv) {
     assert(add_symbol(genv->current_package, sym_stdin) != NULL);
     genv->stream_stdin = stream_stdin;
 
-    char stdout_cstr[] = u8"*stdout*";
-    lis_obj * stdout_name = to_lstring_from_cstr(stdout_cstr, sizeof(stdout_cstr));
+    lis_obj * stdout_name = LSTR(U"*stdout*");
     lis_stream * _stream_stdout = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
     _stream_stdout->name = stdout_name;
     _stream_stdout->fout = stdout;
@@ -65,8 +59,7 @@ void init_streams(lis_global_env * genv) {
     assert(add_symbol(genv->current_package, sym_stdout) != NULL);
     genv->stream_stdout = stream_stdout;
 
-    char stderr_cstr[] = u8"*stderr*";
-    lis_obj * stderr_name = to_lstring_from_cstr(stderr_cstr, sizeof(stderr_cstr));
+    lis_obj * stderr_name = LSTR(U"*stderr*");
     lis_stream * _stream_stderr = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
     _stream_stderr->name = stderr_name;
     _stream_stderr->fout = stderr;
@@ -85,13 +78,11 @@ lis_obj * init_global_env() {
     genv = (lis_global_env *)malloc(sizeof(lis_global_env));
     memset(genv, 0, sizeof(lis_global_env));
 
-    char name_cstr[] = u8"lis";
-    lis_obj * pkgname = to_lstring_from_cstr(name_cstr, sizeof(name_cstr));
+    lis_obj * pkgname = LSTR(U"lis");
     lis_obj * pkg_lis = _make_package(pkgname);
     genv->current_package = pkg_lis;
 
-    char nil_cstr[] = u8"nil";
-    lis_obj * nilname = to_lstring_from_cstr(nil_cstr, sizeof(nil_cstr));
+    lis_obj * nilname = LSTR(U"nil");
     lis_obj * sym_nil = _make_symbol(nilname);
     sym_nil->data.sym->constant_p = true;
     sym_nil->data.sym->package = pkg_lis;
@@ -99,8 +90,7 @@ lis_obj * init_global_env() {
     assert(add_symbol(pkg_lis, sym_nil) != NULL);
     genv->symbol_nil = sym_nil;
 
-    char t_cstr[] = u8"t";
-    lis_obj * tname = to_lstring_from_cstr(t_cstr, sizeof(t_cstr));
+    lis_obj * tname = LSTR(U"t");
     lis_obj * sym_t = _make_symbol(tname);
     sym_t->data.sym->constant_p = true;
     sym_t->data.sym->package = pkg_lis;
