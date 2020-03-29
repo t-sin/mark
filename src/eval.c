@@ -33,8 +33,6 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
         return NULL;
     }
 
-    lis_obj * args = cdr->data.cons->car;
-
     if (name->data.sym->fn != NULL) {
         lis_obj * fn = name->data.sym->fn;
         assert(LIS_TAG3(fn) == LIS_TAG3_BUILTIN);
@@ -42,10 +40,10 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
 
         switch (fn->data.fn->type) {
         case LIS_FUNC_NORMAL:
-            return apply(fn, eval_args(genv, args));
+            return apply(fn, eval_args(genv, cdr));
             break;
         case LIS_FUNC_SPECIAL_FORM:
-            return fn->data.fn->raw_body(genv, args);
+            return fn->data.fn->raw_body(genv, cdr);
         case LIS_FUNC_MACRO:
             break;
         default:
