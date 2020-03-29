@@ -7,10 +7,6 @@
 #include "environment.h"
 #include "eval.h"
 
-lis_obj * eval_quote(lis_obj * obj, lis_obj * args) {
-    return args;
-}
-
 lis_obj * apply(lis_obj * fn, lis_obj * args) {
     // do check lambda list
     // do apply

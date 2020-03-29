@@ -9,16 +9,31 @@
 #include "environment.h"
 #include "package.h"
 #include "eval.h"
+#include "special_form.h"
 
 void init_special_forms(lis_global_env * genv) {
     char quote_cstr[] = u8"quote";
     lis_obj * quote_name = to_lstring_from_cstr(quote_cstr, sizeof(quote_cstr));
     lis_obj * sym_quote = _make_symbol(quote_name);
     sym_quote->data.sym->package = genv->current_package;
-    sym_quote->data.sym->fn = _make_raw_function(eval_quote);
+    sym_quote->data.sym->fn = _make_raw_function(lis_sf_quote);
     sym_quote->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
-    sym_quote->data.sym->fn->data.fn->raw_body = eval_quote;
     assert(add_symbol(genv->current_package, sym_quote) != NULL);
+
+    // function
+    char function_cstr[] = u8"function";
+    lis_obj * function_name = to_lstring_from_cstr(function_cstr, sizeof(function_cstr));
+    lis_obj * sym_function = _make_symbol(function_name);
+    sym_function->data.sym->package = genv->current_package;
+    sym_function->data.sym->fn = _make_raw_function(lis_sf_function);
+    sym_function->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
+    assert(add_symbol(genv->current_package, sym_function) != NULL);
+
+    // setq
+    // let
+    // flet
+    // if
+    // progn
 }
 
 void init_streams(lis_global_env * genv) {
