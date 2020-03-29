@@ -9,6 +9,8 @@ src = [
   'read.c',
   'print.c',
   'eval.c',
+  'list.c',
+  'arithmetic.c',
   'special_form.c',
   'lis.c',
 ]

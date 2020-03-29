@@ -25,7 +25,12 @@ void init_special_forms(lis_global_env * genv) {
     sym_function->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
     assert(add_symbol(genv->current_package, sym_function) != NULL);
 
-    // setq
+    lis_obj * sym_setq = _make_symbol(LSTR(U"setq"));
+    sym_setq->data.sym->package = genv->current_package;
+    sym_setq->data.sym->fn = _make_raw_function(lis_sf_setq);
+    sym_setq->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
+    assert(add_symbol(genv->current_package, sym_setq) != NULL);
+
     // let
     // flet
     // if
