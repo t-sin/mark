@@ -7,17 +7,21 @@
 #include "environment.h"
 #include "eval.h"
 
-lis_obj * apply(lis_obj * obj, lis_obj * args) {
-    return NULL;
-}
-
-lis_obj * eval_quote(lis_obj * genv, lis_obj * args) {
+lis_obj * eval_quote(lis_obj * obj, lis_obj * args) {
     return args;
 }
 
+lis_obj * apply(lis_obj * fn, lis_obj * args) {
+    // do check lambda list
+    // do apply
+    return NULL;
+}
+
+lis_obj * eval_args(lis_obj * genv, lis_obj * args) {
+    return args;
+}
 
 lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
-    // TODO: apply
     lis_obj * name = cons->data.cons->car;
     lis_obj * cdr = cons->data.cons->cdr;
 
@@ -42,8 +46,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
 
         switch (fn->data.fn->type) {
         case LIS_FUNC_NORMAL:
-            // do check lambda list
-            // do applly
+            return apply(fn, eval_args(genv, args));
             break;
         case LIS_FUNC_SPECIAL_FORM:
             return fn->data.fn->raw_body(genv, args);
