@@ -45,6 +45,42 @@ void init_functions(lis_global_env * genv) {
     sym_list_length->data.sym->fn = _make_raw_function(list_length);
     sym_list_length->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
     assert(add_symbol(genv->current_package, sym_list_length) != NULL);
+
+    lis_obj * sym_list_nth = _make_symbol(LSTR(U"nth"));
+    sym_list_nth->data.sym->package = genv->current_package;
+    sym_list_nth->data.sym->fn = _make_raw_function(list_nth);
+    sym_list_nth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_nth) != NULL);
+
+    lis_obj * sym_list_first = _make_symbol(LSTR(U"first"));
+    sym_list_first->data.sym->package = genv->current_package;
+    sym_list_first->data.sym->fn = _make_raw_function(list_first);
+    sym_list_first->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_first) != NULL);
+
+    lis_obj * sym_list_second = _make_symbol(LSTR(U"second"));
+    sym_list_second->data.sym->package = genv->current_package;
+    sym_list_second->data.sym->fn = _make_raw_function(list_second);
+    sym_list_second->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_second) != NULL);
+
+    lis_obj * sym_list_third = _make_symbol(LSTR(U"third"));
+    sym_list_third->data.sym->package = genv->current_package;
+    sym_list_third->data.sym->fn = _make_raw_function(list_third);
+    sym_list_third->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_third) != NULL);
+
+    lis_obj * sym_list_fourth = _make_symbol(LSTR(U"fourth"));
+    sym_list_fourth->data.sym->package = genv->current_package;
+    sym_list_fourth->data.sym->fn = _make_raw_function(list_fourth);
+    sym_list_fourth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_fourth) != NULL);
+
+    lis_obj * sym_list_fifth = _make_symbol(LSTR(U"fifth"));
+    sym_list_fifth->data.sym->package = genv->current_package;
+    sym_list_fifth->data.sym->fn = _make_raw_function(list_fifth);
+    sym_list_fifth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_fifth) != NULL);
 }
 
 void init_streams(lis_global_env * genv) {
