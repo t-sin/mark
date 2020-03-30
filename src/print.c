@@ -14,23 +14,23 @@ void print_string(lis_stream * stream, lis_obj * str) {
     }
 }
 
-void print_cons(lis_stream * stream, lis_obj * genv, lis_obj * car, lis_obj * cdr) {
-    print(stream, genv, car);
+void print_cons(lis_obj * genv, lis_obj * car, lis_obj * cdr, lis_stream * stream) {
+    print(genv, car, stream);
     if (LIS_TAG3(cdr) == LIS_TAG3_BUILTIN && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS) {
         stream_write_char(stream, ' ');
-        print_cons(stream, genv, cdr->data.cons->car, cdr->data.cons->cdr);
+        print_cons(genv, cdr->data.cons->car, cdr->data.cons->cdr, stream);
     } else if (cdr == genv->data.env->env.global->symbol_nil) {
         ;
     } else {
         stream_write_char(stream, ' ');
         stream_write_char(stream, '.');
         stream_write_char(stream, ' ');
-        print(stream, genv, cdr);
+        print(genv, cdr, stream);
     }
 }
 
 #define BUF_SIZE 256
-void print(lis_stream * stream, lis_obj * genv, lis_obj * obj) {
+void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     assert(LIS_TAG3(genv) == LIS_TAG3_BUILTIN);
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
     assert(genv->data.env->type == LIS_ENV_GLOBAL);
@@ -60,7 +60,7 @@ void print(lis_stream * stream, lis_obj * genv, lis_obj * obj) {
             stream_write_char(stream, '#');
             stream_write_char(stream, '(');
             for (size_t i=0; i < obj->data.array->size; i++) {
-                print(stream, genv, &obj->data.array->body[i]);
+                print(genv, &obj->data.array->body[i], stream);
                 if (i+1 < obj->data.array->size) {
                     stream_write_char(stream, ' ');
                 }
@@ -81,7 +81,7 @@ void print(lis_stream * stream, lis_obj * genv, lis_obj * obj) {
 
         case LIS_TAG_TYPE_CONS:
             stream_write_char(stream, '(');
-            print_cons(stream, genv, obj->data.cons->car, obj->data.cons->cdr);
+            print_cons(genv, obj->data.cons->car, obj->data.cons->cdr, stream);
             stream_write_char(stream, ')');
             break;
 

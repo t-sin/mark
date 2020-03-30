@@ -87,7 +87,7 @@ void repl(lis_obj * genv) {
         }
 
         obj = eval(genv, obj);
-        print(stream_stdout, genv, obj);
+        print(genv, obj, stream_stdout);
         stream_write_char(stream_stdout, '\n');
         stream_flush(stream_stdout);
 

@@ -6,7 +6,7 @@
 lis_obj * int_add(lis_obj * genv, lis_obj * a, lis_obj * b) {
     if (LIS_TAG3(a) != LIS_TAG3_INT) {
         lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
-        print(stream, genv, b);
+        print(genv, b, stream);
         stream_write_string(stream, LSTR(U" is not an int."));
         stream_flush(stream);
         return NULL;
@@ -14,7 +14,7 @@ lis_obj * int_add(lis_obj * genv, lis_obj * a, lis_obj * b) {
 
     if (LIS_TAG3(b) != LIS_TAG3_INT) {
         lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
-        print(stream, genv, b);
+        print(genv, b, stream);
         stream_write_string(stream, LSTR(U" is not an int."));
         stream_flush(stream);
         return NULL;

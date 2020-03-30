@@ -4,6 +4,6 @@
 #include "obj.h"
 #include "environment.h"
 
-void print(lis_stream * stream, lis_obj * genv, lis_obj * obj);
+void print(lis_obj * genv, lis_obj * obj, lis_stream * stream);
 
 #endif
