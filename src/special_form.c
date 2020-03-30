@@ -3,6 +3,7 @@
 #include "obj.h"
 #include "lstring.h"
 #include "stream.h"
+#include "eval.h"
 #include "print.h"
 #include "list.h"
 #include "special_form.h"
@@ -40,8 +41,8 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * sym = args->data.cons->car;                 // TODO: (first args)
-    lis_obj * val = args->data.cons->cdr->data.cons->car;  // TODO: (second args)
+    lis_obj * sym = _list_nth(genv, _make_int(0), args);
+    lis_obj * val = eval(genv, _list_nth(genv, _make_int(1), args));
     sym->data.sym->value = val;
     return val;
 }
