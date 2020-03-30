@@ -52,6 +52,24 @@ void init_functions(lis_global_env * genv) {
     sym_list_nth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
     assert(add_symbol(genv->current_package, sym_list_nth) != NULL);
 
+    lis_obj * sym_list_cons = _make_symbol(LSTR(U"cons"));
+    sym_list_cons->data.sym->package = genv->current_package;
+    sym_list_cons->data.sym->fn = _make_raw_function(list_cons);
+    sym_list_cons->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_cons) != NULL);
+
+    lis_obj * sym_list_car = _make_symbol(LSTR(U"car"));
+    sym_list_car->data.sym->package = genv->current_package;
+    sym_list_car->data.sym->fn = _make_raw_function(list_car);
+    sym_list_car->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_car) != NULL);
+
+    lis_obj * sym_list_cdr = _make_symbol(LSTR(U"cdr"));
+    sym_list_cdr->data.sym->package = genv->current_package;
+    sym_list_cdr->data.sym->fn = _make_raw_function(list_cdr);
+    sym_list_cdr->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_cdr) != NULL);
+
     lis_obj * sym_list_first = _make_symbol(LSTR(U"first"));
     sym_list_first->data.sym->package = genv->current_package;
     sym_list_first->data.sym->fn = _make_raw_function(list_first);

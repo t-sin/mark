@@ -68,6 +68,66 @@ lis_obj * list_nth(lis_obj * genv, lis_obj * args) {
     }
 }
 
+lis_obj * _list_cons(lis_obj * genv, lis_obj * a, lis_obj * b) {
+    lis_obj * cons = _make_cons();
+    LIS_CONS(cons)->car = a;
+    LIS_CONS(cons)->cdr = b;
+    return cons;
+}
+
+lis_obj * list_cons(lis_obj * genv, lis_obj * args) {
+    if (_list_length(genv, args)->data.num == 2) {
+        lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
+        lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+        return _list_cons(genv, arg1, arg2);
+    } else {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `cons`."));
+        return NULL;
+    }
+}
+
+lis_obj * _list_car(lis_obj * genv, lis_obj * cons) {
+    if (LIS_TAG3(cons) != LIS_TAG3_BUILTIN ||
+        LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        print(genv, cons, buffer);
+        stream_write_string(buffer, LSTR(U" is not a cons."));
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return NULL;
+    }
+    return LIS_CONS(cons)->car;
+}
+
+lis_obj * list_car(lis_obj * genv, lis_obj * args) {
+    if (_list_length(genv, args)->data.num == 1) {
+        return _list_car(genv, _list_nth(genv, _make_int(0), args));
+    } else {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `car`."));
+        return NULL;
+    }
+}
+
+lis_obj * _list_cdr(lis_obj * genv, lis_obj * cons) {
+    if (LIS_TAG3(cons) != LIS_TAG3_BUILTIN ||
+        LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        print(genv, cons, buffer);
+        stream_write_string(buffer, LSTR(U" is not a cons."));
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return NULL;
+    }
+    return LIS_CONS(cons)->cdr;
+}
+
+lis_obj * list_cdr(lis_obj * genv, lis_obj * args) {
+    if (_list_length(genv, args)->data.num == 1) {
+        return _list_cdr(genv, _list_nth(genv, _make_int(0), args));
+    } else {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `cdr`."));
+        return NULL;
+    }
+}
+
 lis_obj * list_first(lis_obj * genv, lis_obj * args) {
     if (_list_length(genv, args)->data.num == 1) {
         return _list_nth(genv, _make_int(0), LIS_CONS(args)->car);
