@@ -9,7 +9,7 @@ lis_obj * _list_length(lis_obj * genv, lis_obj * list) {
         return _make_int(0);
     } else if (LIS_TAG3(list) != LIS_TAG3_BUILTIN ||
                LIS_TAG_TYPE(list) != LIS_TAG_TYPE_CONS) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, list, buffer);
         stream_write_string(buffer, LSTR(U" is not a list."));
         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
