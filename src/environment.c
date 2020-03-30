@@ -42,7 +42,7 @@ void init_functions(lis_global_env * genv) {
     // lists
     lis_obj * sym_list_length = _make_symbol(LSTR(U"length"));
     sym_list_length->data.sym->package = genv->current_package;
-    sym_list_length->data.sym-> fn = _make_raw_function(list_length);
+    sym_list_length->data.sym->fn = _make_raw_function(list_length);
     sym_list_length->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
     assert(add_symbol(genv->current_package, sym_list_length) != NULL);
 }
