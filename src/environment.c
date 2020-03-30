@@ -11,6 +11,7 @@
 #include "package.h"
 #include "eval.h"
 #include "special_form.h"
+#include "list.h"
 
 void init_special_forms(lis_global_env * genv) {
     lis_obj * sym_quote = _make_symbol(LSTR(U"quote"));
@@ -35,6 +36,15 @@ void init_special_forms(lis_global_env * genv) {
     // flet
     // if
     // progn
+}
+
+void init_functions(lis_global_env * genv) {
+    // lists
+    lis_obj * sym_list_length = _make_symbol(LSTR(U"length"));
+    sym_list_length->data.sym->package = genv->current_package;
+    sym_list_length->data.sym-> fn = _make_raw_function(list_length);
+    sym_list_length->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_list_length) != NULL);
 }
 
 void init_streams(lis_global_env * genv) {
@@ -87,6 +97,10 @@ lis_obj * init_global_env() {
     lis_obj * pkg_lis = _make_package(pkgname);
     genv->current_package = pkg_lis;
 
+    lis_obj * kwd_pkgname = LSTR(U"keyword");
+    lis_obj * pkg_keyword = _make_package(kwd_pkgname);
+    genv->keyword_package = pkg_keyword;
+
     lis_obj * nilname = LSTR(U"nil");
     lis_obj * sym_nil = _make_symbol(nilname);
     sym_nil->data.sym->constant_p = true;
@@ -105,6 +119,7 @@ lis_obj * init_global_env() {
 
     init_streams(genv);
     init_special_forms(genv);
+    init_functions(genv);
 
     lis_obj * env = _make_env(LIS_ENV_GLOBAL);
     env->data.env->env.global = genv;
