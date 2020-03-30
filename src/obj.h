@@ -36,6 +36,8 @@
  * 0111101g => closure
  * 1000101g => pakcage
  * 1001101g => stream
+ * 1010101g => error
+
  *
  * other types
  * 1000110g => other classes?
@@ -58,6 +60,7 @@
 #define LIS_TAG_TYPE_CLS  0x07
 #define LIS_TAG_TYPE_PKG  0x08
 #define LIS_TAG_TYPE_STRM 0x09
+#define LIS_TAG_TYPE_ERR  0x10
 
 typedef uint8_t lis_byte;
 typedef int32_t lis_int;
@@ -73,6 +76,7 @@ struct lis_env;
 struct lis_function;
 struct lis_closure;
 struct lis_package;
+struct lis_error;
 
 typedef struct {
  lis_byte tags;
@@ -90,6 +94,7 @@ typedef struct {
   struct lis_closure * cls;
   struct lis_package * pkg;
   struct lis_stream * stream;
+  struct lis_error * err;
  } data;
 } lis_obj;
 
@@ -163,8 +168,12 @@ typedef struct lis_global_env {
     lis_package_table * package_table;
     lis_obj * current_package;
     lis_obj * keyword_package;
+
+    lis_obj * error;
+
     lis_obj * symbol_t;
     lis_obj * symbol_nil;
+
     lis_obj * stream_stdin;
     lis_obj * stream_stdout;
     lis_obj * stream_stderr;
@@ -231,6 +240,11 @@ typedef struct lis_stream {
 
 #define LIS_STREAM(obj) ((obj->data.stream))
 
+typedef struct lis_error {
+    lis_obj * message;
+} lis_error;
+
+#define LIS_ERR(obj) ((obj)->data.err)
 
 lis_obj * _make_int(lis_int n);
 lis_obj * _make_char(lis_int ch);
@@ -242,5 +256,6 @@ lis_obj * _make_package(lis_obj * name);
 lis_obj * _make_env();
 lis_obj * _make_raw_function();
 lis_obj * _make_lis_stream(lis_stream * s);
+lis_obj * _make_error(lis_obj * msg);
 
 #endif

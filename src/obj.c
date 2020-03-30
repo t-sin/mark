@@ -92,3 +92,11 @@ lis_obj * _make_lis_stream(lis_stream * s) {
     stream->data.stream = s;
     return stream;
 }
+
+lis_obj * _make_error(lis_obj * msg) {
+    lis_obj * err = (lis_obj *)malloc(sizeof(lis_obj));
+    err->tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_ERR << 4;
+    err->data.err = (lis_error *)malloc(sizeof(lis_error));
+    err->data.err->message = msg;
+    return err;
+}

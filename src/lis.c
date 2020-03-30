@@ -71,6 +71,7 @@ void repl(lis_obj * genv) {
     lis_obj * prompt = LSTR(U"? ");
     lis_stream * stream_stdin = genv->data.env->env.global->stream_stdin->data.stream;
     lis_stream * stream_stdout = genv->data.env->env.global->stream_stdout->data.stream;
+    lis_stream * stream_stderr = genv->data.env->env.global->stream_stderr->data.stream;
 
     while (true) {
         stream_write_string(stream_stdout, genv->data.env->env.global->current_package->data.pkg->name);
@@ -87,6 +88,15 @@ void repl(lis_obj * genv) {
         }
 
         obj = eval(genv, obj);
+
+        if (LIS_GENV(genv)->error != NULL) {
+            stream_write_string(stream_stderr, LSTR(U"ERROR: "));
+            stream_write_string(stream_stderr, LIS_ERR(LIS_GENV(genv)->error)->message);
+            stream_write_char(stream_stderr, '\n');
+            stream_flush(stream_stdout);
+            LIS_GENV(genv)->error = NULL;
+        }
+
         print(genv, obj, stream_stdout);
         stream_write_char(stream_stdout, '\n');
         stream_flush(stream_stdout);
