@@ -21,6 +21,7 @@ bool stream_unread_char(lis_stream * stream, lis_char ch);
 bool stream_write_char(lis_stream * stream, lis_char ch);
 
 bool stream_write_string(lis_stream * stream, lis_obj * str);
+lis_obj * stream_output_to_string(lis_stream * stream);
 
 void stream_flush(lis_stream * stream);
 

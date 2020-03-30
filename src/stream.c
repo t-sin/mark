@@ -231,6 +231,34 @@ bool stream_write_string(lis_stream * stream, lis_obj * str) {
     return true;
 }
 
+#define BUFFER_SIZE 256
+
+lis_obj * stream_output_to_string(lis_stream * stream) {
+    size_t size = BUFFER_SIZE;
+    size_t idx = 0;
+    lis_char * buf = (lis_char *)malloc(sizeof(lis_char) * size);
+
+    lis_char ch;
+    while (stream_read_char(stream, &ch)) {
+        if (idx >= size) {
+            size_t newsize = size * 2;
+            lis_char * newbuf = (lis_char *)malloc(sizeof(lis_char) * newsize);
+            for (int i=0; i<size; i++) {
+                newbuf[i] = buf[i];
+            }
+            buf = newbuf;
+            size = newsize;
+        }
+        buf[idx++] = ch;
+    }
+
+    lis_obj * str = _make_string();
+    LIS_STR(str)->size = idx - 1;
+    LIS_STR(str)->body = buf;
+
+    return str;
+}
+
 void stream_flush(lis_stream * stream) {
     //stream_fill_buffer(stream);
     stream_flush_buffer(stream);
