@@ -7,10 +7,15 @@
 #include "environment.h"
 #include "eval.h"
 
-lis_obj * apply(lis_obj * fn, lis_obj * args) {
-    // do check lambda list
-    // do apply
-    return NULL;
+lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
+    if (LIS_FN(fn)->raw_body != NULL) {
+        return fn->data.fn->raw_body(genv, args);
+    } else {
+        // do check lambda list
+        // do apply
+        printf("aaaaaaaaaaaaaaaaaa");
+        return NULL;
+    }
 }
 
 lis_obj * eval_args(lis_obj * genv, lis_obj * args) {
@@ -38,9 +43,12 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
         assert(LIS_TAG3(fn) == LIS_TAG3_BUILTIN);
         assert(LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN);
 
+        lis_obj * args;
         switch (fn->data.fn->type) {
         case LIS_FUNC_NORMAL:
-            return apply(fn, eval_args(genv, cdr));
+            args = eval_args(genv, cdr);
+            if (args == NULL) return NULL;
+            return apply(genv, fn, args);
             break;
         case LIS_FUNC_SPECIAL_FORM:
             return fn->data.fn->raw_body(genv, cdr);
