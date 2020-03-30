@@ -93,7 +93,7 @@ void repl(lis_obj * genv) {
             stream_write_string(stream_stderr, LSTR(U"ERROR: "));
             stream_write_string(stream_stderr, LIS_ERR(LIS_GENV(genv)->error)->message);
             stream_write_char(stream_stderr, '\n');
-            stream_flush(stream_stdout);
+            stream_flush(stream_stderr);
             LIS_GENV(genv)->error = NULL;
         }
 
