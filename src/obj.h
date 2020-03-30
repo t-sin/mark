@@ -115,6 +115,8 @@ typedef struct lis_string {
  lis_int size;
 } lis_string;
 
+#define LIS_STR(obj) ((obj)->data.str)
+
 typedef struct lis_tstamp {
  lis_int year;
  lis_byte month;
@@ -138,6 +140,8 @@ typedef struct lis_cons {
  lis_obj * car;
  lis_obj * cdr;
 } lis_cons;
+
+#define LIS_CONS(obj) ((obj)->data.cons)
 
 typedef struct lis_package {
  lis_obj * name;
@@ -182,6 +186,11 @@ typedef struct lis_env {
  } env;
 } lis_env;
 
+#define LIS_ENV(obj) ((obj)->data.env)
+#define LIS_GENV(obj) ((obj)->data.env->env.global)
+#define LIS_DENV(obj) ((obj)->data.env->env.dynamic)
+#define LIS_LENV(obj) ((obj)->data.env->env.lexical)
+
 typedef enum lis_function_type {
  LIS_FUNC_NORMAL, LIS_FUNC_SPECIAL_FORM, LIS_FUNC_MACRO
 } lis_function_type;
@@ -192,6 +201,8 @@ typedef struct lis_function {
  lis_obj * body;
  lis_obj * (* raw_body)(lis_obj *, lis_obj *);
 } lis_function;
+
+#define LIS_FN(obj) ((obj)->data.fn)
 
 typedef struct lis_closure {
  lis_function fn;
@@ -217,6 +228,8 @@ typedef struct lis_stream {
     lis_stream_direction_type direction;
     lis_stream_element_type element_type;
 } lis_stream;
+
+#define LIS_STREAM(obj) ((obj->data.stream))
 
 
 lis_obj * _make_int(lis_int n);
