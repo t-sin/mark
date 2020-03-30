@@ -15,7 +15,7 @@ lis_obj * _list_length(lis_obj * genv, lis_obj * list) {
         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
         return NULL;
     } else {
-        return int_add(genv, _list_length(genv, LIS_CONS(list)->cdr), _make_int(1));
+        return _int_add(genv, _list_length(genv, LIS_CONS(list)->cdr), _make_int(1));
     }
 }
 
