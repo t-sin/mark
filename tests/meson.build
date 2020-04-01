@@ -13,6 +13,7 @@ test('fundamental streams', test_byte_stream)
 test_stream = executable('test_stream', [
   'stream.c',
   '../src/stream.c',
+  '../src/obj.c',
   '../src/byte_stream.c',
   '../src/utf8.c',
 ])
