@@ -12,6 +12,7 @@
 #include "eval.h"
 #include "special_form.h"
 #include "list.h"
+#include "arithmetic.h"
 
 void init_special_forms(lis_global_env * genv) {
     lis_obj * sym_quote = _make_symbol(LSTR(U"quote"));
@@ -99,6 +100,55 @@ void init_functions(lis_global_env * genv) {
     sym_list_fifth->data.sym->fn = _make_raw_function(list_fifth);
     sym_list_fifth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
     assert(add_symbol(genv->current_package, sym_list_fifth) != NULL);
+
+    // integers
+    lis_obj * sym_int_zerop = _make_symbol(LSTR(U"zerop"));
+    sym_int_zerop->data.sym->package = genv->current_package;
+    sym_int_zerop->data.sym->fn = _make_raw_function(int_zerop);
+    sym_int_zerop->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_zerop) != NULL);
+
+    lis_obj * sym_int_plusp = _make_symbol(LSTR(U"plusp"));
+    sym_int_plusp->data.sym->package = genv->current_package;
+    sym_int_plusp->data.sym->fn = _make_raw_function(int_plusp);
+    sym_int_plusp->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_plusp) != NULL);
+
+    lis_obj * sym_int_minusp = _make_symbol(LSTR(U"minusp"));
+    sym_int_minusp->data.sym->package = genv->current_package;
+    sym_int_minusp->data.sym->fn = _make_raw_function(int_minusp);
+    sym_int_minusp->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_minusp) != NULL);
+
+    lis_obj * sym_int_equal = _make_symbol(LSTR(U"="));
+    sym_int_equal->data.sym->package = genv->current_package;
+    sym_int_equal->data.sym->fn = _make_raw_function(int_equal);
+    sym_int_equal->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_equal) != NULL);
+
+    lis_obj * sym_int_add = _make_symbol(LSTR(U"+"));
+    sym_int_add->data.sym->package = genv->current_package;
+    sym_int_add->data.sym->fn = _make_raw_function(int_add);
+    sym_int_add->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_add) != NULL);
+
+    lis_obj * sym_int_sub = _make_symbol(LSTR(U"-"));
+    sym_int_sub->data.sym->package = genv->current_package;
+    sym_int_sub->data.sym->fn = _make_raw_function(int_sub);
+    sym_int_sub->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_sub) != NULL);
+
+    lis_obj * sym_int_mul = _make_symbol(LSTR(U"*"));
+    sym_int_mul->data.sym->package = genv->current_package;
+    sym_int_mul->data.sym->fn = _make_raw_function(int_mul);
+    sym_int_mul->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_mul) != NULL);
+
+    lis_obj * sym_int_div = _make_symbol(LSTR(U"/"));
+    sym_int_div->data.sym->package = genv->current_package;
+    sym_int_div->data.sym->fn = _make_raw_function(int_div);
+    sym_int_div->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
+    assert(add_symbol(genv->current_package, sym_int_div) != NULL);
 }
 
 void init_streams(lis_global_env * genv) {
