@@ -33,116 +33,36 @@ void init_special_forms(lis_global_env * genv) {
     // progn
 }
 
+#define define_builtin_function(opname, symname, cfnname) \
+  lis_obj * symname = _make_symbol(LSTR(opname)); \
+  symname->data.sym->package = genv->current_package; \
+  symname->data.sym->fn = _make_raw_function(cfnname); \
+  symname->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL; \
+  assert(add_symbol(genv->current_package, symname) != NULL)
+
+
 void init_functions(lis_global_env * genv) {
     // lists
-    lis_obj * sym_list_length = _make_symbol(LSTR(U"length"));
-    sym_list_length->data.sym->package = genv->current_package;
-    sym_list_length->data.sym->fn = _make_raw_function(list_length);
-    sym_list_length->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_length) != NULL);
-
-    lis_obj * sym_list_nth = _make_symbol(LSTR(U"nth"));
-    sym_list_nth->data.sym->package = genv->current_package;
-    sym_list_nth->data.sym->fn = _make_raw_function(list_nth);
-    sym_list_nth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_nth) != NULL);
-
-    lis_obj * sym_list_cons = _make_symbol(LSTR(U"cons"));
-    sym_list_cons->data.sym->package = genv->current_package;
-    sym_list_cons->data.sym->fn = _make_raw_function(list_cons);
-    sym_list_cons->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_cons) != NULL);
-
-    lis_obj * sym_list_car = _make_symbol(LSTR(U"car"));
-    sym_list_car->data.sym->package = genv->current_package;
-    sym_list_car->data.sym->fn = _make_raw_function(list_car);
-    sym_list_car->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_car) != NULL);
-
-    lis_obj * sym_list_cdr = _make_symbol(LSTR(U"cdr"));
-    sym_list_cdr->data.sym->package = genv->current_package;
-    sym_list_cdr->data.sym->fn = _make_raw_function(list_cdr);
-    sym_list_cdr->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_cdr) != NULL);
-
-    lis_obj * sym_list_first = _make_symbol(LSTR(U"first"));
-    sym_list_first->data.sym->package = genv->current_package;
-    sym_list_first->data.sym->fn = _make_raw_function(list_first);
-    sym_list_first->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_first) != NULL);
-
-    lis_obj * sym_list_second = _make_symbol(LSTR(U"second"));
-    sym_list_second->data.sym->package = genv->current_package;
-    sym_list_second->data.sym->fn = _make_raw_function(list_second);
-    sym_list_second->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_second) != NULL);
-
-    lis_obj * sym_list_third = _make_symbol(LSTR(U"third"));
-    sym_list_third->data.sym->package = genv->current_package;
-    sym_list_third->data.sym->fn = _make_raw_function(list_third);
-    sym_list_third->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_third) != NULL);
-
-    lis_obj * sym_list_fourth = _make_symbol(LSTR(U"fourth"));
-    sym_list_fourth->data.sym->package = genv->current_package;
-    sym_list_fourth->data.sym->fn = _make_raw_function(list_fourth);
-    sym_list_fourth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_fourth) != NULL);
-
-    lis_obj * sym_list_fifth = _make_symbol(LSTR(U"fifth"));
-    sym_list_fifth->data.sym->package = genv->current_package;
-    sym_list_fifth->data.sym->fn = _make_raw_function(list_fifth);
-    sym_list_fifth->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_list_fifth) != NULL);
+    define_builtin_function(U"length", sym_list_length, list_length);
+    define_builtin_function(U"nth", sym_list_nth, list_nth);
+    define_builtin_function(U"cons", sym_list_cons, list_cons);
+    define_builtin_function(U"car", sym_list_car, list_car);
+    define_builtin_function(U"cdr", sym_list_cdr, list_cdr);
+    define_builtin_function(U"first", sym_list_first, list_first);
+    define_builtin_function(U"second", sym_list_second, list_second);
+    define_builtin_function(U"third", sym_list_third, list_third);
+    define_builtin_function(U"fourth", sym_list_fourth, list_fourth);
+    define_builtin_function(U"fifth", sym_list_fifth, list_fifth);
 
     // integers
-    lis_obj * sym_int_zerop = _make_symbol(LSTR(U"zerop"));
-    sym_int_zerop->data.sym->package = genv->current_package;
-    sym_int_zerop->data.sym->fn = _make_raw_function(int_zerop);
-    sym_int_zerop->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_zerop) != NULL);
-
-    lis_obj * sym_int_plusp = _make_symbol(LSTR(U"plusp"));
-    sym_int_plusp->data.sym->package = genv->current_package;
-    sym_int_plusp->data.sym->fn = _make_raw_function(int_plusp);
-    sym_int_plusp->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_plusp) != NULL);
-
-    lis_obj * sym_int_minusp = _make_symbol(LSTR(U"minusp"));
-    sym_int_minusp->data.sym->package = genv->current_package;
-    sym_int_minusp->data.sym->fn = _make_raw_function(int_minusp);
-    sym_int_minusp->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_minusp) != NULL);
-
-    lis_obj * sym_int_equal = _make_symbol(LSTR(U"="));
-    sym_int_equal->data.sym->package = genv->current_package;
-    sym_int_equal->data.sym->fn = _make_raw_function(int_equal);
-    sym_int_equal->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_equal) != NULL);
-
-    lis_obj * sym_int_add = _make_symbol(LSTR(U"+"));
-    sym_int_add->data.sym->package = genv->current_package;
-    sym_int_add->data.sym->fn = _make_raw_function(int_add);
-    sym_int_add->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_add) != NULL);
-
-    lis_obj * sym_int_sub = _make_symbol(LSTR(U"-"));
-    sym_int_sub->data.sym->package = genv->current_package;
-    sym_int_sub->data.sym->fn = _make_raw_function(int_sub);
-    sym_int_sub->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_sub) != NULL);
-
-    lis_obj * sym_int_mul = _make_symbol(LSTR(U"*"));
-    sym_int_mul->data.sym->package = genv->current_package;
-    sym_int_mul->data.sym->fn = _make_raw_function(int_mul);
-    sym_int_mul->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_mul) != NULL);
-
-    lis_obj * sym_int_div = _make_symbol(LSTR(U"/"));
-    sym_int_div->data.sym->package = genv->current_package;
-    sym_int_div->data.sym->fn = _make_raw_function(int_div);
-    sym_int_div->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL;
-    assert(add_symbol(genv->current_package, sym_int_div) != NULL);
+    define_builtin_function(U"zerop", sym_int_zerop, int_zerop);
+    define_builtin_function(U"plusp", sym_int_plusp, int_plusp);
+    define_builtin_function(U"minusp", sym_int_minusp, int_minusp);
+    define_builtin_function(U"=", sym_int_equal, int_equal);
+    define_builtin_function(U"+", sym_int_add, int_add);
+    define_builtin_function(U"-", sym_int_sub, int_sub);
+    define_builtin_function(U"*", sym_int_mul, int_mul);
+    define_builtin_function(U"/", sym_int_div, int_div);
 }
 
 void init_streams(lis_global_env * genv) {
