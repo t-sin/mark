@@ -14,24 +14,18 @@
 #include "list.h"
 #include "arithmetic.h"
 
+#define define_special_form(opname, symname, cfnname) \
+  lis_obj * symname = _make_symbol(LSTR(opname)); \
+  symname->data.sym->package = genv->current_package; \
+  symname->data.sym->fn = _make_raw_function(cfnname); \
+  symname->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM; \
+  assert(add_symbol(genv->current_package, symname) != NULL)
+
+
 void init_special_forms(lis_global_env * genv) {
-    lis_obj * sym_quote = _make_symbol(LSTR(U"quote"));
-    sym_quote->data.sym->package = genv->current_package;
-    sym_quote->data.sym->fn = _make_raw_function(lis_sf_quote);
-    sym_quote->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
-    assert(add_symbol(genv->current_package, sym_quote) != NULL);
-
-    lis_obj * sym_function = _make_symbol(LSTR(U"function"));
-    sym_function->data.sym->package = genv->current_package;
-    sym_function->data.sym->fn = _make_raw_function(lis_sf_function);
-    sym_function->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
-    assert(add_symbol(genv->current_package, sym_function) != NULL);
-
-    lis_obj * sym_setq = _make_symbol(LSTR(U"setq"));
-    sym_setq->data.sym->package = genv->current_package;
-    sym_setq->data.sym->fn = _make_raw_function(lis_sf_setq);
-    sym_setq->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM;
-    assert(add_symbol(genv->current_package, sym_setq) != NULL);
+    define_special_form(U"quote", sym_quote, lis_sf_quote);
+    define_special_form(U"function", sym_function, lis_sf_function);
+    define_special_form(U"setq", sym_setq, lis_sf_setq);
 
     // let
     // flet
