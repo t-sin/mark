@@ -4,8 +4,10 @@
 
 #include "obj.h"
 #include "lstring.h"
+#include "stream.h"
 #include "environment.h"
 #include "eval.h"
+#include "print.h"
 
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     if (LIS_FN(fn)->raw_body != NULL) {
