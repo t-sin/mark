@@ -58,3 +58,23 @@ lis_obj * lis_sf_progn(lis_obj * genv, lis_obj * args) {
 
     return ret;
 }
+
+lis_obj * lis_sf_if(lis_obj * genv, lis_obj * args) {
+    lis_obj * len = _list_length(genv, args);
+    if (len == NULL ||
+        LIS_TAG3(len) != LIS_TAG3_INT ||
+        len->data.num != 3) {
+        lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
+        stream_write_string(stream, LSTR(U"wrong number of args to `if`"));
+        print(genv, args, stream);
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(stream));
+        return NULL;
+    }
+
+    lis_obj * condition = eval(genv, _list_nth(genv, _make_int(0), args));
+    if (condition != LIS_GENV(genv)->symbol_nil) {
+        return eval(genv, _list_nth(genv, _make_int(1), args));
+    } else {
+        return eval(genv, _list_nth(genv, _make_int(2), args));
+    }
+}

@@ -27,10 +27,10 @@ void init_special_forms(lis_global_env * genv) {
   define_special_form(U"function", sym_function, lis_sf_function);
   define_special_form(U"setq", sym_setq, lis_sf_setq);
   define_special_form(U"progn", sym_progn, lis_sf_progn);
+  define_special_form(U"if", sym_if, lis_sf_if);
 
   // let
   // flet
-  // if
 }
 
 #define define_builtin_function(opname, symname, cfnname) \
