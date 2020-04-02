@@ -3,6 +3,8 @@
 
 #include "obj.h"
 
+bool _list_atom(lis_obj * genv, lis_obj * obj);
+lis_obj * list_atom(lis_obj * genv, lis_obj * args);
 bool _list_consp(lis_obj * genv, lis_obj * cons);
 lis_obj * list_consp(lis_obj * genv, lis_obj * args);
 bool * _list_listp(lis_obj * genv, lis_obj * cons);
