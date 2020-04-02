@@ -7,6 +7,8 @@
 #include "package.h"
 #include "environment.h"
 
+#include "read.h"
+
 bool is_cons_open_delimiter(lis_char ch) {
     return ch == '(';
 }
