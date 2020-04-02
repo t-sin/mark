@@ -43,6 +43,8 @@ void init_special_forms(lis_global_env * genv) {
 
 void init_functions(lis_global_env * genv) {
   // lists
+  define_builtin_function(U"consp", sym_list_consp, list_consp);
+  define_builtin_function(U"listp", sym_list_listp, list_listp);
   define_builtin_function(U"length", sym_list_length, list_length);
   define_builtin_function(U"nth", sym_list_nth, list_nth);
   define_builtin_function(U"cons", sym_list_cons, list_cons);

@@ -4,6 +4,51 @@
 #include "print.h"
 #include "arithmetic.h"
 
+lis_obj * _list_length(lis_obj * genv, lis_obj * list);
+lis_obj * list_length(lis_obj * genv, lis_obj * args);
+
+lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list);
+lis_obj * list_nth(lis_obj * genv, lis_obj * args);
+
+bool _list_consp(lis_obj * genv, lis_obj * cons) {
+    if (LIS_TAG3(cons) != LIS_TAG3_BUILTIN ||
+        LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+lis_obj * list_consp(lis_obj * genv, lis_obj * args) {
+    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    if (_list_consp(genv, arg)) {
+        return LIS_GENV(genv)->symbol_t;
+    } else {
+        return LIS_GENV(genv)->symbol_nil;
+    }
+}
+
+bool * _list_listp(lis_obj * genv, lis_obj * obj) {
+    if (obj == LIS_GENV(genv)->symbol_nil) {
+        return true;
+    }
+
+    if (!_list_consp(genv, obj)) {
+        return false;
+    }
+
+    return _list_listp(genv, LIS_CONS(obj)->cdr);
+}
+
+lis_obj * list_listp(lis_obj * genv, lis_obj * args) {
+    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    if(_list_listp(genv, arg)) {
+        return LIS_GENV(genv)->symbol_t;
+    } else {
+        return LIS_GENV(genv)->symbol_nil;
+    }
+}
+
 lis_obj * _list_length(lis_obj * genv, lis_obj * list) {
     if (list == LIS_GENV(genv)->symbol_nil) {
         return _make_int(0);
