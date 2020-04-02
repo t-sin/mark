@@ -46,7 +46,7 @@ lis_obj * list_consp(lis_obj * genv, lis_obj * args) {
     }
 }
 
-bool * _list_listp(lis_obj * genv, lis_obj * obj) {
+bool _list_listp(lis_obj * genv, lis_obj * obj) {
     if (obj == LIS_GENV(genv)->symbol_nil) {
         return true;
     }
