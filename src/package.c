@@ -53,7 +53,7 @@ package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym) 
 
     for (int i=0; i<pkg->num; i++) {
         if (pkg->symbols[i] != NULL &&
-            string_equal(pkg->symbols[i]->data.sym->name->data.str, name->data.str)) {
+            _string_equal(pkg->symbols[i]->data.sym->name->data.str, name->data.str)) {
             *sym = pkg->symbols[i];
             return PKG_INTERNAL;  // TODO: INTERNAL, EXTERNAL or INHERITED
         }

@@ -12,6 +12,6 @@
 
 lis_obj * u2lstring(const char32_t * ustr, size_t ustr_size);
 
-bool string_equal(lis_string * s1, lis_string * s2);
+bool _string_equal(lis_string * s1, lis_string * s2);
 
 #endif

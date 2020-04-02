@@ -23,7 +23,7 @@ lis_obj * u2lstring(const char32_t * ustr, size_t ustr_size) {
     return str;
 }
 
-bool string_equal(lis_string * s1, lis_string * s2) {
+bool _string_equal(lis_string * s1, lis_string * s2) {
     if (s1->size != s2->size) {
         return false;
     }
