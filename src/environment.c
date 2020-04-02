@@ -66,6 +66,7 @@ void init_functions(lis_global_env * genv) {
 
   // strings
   define_builtin_function(U"string=", sym_string_equal, string_equal);
+  define_builtin_function(U"stringp", sym_stringp, stringp);
 }
 
 void init_streams(lis_global_env * genv) {

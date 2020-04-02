@@ -72,3 +72,13 @@ lis_obj * string_equal(lis_obj * genv, lis_obj * args) {
         return LIS_GENV(genv)->symbol_nil;
     }
 }
+
+lis_obj * stringp(lis_obj * genv, lis_obj * args) {
+    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    if (LIS_TAG3(arg) != LIS_TAG3_BUILTIN ||
+        LIS_TAG_TYPE(arg) != LIS_TAG_TYPE_STR) {
+        return LIS_GENV(genv)->symbol_nil;
+    } else {
+        return LIS_GENV(genv)->symbol_t;
+    }
+}
