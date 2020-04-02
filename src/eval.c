@@ -76,16 +76,25 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
         assert(LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN);
 
         lis_obj * args;
+        lis_obj * ret;
         switch (fn->data.fn->type) {
         case LIS_FUNC_NORMAL:
             args = eval_args(genv, cdr);
             if (args == NULL) return NULL;
-            return apply(genv, fn, args);
+            if (LIS_GENV(genv)->error != NULL) return NULL;
+            ret = apply(genv, fn, args);
+            if (LIS_GENV(genv)->error != NULL) return NULL;
+            return ret;
             break;
+
         case LIS_FUNC_SPECIAL_FORM:
-            return fn->data.fn->raw_body(genv, cdr);
+            ret =  fn->data.fn->raw_body(genv, cdr);
+            if (LIS_GENV(genv)->error != NULL) return NULL;
+            return ret;
+
         case LIS_FUNC_MACRO:
             break;
+
         default:
             printf("invalid function\n");
             assert(false);
