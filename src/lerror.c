@@ -1,0 +1,20 @@
+#include "obj.h"
+#include "lstring.h"
+#include "stream.h"
+#include "print.h"
+
+#include "lerror.h"
+
+void not_string_error(lis_obj * genv, lis_obj * obj) {
+    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    print(genv, obj, buffer);
+    stream_write_string(buffer, LSTR(U" is not an string."));
+    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+}
+
+void not_int_error(lis_obj * genv, lis_obj * obj) {
+    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    print(genv, obj, buffer);
+    stream_write_string(buffer, LSTR(U" is not an integer."));
+    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+}
