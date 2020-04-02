@@ -5,6 +5,8 @@
 #include "print.h"
 #include "eval.h"
 
+#include "arithmetic.h"
+
 lis_obj * int_integerp(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"integerp"))) {
         return NULL;
