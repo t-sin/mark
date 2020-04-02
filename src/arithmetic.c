@@ -1,4 +1,5 @@
 #include "obj.h"
+#include "lerror.h"
 #include "lstring.h"
 #include "stream.h"
 #include "list.h"
@@ -22,10 +23,7 @@ lis_obj * int_integerp(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _int_zerop(lis_obj * genv, lis_obj * num) {
     if (LIS_TAG3(num) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, num, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, num);
         return NULL;
     }
 
@@ -46,10 +44,7 @@ lis_obj * int_zerop(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _int_plusp(lis_obj * genv, lis_obj * num) {
     if (LIS_TAG3(num) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, num, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, num);
         return NULL;
     }
 
@@ -94,18 +89,12 @@ lis_obj * int_minusp(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _int_equal(lis_obj * genv, lis_obj * a, lis_obj * b) {
     if (LIS_TAG3(a) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, a, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, a);
         return NULL;
     }
 
     if (LIS_TAG3(b) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, b, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, b);
         return NULL;
     }
 
@@ -128,18 +117,12 @@ lis_obj * int_equal(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _int_add(lis_obj * genv, lis_obj * a, lis_obj * b) {
     if (LIS_TAG3(a) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, a, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, a);
         return NULL;
     }
 
     if (LIS_TAG3(b) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, b, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, b);
         return NULL;
     }
 
@@ -158,18 +141,12 @@ lis_obj * int_add(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _int_sub(lis_obj * genv, lis_obj * a, lis_obj * b) {
     if (LIS_TAG3(a) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, a, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, a);
         return NULL;
     }
 
     if (LIS_TAG3(b) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
-        print(genv, b, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, b);
         return NULL;
     }
 
@@ -188,18 +165,12 @@ lis_obj * int_sub(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _int_mul(lis_obj * genv, lis_obj * a, lis_obj * b) {
     if (LIS_TAG3(a) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, a, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, a);
         return NULL;
     }
 
     if (LIS_TAG3(b) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
-        print(genv, b, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, b);
         return NULL;
     }
 
@@ -218,18 +189,12 @@ lis_obj * int_mul(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _int_div(lis_obj * genv, lis_obj * a, lis_obj * b) {
     if (LIS_TAG3(a) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        print(genv, a, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, a);
         return NULL;
     }
 
     if (LIS_TAG3(b) != LIS_TAG3_INT) {
-        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
-        print(genv, b, buffer);
-        stream_write_string(buffer, LSTR(U" is not an integer."));
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        not_int_error(genv, b);
         return NULL;
     }
 

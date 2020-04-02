@@ -2,6 +2,7 @@ src = [
   'utf8.c',
   'byte_stream.c',
   'obj.c',
+  'lerror.c',
   'stream.c',
   'lstring.c',
   'package.c',
