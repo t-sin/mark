@@ -7,12 +7,13 @@
 #include "obj.h"
 #include "lstring.h"
 #include "stream.h"
-#include "environment.h"
+#include "list.h"
+#include "array.h"
+#include "arithmetic.h"
 #include "package.h"
 #include "eval.h"
 #include "special_form.h"
-#include "list.h"
-#include "arithmetic.h"
+#include "environment.h"
 
 #define define_special_form(opname, symname, cfnname) \
     lis_obj * symname = _make_symbol(LSTR(opname)); \
@@ -71,6 +72,11 @@ void init_functions(lis_global_env * genv) {
   // strings
   define_builtin_function(U"string=", sym_string_equal, string_equal);
   define_builtin_function(U"stringp", sym_stringp, stringp);
+
+  // arrays
+  // define_builtin_function(U"arrayp", sym_arrayp, array_arrayp);
+  // define_builtin_function(U"make_array", sym_make_array, array_make_array);
+  // define_builtin_function(U"aref", sym_aref, array_aref);
 }
 
 void init_streams(lis_global_env * genv) {

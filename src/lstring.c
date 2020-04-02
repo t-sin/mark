@@ -6,6 +6,7 @@
 #include "stream.h"
 #include "list.h"
 #include "print.h"
+#include "eval.h"
 #include "lstring.h"
 
 lis_obj * u2lstring(const char32_t * ustr, size_t ustr_size) {
@@ -41,8 +42,7 @@ bool _string_equal(lis_string * s1, lis_string * s2) {
 }
 
 lis_obj * string_equal(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num != 2) {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `string=`."));
+    if (!check_arglen(genv, args, 2, LSTR(U"string="))) {
         return NULL;
     }
 
@@ -74,6 +74,10 @@ lis_obj * string_equal(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * stringp(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"stringp"))) {
+        return NULL;
+    }
+
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
     if (LIS_TAG3(arg) != LIS_TAG3_BUILTIN ||
         LIS_TAG_TYPE(arg) != LIS_TAG_TYPE_STR) {

@@ -1,10 +1,15 @@
 #include "obj.h"
 #include "lstring.h"
 #include "stream.h"
-#include "print.h"
 #include "list.h"
+#include "print.h"
+#include "eval.h"
 
 lis_obj * int_integerp(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"integerp"))) {
+        return NULL;
+    }
+
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
     if (LIS_TAG3(arg) == LIS_TAG3_INT) {
         return LIS_GENV(genv)->symbol_t;
@@ -30,12 +35,11 @@ lis_obj * _int_zerop(lis_obj * genv, lis_obj * num) {
 }
 
 lis_obj * int_zerop(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 1) {
-        return _int_zerop(genv, _list_nth(genv, _make_int(0), args));
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `zerop`."));
+    if (!check_arglen(genv, args, 1, LSTR(U"zerop"))) {
         return NULL;
     }
+
+    return _int_zerop(genv, _list_nth(genv, _make_int(0), args));
 }
 
 lis_obj * _int_plusp(lis_obj * genv, lis_obj * num) {
@@ -55,12 +59,11 @@ lis_obj * _int_plusp(lis_obj * genv, lis_obj * num) {
 }
 
 lis_obj * int_plusp(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 1) {
-        return _int_plusp(genv, _list_nth(genv, _make_int(0), args));
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `plusp`."));
+    if (!check_arglen(genv, args, 1, LSTR(U"plusp"))) {
         return NULL;
     }
+
+    return _int_plusp(genv, _list_nth(genv, _make_int(0), args));
 }
 
 lis_obj * _int_minusp(lis_obj * genv, lis_obj * num) {
@@ -80,12 +83,11 @@ lis_obj * _int_minusp(lis_obj * genv, lis_obj * num) {
 }
 
 lis_obj * int_minusp(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 1) {
-        return _int_minusp(genv, _list_nth(genv, _make_int(0), args));
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `minusp`."));
+    if (!check_arglen(genv, args, 1, LSTR(U"minusp"))) {
         return NULL;
     }
+
+    return _int_minusp(genv, _list_nth(genv, _make_int(0), args));
 }
 
 lis_obj * _int_equal(lis_obj * genv, lis_obj * a, lis_obj * b) {
@@ -113,14 +115,13 @@ lis_obj * _int_equal(lis_obj * genv, lis_obj * a, lis_obj * b) {
 }
 
 lis_obj * int_equal(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 2) {
-        lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-        lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
-        return _int_equal(genv, arg1, arg2);
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `=`."));
+    if (!check_arglen(genv, args, 2, LSTR(U"="))) {
         return NULL;
     }
+
+    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    return _int_equal(genv, arg1, arg2);
 }
 
 lis_obj * _int_add(lis_obj * genv, lis_obj * a, lis_obj * b) {
@@ -144,14 +145,13 @@ lis_obj * _int_add(lis_obj * genv, lis_obj * a, lis_obj * b) {
 }
 
 lis_obj * int_add(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 2) {
-        lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-        lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
-        return _int_add(genv, arg1, arg2);
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `+`."));
+    if (!check_arglen(genv, args, 2, LSTR(U"+"))) {
         return NULL;
     }
+
+    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    return _int_add(genv, arg1, arg2);
 }
 
 lis_obj * _int_sub(lis_obj * genv, lis_obj * a, lis_obj * b) {
@@ -175,14 +175,13 @@ lis_obj * _int_sub(lis_obj * genv, lis_obj * a, lis_obj * b) {
 }
 
 lis_obj * int_sub(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 2) {
-        lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-        lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
-        return _int_sub(genv, arg1, arg2);
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `-`."));
+    if (!check_arglen(genv, args, 2, LSTR(U"-"))) {
         return NULL;
     }
+
+    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    return _int_sub(genv, arg1, arg2);
 }
 
 lis_obj * _int_mul(lis_obj * genv, lis_obj * a, lis_obj * b) {
@@ -206,14 +205,13 @@ lis_obj * _int_mul(lis_obj * genv, lis_obj * a, lis_obj * b) {
 }
 
 lis_obj * int_mul(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 2) {
-        lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-        lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
-        return _int_mul(genv, arg1, arg2);
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `*`."));
+    if (!check_arglen(genv, args, 2, LSTR(U"*"))) {
         return NULL;
     }
+
+    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    return _int_mul(genv, arg1, arg2);
 }
 
 lis_obj * _int_div(lis_obj * genv, lis_obj * a, lis_obj * b) {
@@ -242,12 +240,11 @@ lis_obj * _int_div(lis_obj * genv, lis_obj * a, lis_obj * b) {
 }
 
 lis_obj * int_div(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num == 2) {
-        lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-        lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
-        return _int_div(genv, arg1, arg2);
-    } else {
-        LIS_GENV(genv)->error = _make_error(LSTR(U"wrong number of args for `/`."));
+    if (!check_arglen(genv, args, 2, LSTR(U"/"))) {
         return NULL;
     }
+
+    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    return _int_div(genv, arg1, arg2);
 }

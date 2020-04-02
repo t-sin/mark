@@ -30,14 +30,7 @@ lis_obj * lis_sf_function(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * args) {
-    lis_obj * len = _list_length(genv, args);
-    if (len == NULL ||
-        LIS_TAG3(len) != LIS_TAG3_INT ||
-        len->data.num != 2) {
-        lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
-        stream_write_string(stream, LSTR(U"wrong number of args to setq"));
-        print(genv, args, stream);
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(stream));
+    if (!check_arglen(genv, args, 2, LSTR(U"setq"))) {
         return NULL;
     }
 
@@ -60,14 +53,7 @@ lis_obj * lis_sf_progn(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * lis_sf_if(lis_obj * genv, lis_obj * args) {
-    lis_obj * len = _list_length(genv, args);
-    if (len == NULL ||
-        LIS_TAG3(len) != LIS_TAG3_INT ||
-        len->data.num != 3) {
-        lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
-        stream_write_string(stream, LSTR(U"wrong number of args to `if`"));
-        print(genv, args, stream);
-        LIS_GENV(genv)->error = _make_error(stream_output_to_string(stream));
+    if (!check_arglen(genv, args, 3, LSTR(U"if"))) {
         return NULL;
     }
 
