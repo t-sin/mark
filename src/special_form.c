@@ -19,7 +19,7 @@ lis_obj * lis_sf_function(lis_obj * genv, lis_obj * args) {
         lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
         print(genv, sym, stream);
         stream_write_string(stream, LSTR(U" is not a symbol."));
-        stream_flush(stream);
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(stream));
         return NULL;
     }
     if (sym->data.sym->fn == NULL) {
@@ -37,7 +37,7 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * args) {
         lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
         stream_write_string(stream, LSTR(U"wrong number of args to setq"));
         print(genv, args, stream);
-        stream_flush(stream);
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(stream));
         return NULL;
     }
 
@@ -45,4 +45,16 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * args) {
     lis_obj * val = eval(genv, _list_nth(genv, _make_int(1), args));
     sym->data.sym->value = val;
     return val;
+}
+
+lis_obj * lis_sf_progn(lis_obj * genv, lis_obj * args) {
+    lis_obj * ret = LIS_GENV(genv)->symbol_nil;
+
+    lis_obj * rest = args;
+    while (rest != LIS_GENV(genv)->symbol_nil) {
+        ret = eval(genv, _list_car(genv, rest));
+        rest = _list_cdr(genv, rest);
+    }
+
+    return ret;
 }

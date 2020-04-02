@@ -26,11 +26,11 @@ void init_special_forms(lis_global_env * genv) {
   define_special_form(U"quote", sym_quote, lis_sf_quote);
   define_special_form(U"function", sym_function, lis_sf_function);
   define_special_form(U"setq", sym_setq, lis_sf_setq);
+  define_special_form(U"progn", sym_progn, lis_sf_progn);
 
   // let
   // flet
   // if
-  // progn
 }
 
 #define define_builtin_function(opname, symname, cfnname) \
