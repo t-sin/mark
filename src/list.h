@@ -19,10 +19,7 @@ lis_obj * list_car(lis_obj * genv, lis_obj * args);
 lis_obj * list_cdr(lis_obj * genv, lis_obj * args);
 
 lis_obj * _list_length(lis_obj * genv, lis_obj * list);
-lis_obj * list_length(lis_obj * genv, lis_obj * args);
-
 lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list);
-lis_obj * list_nth(lis_obj * genv, lis_obj * args);
 
 lis_obj * list_first(lis_obj * genv, lis_obj * args);
 lis_obj * list_second(lis_obj * genv, lis_obj * args);
