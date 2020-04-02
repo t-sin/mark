@@ -74,7 +74,7 @@ void init_functions(lis_global_env * genv) {
   define_builtin_function(U"stringp", sym_stringp, stringp);
 
   // arrays
-  // define_builtin_function(U"arrayp", sym_arrayp, array_arrayp);
+  define_builtin_function(U"arrayp", sym_arrayp, array_arrayp);
   // define_builtin_function(U"make_array", sym_make_array, array_make_array);
   // define_builtin_function(U"aref", sym_aref, array_aref);
 }
