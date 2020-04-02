@@ -8,7 +8,10 @@
 #include "list.h"
 #include "special_form.h"
 
-lis_obj * lis_sf_quote(lis_obj * obj, lis_obj * args) {
+lis_obj * lis_sf_quote(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"quote"))) {
+        return NULL;
+    }
     return args->data.cons->car;
 }
 
