@@ -17,4 +17,7 @@ lis_obj * string_equal(lis_obj * genv, lis_obj * args);
 
 lis_obj * stringp(lis_obj * genv, lis_obj * args);
 
+lis_obj * _string_length(lis_obj * genv, lis_obj * str);
+lis_obj * _string_char(lis_obj * genv, lis_obj * str, lis_obj * n);
+
 #endif

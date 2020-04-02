@@ -24,7 +24,7 @@ lis_obj * _seq_length(lis_obj * genv, lis_obj * seq) {
             return NULL;
 
         case LIS_TAG_TYPE_STR:
-            return NULL;
+            return _string_length(genv, seq);
 
         case LIS_TAG_TYPE_CONS:
             return _list_length(genv, seq);
@@ -59,7 +59,7 @@ lis_obj * _seq_elt(lis_obj * genv, lis_obj * seq, lis_obj * n) {
             return NULL;
 
         case LIS_TAG_TYPE_STR:
-            return NULL;
+            return _string_char(genv, seq, n);
 
         case LIS_TAG_TYPE_CONS:
             return _list_nth(genv, n, seq);
