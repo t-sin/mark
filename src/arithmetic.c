@@ -4,6 +4,15 @@
 #include "print.h"
 #include "list.h"
 
+lis_obj * int_integerp(lis_obj * genv, lis_obj * args) {
+    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    if (LIS_TAG3(arg) == LIS_TAG3_INT) {
+        return LIS_GENV(genv)->symbol_t;
+    } else {
+        return LIS_GENV(genv)->symbol_nil;
+    }
+}
+
 lis_obj * _int_zerop(lis_obj * genv, lis_obj * num) {
     if (LIS_TAG3(num) != LIS_TAG3_INT) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);

@@ -12,6 +12,7 @@ lis_obj * _int_sub(lis_obj * genv, lis_obj * a, lis_obj * b);
 lis_obj * _int_mul(lis_obj * genv, lis_obj * a, lis_obj * b);
 lis_obj * _int_div(lis_obj * genv, lis_obj * a, lis_obj * b);
 
+lis_obj * int_integerp(lis_obj * genv, lis_obj * args);
 lis_obj * int_zerop(lis_obj * genv, lis_obj * args);
 lis_obj * int_plusp(lis_obj * genv, lis_obj * args);
 lis_obj * int_minusp(lis_obj * genv, lis_obj * args);

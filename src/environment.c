@@ -55,6 +55,7 @@ void init_functions(lis_global_env * genv) {
   define_builtin_function(U"fifth", sym_list_fifth, list_fifth);
 
   // integers
+  define_builtin_function(U"integerp", sym_integerp, int_integerp);
   define_builtin_function(U"zerop", sym_int_zerop, int_zerop);
   define_builtin_function(U"plusp", sym_int_plusp, int_plusp);
   define_builtin_function(U"minusp", sym_int_minusp, int_minusp);
