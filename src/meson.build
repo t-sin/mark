@@ -12,6 +12,7 @@ src = [
   'array.c',
   'list.c',
   'arithmetic.c',
+  'sequence.c',
   'special_form.c',
   'lis.c',
 ]

@@ -10,6 +10,7 @@
 #include "list.h"
 #include "array.h"
 #include "arithmetic.h"
+#include "sequence.h"
 #include "package.h"
 #include "eval.h"
 #include "special_form.h"
@@ -75,6 +76,10 @@ void init_functions(lis_global_env * genv) {
   define_builtin_function(U"arrayp", sym_arrayp, array_arrayp);
   // define_builtin_function(U"make_array", sym_make_array, array_make_array);
   // define_builtin_function(U"aref", sym_aref, array_aref);
+
+  // sequences
+  define_builtin_function(U"length", sym_seq_length, seq_length);
+  define_builtin_function(U"elt", sym_seq_elt, seq_elt);
 }
 
 void init_streams(lis_global_env * genv) {

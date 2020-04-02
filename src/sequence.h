@@ -1,9 +1,15 @@
 #ifndef __lis_sequence
 #define __lis_sequence
 
+#include "obj.h"
+
 // seq_copy_seq
-// seq_length
-// seq_elt
+
+lis_obj * _seq_length(lis_obj * genv, lis_obj * seq);
+lis_obj * seq_length(lis_obj * genv, lis_obj * args);
+
+lis_obj * _seq_elt(lis_obj * genv, lis_obj * seq, lis_obj * n);
+lis_obj * seq_elt(lis_obj * genv, lis_obj * args);
 
 // seq_subseq
 // seq_concatenate
