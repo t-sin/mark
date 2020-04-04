@@ -2,7 +2,6 @@
 #define __lis_eval
 
 #include "obj.h"
-#include "environment.h"
 
 bool check_arglen(lis_obj * genv, lis_obj * args, int len, lis_obj * opname);
 

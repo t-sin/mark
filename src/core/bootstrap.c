@@ -14,7 +14,8 @@
 #include "package.h"
 #include "eval.h"
 #include "special_form.h"
-#include "environment.h"
+
+#include "bootstrap.h"
 
 #define define_special_form(opname, symname, cfnname) \
     lis_obj * symname = _make_symbol(LSTR(opname)); \

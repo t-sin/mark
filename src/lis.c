@@ -5,13 +5,13 @@
 #include <string.h>
 #include <uchar.h>
 
-#include "obj.h"
-#include "lstring.h"
-#include "stream.h"
-#include "environment.h"
-#include "eval.h"
-#include "print.h"
-#include "read.h"
+#include "core/obj.h"
+#include "core/lstring.h"
+#include "core/stream.h"
+#include "core/eval.h"
+#include "core/print.h"
+#include "core/read.h"
+#include "core/bootstrap.h"
 
 void print_usage() {
     printf("usage: lis LISPATH\n");

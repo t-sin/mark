@@ -5,7 +5,6 @@
 #include "obj.h"
 #include "stream.h"
 #include "package.h"
-#include "environment.h"
 
 #include "read.h"
 

@@ -3,10 +3,10 @@
 #include <uchar.h>
 
 #include "obj.h"
-#include "print.h"
 #include "lstring.h"
 #include "stream.h"
-#include "environment.h"
+
+#include "print.h"
 
 void print_string(lis_stream * stream, lis_obj * str) {
     for (size_t i=0; i < str->data.str->size; i++) {

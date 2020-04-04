@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "util/byte_stream.h"
-#include "util/utf8.h"
+#include "../util/byte_stream.h"
+#include "../util/utf8.h"
 
 /* tags
  * 

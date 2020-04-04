@@ -1,5 +1,5 @@
-#ifndef __lis_environment
-#define __lis_environment
+#ifndef __lis_bootstrap
+#define __lis_bootstrap
 
 #include "obj.h"
 

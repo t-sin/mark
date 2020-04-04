@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "util/byte_stream.h"
-#include "util/utf8.h"
+#include "../util/byte_stream.h"
+#include "../util/utf8.h"
 #include "obj.h"
 
 #include "stream.h"

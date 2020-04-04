@@ -6,9 +6,9 @@
 #include "lstring.h"
 #include "stream.h"
 #include "list.h"
-#include "environment.h"
-#include "eval.h"
 #include "print.h"
+
+#include "eval.h"
 
 bool check_arglen(lis_obj * genv, lis_obj * args, int len, lis_obj * opname) {
     if (_list_length(genv, args)->data.num != len) {

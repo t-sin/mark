@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "../src/util/byte_stream.h"
-#include "../src/obj.h"
-#include "../src/stream.h"
+#include "../src/core/obj.h"
+#include "../src/core/stream.h"
 
 void test_read_write_bytes() {
     lis_stream * stream = make_lis_stream(5, LIS_STREAM_IN, LIS_STREAM_BINARY);
