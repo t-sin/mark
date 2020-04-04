@@ -107,6 +107,9 @@ lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list) {
         lis_obj * ret = list;
         for (int i=0; i<n->data.num; i++) {
             ret = LIS_CONS(ret)->cdr;
+            if (ret == LIS_GENV(genv)->symbol_nil) {
+                return ret;
+            }
         }
         return LIS_CONS(ret)->car;
     }
