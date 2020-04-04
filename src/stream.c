@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "byte_stream.h"
-#include "utf8.h"
+#include "util/byte_stream.h"
+#include "util/utf8.h"
 #include "obj.h"
+
 #include "stream.h"
 
 lis_stream * make_lis_stream(size_t buf_size,

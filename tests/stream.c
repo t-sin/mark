@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "../src/byte_stream.h"
+#include "../src/util/byte_stream.h"
 #include "../src/obj.h"
 #include "../src/stream.h"
 

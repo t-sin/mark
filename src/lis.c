@@ -6,7 +6,6 @@
 #include <uchar.h>
 
 #include "obj.h"
-#include "utf8.h"
 #include "lstring.h"
 #include "stream.h"
 #include "environment.h"
