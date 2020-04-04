@@ -30,13 +30,13 @@ lis_obj * _seq_length(lis_obj * genv, lis_obj * seq) {
             return _list_length(genv, seq);
 
         default:
-            type_error(genv, seq);
+            not_seq_error(genv, seq);
             return NULL;
         }
 
     } else {
         // user defined sequences??
-        type_error(genv, seq);
+        not_seq_error(genv, seq);
         return NULL;
     }
 }
@@ -65,13 +65,13 @@ lis_obj * _seq_elt(lis_obj * genv, lis_obj * seq, lis_obj * n) {
             return _list_nth(genv, n, seq);
 
         default:
-            type_error(genv, seq);
+            not_seq_error(genv, seq);
             return NULL;
         }
 
     } else {
         // user defined sequences??
-        type_error(genv, seq);
+        not_seq_error(genv, seq);
         return NULL;
     }
 }
