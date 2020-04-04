@@ -48,6 +48,7 @@ void init_functions(lis_global_env * genv) {
   define_builtin_function(U"atom", sym_list_atom, list_atom);
   define_builtin_function(U"consp", sym_list_consp, list_consp);
   define_builtin_function(U"listp", sym_list_listp, list_listp);
+  define_builtin_function(U"nth", sym_list_nth, list_nth);
   define_builtin_function(U"cons", sym_list_cons, list_cons);
   define_builtin_function(U"car", sym_list_car, list_car);
   define_builtin_function(U"cdr", sym_list_cdr, list_cdr);

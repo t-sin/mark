@@ -115,6 +115,16 @@ lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list) {
     }
 }
 
+lis_obj * list_nth(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 2, LSTR(U"nth"))) {
+        return NULL;
+    }
+
+    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    return _list_nth(genv, arg1, arg2);
+}
+
 lis_obj * _list_cons(lis_obj * genv, lis_obj * a, lis_obj * b) {
     lis_obj * cons = _make_cons();
     LIS_CONS(cons)->car = a;
