@@ -79,6 +79,7 @@ void init_functions(lis_global_env * genv) {
   // define_builtin_function(U"aref", sym_aref, array_aref);
 
   // sequences
+  define_builtin_function(U"copy-seq", sym_seq_copy_seq, seq_copy_seq);
   define_builtin_function(U"length", sym_seq_length, seq_length);
   define_builtin_function(U"elt", sym_seq_elt, seq_elt);
 }

@@ -3,7 +3,8 @@
 
 #include "obj.h"
 
-// seq_copy_seq
+lis_obj * _seq_copy_seq(lis_obj * genv, lis_obj * seq);
+lis_obj * seq_copy_seq(lis_obj * genv, lis_obj * args);
 
 lis_obj * _seq_length(lis_obj * genv, lis_obj * seq);
 lis_obj * seq_length(lis_obj * genv, lis_obj * args);
