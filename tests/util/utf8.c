@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "../src/util/utf8.h"
+#include "../../src/util/utf8.h"
 
 void test_encode_and_decode() {
     char expect[] = u8"abc ABC αβγλω あいうえお 😀😁😂";

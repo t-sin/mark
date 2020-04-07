@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "../src/util/byte_stream.h"
+#include "../../src/util/byte_stream.h"
 
 void test_make_stream() {
     _stream * stream;
