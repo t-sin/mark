@@ -18,3 +18,9 @@ test_stream = executable('test_stream', [
   '../../src/util/utf8.c',
 ])
 test('high-level streams', test_stream)
+
+test_table = executable('test_table', [
+  'table.c',
+  '../../src/util/table.c',
+])
+test('hash tables', test_table)
