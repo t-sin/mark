@@ -2,10 +2,13 @@
 
 #include "obj.h"
 #include "lstring.h"
+#include "lerror.h"
 #include "stream.h"
 #include "eval.h"
 #include "print.h"
 #include "list.h"
+#include "environment.h"
+
 #include "special_form.h"
 
 lis_obj * lis_sf_quote(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
@@ -67,5 +70,31 @@ lis_obj * lis_sf_if(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return eval(genv, lenv, _list_nth(genv, _make_int(2), args));
     }
 }
+
+lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+    lis_obj * new_lenv = _make_lexical_env(LIS_ENV_LEXICAL);
+    LIS_ENV(new_lenv)->parent = lenv;
+
+    lis_obj * binding_list = _list_car(genv, args);
+    if (!_list_listp(genv, binding_list)) {
+        not_list_error(genv, binding_list);
+        return NULL;
     }
+
+    lis_obj * rest = binding_list;
+    while (rest != LIS_GENV(genv)->symbol_nil) {
+        lis_obj * binding = _list_car(genv, rest);
+
+        if (!check_arglen(genv, binding, 2, LSTR(U"binding list of let"))) {
+            return NULL;
+        }
+
+        lis_obj * name = _list_car(genv, binding);
+        lis_obj * value = _list_car(genv, _list_cdr(genv, binding));
+        set_lexical_value(new_lenv, name, value);
+
+        rest = _list_cdr(genv, rest);
+    }
+
+    return lis_sf_progn(genv, new_lenv, _list_cdr(genv, args));
 }

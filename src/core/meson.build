@@ -11,6 +11,7 @@ src = [
   'list.c',
   'arithmetic.c',
   'sequence.c',
+  'environment.c',
   'special_form.c',
   'bootstrap.c',
 ]
