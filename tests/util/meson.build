@@ -10,15 +10,6 @@ test_byte_stream = executable('test_byte_stream', [
 ])
 test('fundamental streams', test_byte_stream)
 
-test_stream = executable('test_stream', [
-  'stream.c',
-  '../../src/core/stream.c',
-  '../../src/core/obj.c',
-  '../../src/util/byte_stream.c',
-  '../../src/util/utf8.c',
-])
-test('high-level streams', test_stream)
-
 test_table = executable('test_table', [
   'table.c',
   '../../src/util/table.c',
