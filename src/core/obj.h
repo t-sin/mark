@@ -6,6 +6,7 @@
 
 #include "../util/byte_stream.h"
 #include "../util/utf8.h"
+#include "../util/table.h"
 
 /* tags
  * 
@@ -183,11 +184,13 @@ typedef struct lis_dynamic_env {
 } lis_dynamic_env;
 
 typedef struct lis_lexical_env {
+    _table * var;
+    _table * fn;
 } lis_lexical_env;
 
 typedef struct lis_env {
     env_type type;
-    struct lis_env * parent;
+    lis_obj * parent;
     union {
         lis_global_env * global;
         lis_dynamic_env * dynamic;
