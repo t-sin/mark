@@ -90,8 +90,7 @@ lis_obj * _make_raw_function(lis_obj * (*raw_fn)(lis_obj *, lis_obj *)) {
     fn->data.fn = (lis_function *)malloc(sizeof(lis_function));
     fn->data.fn->type = LIS_FUNC_NORMAL;
     fn->data.fn->lambdalist = NULL;
-    fn->data.fn->body = NULL;
-    fn->data.fn->raw_body = raw_fn;
+    fn->data.fn->body.raw = raw_fn;
     return fn;
 }
 

@@ -210,8 +210,11 @@ typedef enum lis_function_type {
 typedef struct lis_function {
     lis_function_type type;
     lis_obj * lambdalist;
-    lis_obj * body;
-    lis_obj * (* raw_body)(lis_obj *, lis_obj *);
+    union {
+        lis_obj * lisp;
+        lis_obj * (* raw)(lis_obj *, lis_obj *);
+        lis_obj * (* sf)(lis_obj *, lis_obj *, lis_obj *);
+    } body;
 } lis_function;
 
 #define LIS_FN(obj) ((obj)->data.fn)

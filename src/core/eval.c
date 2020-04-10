@@ -39,8 +39,8 @@ bool check_argeven(lis_obj * genv, lis_obj * args, lis_obj * opname) {
 }
 
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
-    if (LIS_FN(fn)->raw_body != NULL) {
-        return fn->data.fn->raw_body(genv, args);
+    if (LIS_FN(fn)->body.raw != NULL) {
+        return fn->data.fn->body.raw(genv, args);
     } else {
         // do check lambda list
         // do apply
