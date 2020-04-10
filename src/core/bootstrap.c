@@ -26,63 +26,63 @@
 
 
 void init_special_forms(lis_global_env * genv) {
-  define_special_form(U"quote", sym_quote, lis_sf_quote);
-  define_special_form(U"function", sym_function, lis_sf_function);
-  define_special_form(U"setq", sym_setq, lis_sf_setq);
-  define_special_form(U"progn", sym_progn, lis_sf_progn);
-  define_special_form(U"if", sym_if, lis_sf_if);
+    define_special_form(U"quote", sym_quote, lis_sf_quote);
+    define_special_form(U"function", sym_function, lis_sf_function);
+    define_special_form(U"setq", sym_setq, lis_sf_setq);
+    define_special_form(U"progn", sym_progn, lis_sf_progn);
+    define_special_form(U"if", sym_if, lis_sf_if);
 
-  // let
-  // flet
+    // let
+    // flet
 }
 
 #define define_builtin_function(opname, symname, cfnname) \
-  lis_obj * symname = _make_symbol(LSTR(opname)); \
-  symname->data.sym->package = genv->current_package; \
-  symname->data.sym->fn = _make_raw_function(cfnname); \
-  symname->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL; \
-  assert(add_symbol(genv->current_package, symname) != NULL)
+    lis_obj * symname = _make_symbol(LSTR(opname)); \
+    symname->data.sym->package = genv->current_package; \
+    symname->data.sym->fn = _make_raw_function(cfnname); \
+    symname->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL; \
+    assert(add_symbol(genv->current_package, symname) != NULL)
 
 
 void init_functions(lis_global_env * genv) {
-  // lists
-  define_builtin_function(U"atom", sym_list_atom, list_atom);
-  define_builtin_function(U"consp", sym_list_consp, list_consp);
-  define_builtin_function(U"listp", sym_list_listp, list_listp);
-  define_builtin_function(U"nth", sym_list_nth, list_nth);
-  define_builtin_function(U"cons", sym_list_cons, list_cons);
-  define_builtin_function(U"car", sym_list_car, list_car);
-  define_builtin_function(U"cdr", sym_list_cdr, list_cdr);
-  define_builtin_function(U"first", sym_list_first, list_first);
-  define_builtin_function(U"second", sym_list_second, list_second);
-  define_builtin_function(U"third", sym_list_third, list_third);
-  define_builtin_function(U"fourth", sym_list_fourth, list_fourth);
-  define_builtin_function(U"fifth", sym_list_fifth, list_fifth);
+    // lists
+    define_builtin_function(U"atom", sym_list_atom, list_atom);
+    define_builtin_function(U"consp", sym_list_consp, list_consp);
+    define_builtin_function(U"listp", sym_list_listp, list_listp);
+    define_builtin_function(U"nth", sym_list_nth, list_nth);
+    define_builtin_function(U"cons", sym_list_cons, list_cons);
+    define_builtin_function(U"car", sym_list_car, list_car);
+    define_builtin_function(U"cdr", sym_list_cdr, list_cdr);
+    define_builtin_function(U"first", sym_list_first, list_first);
+    define_builtin_function(U"second", sym_list_second, list_second);
+    define_builtin_function(U"third", sym_list_third, list_third);
+    define_builtin_function(U"fourth", sym_list_fourth, list_fourth);
+    define_builtin_function(U"fifth", sym_list_fifth, list_fifth);
 
-  // integers
-  define_builtin_function(U"integerp", sym_integerp, int_integerp);
-  define_builtin_function(U"zerop", sym_int_zerop, int_zerop);
-  define_builtin_function(U"plusp", sym_int_plusp, int_plusp);
-  define_builtin_function(U"minusp", sym_int_minusp, int_minusp);
-  define_builtin_function(U"=", sym_int_equal, int_equal);
-  define_builtin_function(U"+", sym_int_add, int_add);
-  define_builtin_function(U"-", sym_int_sub, int_sub);
-  define_builtin_function(U"*", sym_int_mul, int_mul);
-  define_builtin_function(U"/", sym_int_div, int_div);
+    // integers
+    define_builtin_function(U"integerp", sym_integerp, int_integerp);
+    define_builtin_function(U"zerop", sym_int_zerop, int_zerop);
+    define_builtin_function(U"plusp", sym_int_plusp, int_plusp);
+    define_builtin_function(U"minusp", sym_int_minusp, int_minusp);
+    define_builtin_function(U"=", sym_int_equal, int_equal);
+    define_builtin_function(U"+", sym_int_add, int_add);
+    define_builtin_function(U"-", sym_int_sub, int_sub);
+    define_builtin_function(U"*", sym_int_mul, int_mul);
+    define_builtin_function(U"/", sym_int_div, int_div);
 
-  // strings
-  define_builtin_function(U"string=", sym_string_equal, string_equal);
-  define_builtin_function(U"stringp", sym_stringp, stringp);
+    // strings
+    define_builtin_function(U"string=", sym_string_equal, string_equal);
+    define_builtin_function(U"stringp", sym_stringp, stringp);
 
-  // arrays
-  define_builtin_function(U"arrayp", sym_arrayp, array_arrayp);
-  // define_builtin_function(U"make_array", sym_make_array, array_make_array);
-  // define_builtin_function(U"aref", sym_aref, array_aref);
+    // arrays
+    define_builtin_function(U"arrayp", sym_arrayp, array_arrayp);
+    // define_builtin_function(U"make_array", sym_make_array, array_make_array);
+    // define_builtin_function(U"aref", sym_aref, array_aref);
 
-  // sequences
-  define_builtin_function(U"copy-seq", sym_seq_copy_seq, seq_copy_seq);
-  define_builtin_function(U"length", sym_seq_length, seq_length);
-  define_builtin_function(U"elt", sym_seq_elt, seq_elt);
+    // sequences
+    define_builtin_function(U"copy-seq", sym_seq_copy_seq, seq_copy_seq);
+    define_builtin_function(U"length", sym_seq_length, seq_length);
+    define_builtin_function(U"elt", sym_seq_elt, seq_elt);
 }
 
 void init_streams(lis_global_env * genv) {

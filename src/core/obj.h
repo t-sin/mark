@@ -79,23 +79,23 @@ struct lis_package;
 struct lis_error;
 
 typedef struct {
- lis_byte tags;
- union {
-  lis_int num;
-  lis_char ch;
-  lis_ptr ptr;
-  struct lis_array * array;
-  struct lis_string * str;
-  struct lis_tstamp * ts;
-  struct lis_symbol * sym;
-  struct lis_cons * cons;
-  struct lis_env * env;
-  struct lis_function * fn;
-  struct lis_closure * cls;
-  struct lis_package * pkg;
-  struct lis_stream * stream;
-  struct lis_error * err;
- } data;
+    lis_byte tags;
+    union {
+        lis_int num;
+        lis_char ch;
+        lis_ptr ptr;
+        struct lis_array * array;
+        struct lis_string * str;
+        struct lis_tstamp * ts;
+        struct lis_symbol * sym;
+        struct lis_cons * cons;
+        struct lis_env * env;
+        struct lis_function * fn;
+        struct lis_closure * cls;
+        struct lis_package * pkg;
+        struct lis_stream * stream;
+        struct lis_error * err;
+    } data;
 } lis_obj;
 
 #define LIS_GC_TAG(o) ((o)->tags & 0x01)
@@ -111,48 +111,48 @@ typedef struct {
 #define LIS_TAG_TYPE(o) (LIS_TAG(o) >> 3)
 
 typedef struct lis_array {
- lis_obj * body;
- lis_int size;
+    lis_obj * body;
+    lis_int size;
 } lis_array;
 
 typedef struct lis_string {
- lis_char * body;
- lis_int size;
+    lis_char * body;
+    lis_int size;
 } lis_string;
 
 #define LIS_STR(obj) ((obj)->data.str)
 
 typedef struct lis_tstamp {
- lis_int year;
- lis_byte month;
- lis_byte day;
- lis_byte hour;
- lis_byte minute;
- lis_byte second;
- lis_byte day_of_week;
+    lis_int year;
+    lis_byte month;
+    lis_byte day;
+    lis_byte hour;
+    lis_byte minute;
+    lis_byte second;
+    lis_byte day_of_week;
 } lis_tstamp; 
 
 typedef struct lis_symbol {
- lis_obj * name;
- lis_obj * value;
- bool constant_p;
- bool dynamic_p;
- lis_obj * package;
- lis_obj * fn;
+    lis_obj * name;
+    lis_obj * value;
+    bool constant_p;
+    bool dynamic_p;
+    lis_obj * package;
+    lis_obj * fn;
 } lis_symbol;
 
 typedef struct lis_cons {
- lis_obj * car;
- lis_obj * cdr;
+    lis_obj * car;
+    lis_obj * cdr;
 } lis_cons;
 
 #define LIS_CONS(obj) ((obj)->data.cons)
 
 typedef struct lis_package {
- lis_obj * name;
- lis_obj ** symbols;
- size_t num;
- size_t size;
+    lis_obj * name;
+    lis_obj ** symbols;
+    size_t num;
+    size_t size;
 } lis_package;
 
 typedef struct lis_package_table {
@@ -186,13 +186,13 @@ typedef struct lis_lexical_env {
 } lis_lexical_env;
 
 typedef struct lis_env {
- env_type type;
- struct lis_env * parent;
- union {
-  lis_global_env * global;
-  lis_dynamic_env * dynamic;
-  lis_lexical_env * lexical;
- } env;
+    env_type type;
+    struct lis_env * parent;
+    union {
+        lis_global_env * global;
+        lis_dynamic_env * dynamic;
+        lis_lexical_env * lexical;
+    } env;
 } lis_env;
 
 #define LIS_ENV(obj) ((obj)->data.env)
@@ -201,21 +201,21 @@ typedef struct lis_env {
 #define LIS_LENV(obj) ((obj)->data.env->env.lexical)
 
 typedef enum lis_function_type {
- LIS_FUNC_NORMAL, LIS_FUNC_SPECIAL_FORM, LIS_FUNC_MACRO
+    LIS_FUNC_NORMAL, LIS_FUNC_SPECIAL_FORM, LIS_FUNC_MACRO
 } lis_function_type;
 
 typedef struct lis_function {
- lis_function_type type;
- lis_obj * lambdalist;
- lis_obj * body;
- lis_obj * (* raw_body)(lis_obj *, lis_obj *);
+    lis_function_type type;
+    lis_obj * lambdalist;
+    lis_obj * body;
+    lis_obj * (* raw_body)(lis_obj *, lis_obj *);
 } lis_function;
 
 #define LIS_FN(obj) ((obj)->data.fn)
 
 typedef struct lis_closure {
- lis_function fn;
- lis_env env;
+    lis_function fn;
+    lis_env env;
 } lis_closure;
 
 typedef enum lis_stream_direction_type {
