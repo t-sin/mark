@@ -7,6 +7,7 @@
 #include "stream.h"
 #include "list.h"
 #include "print.h"
+#include "environment.h"
 
 #include "eval.h"
 
@@ -131,6 +132,8 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
 
     } else if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN) {
         // built-in types
+        lis_obj * val;
+
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:
             return obj;
@@ -140,7 +143,12 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
 
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
-            return obj->data.sym->value;
+            val = get_lexical_value(lenv, obj);
+            if (val != NULL) {
+                return val;
+            } else {
+                return obj->data.sym->value;
+            }
 
         case LIS_TAG_TYPE_CONS:
             return eval_cons(genv, lenv, obj);

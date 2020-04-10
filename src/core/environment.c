@@ -11,7 +11,7 @@ lis_obj * get_lexical_value(lis_obj * lenv, lis_obj * name) {
     _table_entry * entry = _table_find(LIS_LENV(lenv)->var, (void *)name);
 
     if (entry == NULL) {
-        return LIS_ENV(lenv)->parent;
+        return get_lexical_value(LIS_ENV(lenv)->parent, name);
     }
 
     return (lis_obj *)entry->value;
