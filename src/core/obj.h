@@ -46,8 +46,8 @@
 #define LIS_TAG3_PTR      0x00
 #define LIS_TAG3_INT      0x01
 #define LIS_TAG3_CHAR     0x03
-#define LIS_TAG3_SPECIAL  0x05  // NOT USED
-#define LIS_TAG3_BUILTIN  0x04
+#define LIS_TAG3_SPECIAL  0x04  // NOT USED
+#define LIS_TAG3_BUILTIN  0x05
 #define LIS_TAG3_OTHER    0x06
 
 #define LIS_TAG_TYPE_ARY  0x00
