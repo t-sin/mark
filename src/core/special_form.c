@@ -8,14 +8,14 @@
 #include "list.h"
 #include "special_form.h"
 
-lis_obj * lis_sf_quote(lis_obj * genv, lis_obj * args) {
+lis_obj * lis_sf_quote(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"quote"))) {
         return NULL;
     }
     return args->data.cons->car;
 }
 
-lis_obj * lis_sf_function(lis_obj * genv, lis_obj * args) {
+lis_obj * lis_sf_function(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     lis_obj * sym = args->data.cons->car;
     if (LIS_TAG3(sym) != LIS_TAG3_BUILTIN ||
         LIS_TAG_TYPE(sym) != LIS_TAG_TYPE_SYM) {
@@ -32,38 +32,40 @@ lis_obj * lis_sf_function(lis_obj * genv, lis_obj * args) {
     }
 }
 
-lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * args) {
+lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (!check_arglen(genv, args, 2, LSTR(U"setq"))) {
         return NULL;
     }
 
     lis_obj * sym = _list_nth(genv, _make_int(0), args);
-    lis_obj * val = eval(genv, _list_nth(genv, _make_int(1), args));
+    lis_obj * val = eval(genv, lenv, _list_nth(genv, _make_int(1), args));
     sym->data.sym->value = val;
     return val;
 }
 
-lis_obj * lis_sf_progn(lis_obj * genv, lis_obj * args) {
+lis_obj * lis_sf_progn(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     lis_obj * ret = LIS_GENV(genv)->symbol_nil;
 
     lis_obj * rest = args;
     while (rest != LIS_GENV(genv)->symbol_nil) {
-        ret = eval(genv, _list_car(genv, rest));
+        ret = eval(genv, lenv, _list_car(genv, rest));
         rest = _list_cdr(genv, rest);
     }
 
     return ret;
 }
 
-lis_obj * lis_sf_if(lis_obj * genv, lis_obj * args) {
+lis_obj * lis_sf_if(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (!check_arglen(genv, args, 3, LSTR(U"if"))) {
         return NULL;
     }
 
-    lis_obj * condition = eval(genv, _list_nth(genv, _make_int(0), args));
+    lis_obj * condition = eval(genv, lenv, _list_nth(genv, _make_int(0), args));
     if (condition != LIS_GENV(genv)->symbol_nil) {
-        return eval(genv, _list_nth(genv, _make_int(1), args));
+        return eval(genv, lenv, _list_nth(genv, _make_int(1), args));
     } else {
-        return eval(genv, _list_nth(genv, _make_int(2), args));
+        return eval(genv, lenv, _list_nth(genv, _make_int(2), args));
+    }
+}
     }
 }

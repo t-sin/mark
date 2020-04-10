@@ -86,7 +86,7 @@ void repl(lis_obj * genv) {
             break;
         }
 
-        obj = eval(genv, obj);
+        obj = eval(genv, NULL, obj);
 
         if (LIS_GENV(genv)->error != NULL) {
             stream_write_string(stream_stderr, LSTR(U"ERROR: "));

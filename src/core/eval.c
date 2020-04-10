@@ -49,7 +49,7 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     }
 }
 
-lis_obj * eval_args(lis_obj * genv, lis_obj * args) {
+lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (args == LIS_GENV(genv)->symbol_nil) {
         return LIS_GENV(genv)->symbol_nil;
     } else if (LIS_TAG3(args) != LIS_TAG3_BUILTIN ||
@@ -62,13 +62,13 @@ lis_obj * eval_args(lis_obj * genv, lis_obj * args) {
         return NULL;
     } else {
         lis_obj * cons = _make_cons();
-        LIS_CONS(cons)->car = eval(genv, LIS_CONS(args)->car);
-        LIS_CONS(cons)->cdr = eval_args(genv, LIS_CONS(args)->cdr);
+        LIS_CONS(cons)->car = eval(genv, lenv, LIS_CONS(args)->car);
+        LIS_CONS(cons)->cdr = eval_args(genv, lenv, LIS_CONS(args)->cdr);
         return cons;
     }
 }
 
-lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
+lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
     lis_obj * name = cons->data.cons->car;
     lis_obj * cdr = cons->data.cons->cdr;
 
@@ -93,7 +93,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
         lis_obj * ret;
         switch (fn->data.fn->type) {
         case LIS_FUNC_NORMAL:
-            args = eval_args(genv, cdr);
+            args = eval_args(genv, lenv, cdr);
             if (args == NULL) return NULL;
             if (LIS_GENV(genv)->error != NULL) return NULL;
             ret = apply(genv, fn, args);
@@ -102,7 +102,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
             break;
 
         case LIS_FUNC_SPECIAL_FORM:
-            ret =  fn->data.fn->raw_body(genv, cdr);
+            ret =  fn->data.fn->body.sf(genv, lenv, cdr);
             if (LIS_GENV(genv)->error != NULL) return NULL;
             return ret;
 
@@ -123,7 +123,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * cons) {
     }
 }
 
-lis_obj * eval(lis_obj * genv, lis_obj * obj) {
+lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
     if (LIS_TAG3(obj) == LIS_TAG3_INT) {
         return obj;  // integer
     } else if (LIS_TAG3(obj) == LIS_TAG3_CHAR) {
@@ -143,7 +143,7 @@ lis_obj * eval(lis_obj * genv, lis_obj * obj) {
             return obj->data.sym->value;
 
         case LIS_TAG_TYPE_CONS:
-            return eval_cons(genv, obj);
+            return eval_cons(genv, lenv, obj);
 
         case LIS_TAG_TYPE_ENV:
         case LIS_TAG_TYPE_FN:
