@@ -257,6 +257,7 @@ lis_obj * _make_symbol(lis_obj * name);
 lis_obj * _make_cons();
 lis_obj * _make_package(lis_obj * name);
 lis_obj * _make_env();
+lis_obj * _make_lexical_env();
 lis_obj * _make_raw_function();
 lis_obj * _make_lis_stream(lis_stream * s);
 lis_obj * _make_error(lis_obj * msg);

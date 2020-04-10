@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "../util/table.h"
 #include "obj.h"
 
 lis_obj * _make_int(lis_int n) {
@@ -72,6 +73,14 @@ lis_obj * _make_env(env_type type) {
     env->data.env->parent = NULL;
     env->data.env = (lis_env *)malloc(sizeof(lis_env));
     env->data.env->type = type;
+    return env;
+}
+
+lis_obj * _make_lexical_env() {
+    lis_obj * env = _make_env(LIS_ENV_LEXICAL);
+    LIS_LENV(env) = (lis_lexical_env *)malloc(sizeof(lis_lexical_env));
+    LIS_LENV(env)->var = _make_table(256);
+    LIS_LENV(env)->fn = _make_table(256);
     return env;
 }
 
