@@ -24,6 +24,20 @@ bool check_arglen(lis_obj * genv, lis_obj * args, int len, lis_obj * opname) {
     }
 }
 
+bool check_argeven(lis_obj * genv, lis_obj * args, lis_obj * opname) {
+    if (_list_length(genv, args)->data.num % 2 == 0) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        stream_write_string(buffer, LSTR(U"odd number of args for `"));
+        stream_write_string(buffer, opname);
+        stream_write_string(buffer, LSTR(U"`."));
+
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return false;
+    } else {
+        return true;
+    }
+}
+
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     if (LIS_FN(fn)->raw_body != NULL) {
         return fn->data.fn->raw_body(genv, args);
