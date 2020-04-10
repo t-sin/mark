@@ -90,7 +90,7 @@ lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         }
 
         lis_obj * name = _list_car(genv, binding);
-        lis_obj * value = _list_car(genv, _list_cdr(genv, binding));
+        lis_obj * value = eval(genv, lenv, _list_car(genv, _list_cdr(genv, binding)));
         set_lexical_value(new_lenv, name, value);
 
         rest = _list_cdr(genv, rest);
