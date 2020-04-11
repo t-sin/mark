@@ -88,9 +88,13 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
         return NULL;
     }
 
-    if (LIS_TAG3(cdr) != LIS_TAG3_BUILTIN ||
-        LIS_TAG_TYPE(cdr) != LIS_TAG_TYPE_CONS) {
-        printf("args is not a list\n");
+    if (cdr != LIS_GENV(genv)->symbol_nil &&
+        !(LIS_TAG3(cdr) == LIS_TAG3_BUILTIN &&
+          LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS)) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
+        print(genv, cdr, buffer);
+        stream_write_string(buffer, LSTR(U" is not a list."));
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
         return NULL;
     }
 
