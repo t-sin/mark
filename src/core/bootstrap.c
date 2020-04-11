@@ -85,6 +85,9 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"copy-seq", sym_seq_copy_seq, seq_copy_seq);
     define_builtin_function(U"length", sym_seq_length, seq_length);
     define_builtin_function(U"elt", sym_seq_elt, seq_elt);
+
+    // packages
+    define_builtin_function(U"list-all-packages", sym_package_list_all_packages, _package_list_all_packages);
 }
 
 void init_streams(lis_global_env * genv) {

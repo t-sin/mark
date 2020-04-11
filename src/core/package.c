@@ -27,6 +27,30 @@ lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
     return pkg;
 }
 
+lis_obj * _package_list_all_packages(lis_obj * genv) {
+    lis_obj * pkg_list = LIS_GENV(genv)->symbol_nil;
+    _table * table = LIS_GENV(genv)->package_table;
+
+    for (size_t i=0; i<table->size; i++) {
+        _table_entry * e = table->array + i;
+        if (e->key != NULL) {
+            while (e != NULL) {
+                pkg_list = _list_cons(genv, (lis_obj *)e->value, pkg_list);
+                e = e->next;
+            }
+        }
+    }
+
+    return pkg_list;
+}
+
+lis_obj * package_list_all_packages(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 0, LSTR(U"list-all-packages"))) {
+        return NULL;
+    }
+    lis_obj * arg = _package_list_all_packages(genv);
+}
+
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
     assert(LIS_TAG3(package) == LIS_TAG3_BUILTIN);
     assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);

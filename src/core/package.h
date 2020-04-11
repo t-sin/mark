@@ -4,6 +4,7 @@
 #include "obj.h"
 
 lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str);
+lis_obj * _package_list_all_packages(lis_obj * genv);
 
 typedef enum package_intern_status {
     PKG_INTERNAL, PKG_EXTERNAL, PKG_INHERITED
