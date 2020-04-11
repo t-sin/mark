@@ -22,15 +22,16 @@ _table * _make_table(size_t size) {
     table->array = (_table_entry *)malloc(sizeof(_table_entry) * size);
     memset(table->array, 0, sizeof(_table_entry) * size);
     table->num = 0;
+    table->eq_fn = _table_ptr_eq;
     return table;
 }
 
-_table_entry * _table_find(_table * table, void * key, bool (* eq)(void *, void *)) {
+_table_entry * _table_find(_table * table, void * key) {
     size_t pos = _hash(key, table->size);
     _table_entry * entry = table->array + pos;
 
     while (entry != NULL) {
-        if (eq(entry->key, key)) {
+        if (table->eq_fn(entry->key, key)) {
             return entry;
         }
         entry = entry->next;
@@ -39,7 +40,8 @@ _table_entry * _table_find(_table * table, void * key, bool (* eq)(void *, void 
     return NULL;
 }
 
-_table_entry * _entry_set(_table_entry * array, size_t size, void * key, void * value, bool (* eq)(void *, void *)) {
+_table_entry * _entry_set(_table_entry * array, size_t size, void * key, void * value,
+                          bool (* eq_fn)(void *, void *)) {
     size_t pos = _hash(key, size);
     _table_entry * base = array + pos;
     _table_entry * entry = base;
@@ -52,7 +54,7 @@ _table_entry * _entry_set(_table_entry * array, size_t size, void * key, void * 
     }
 
     while (entry != NULL) {
-        if (eq(entry->key, key)) {
+        if (eq_fn(entry->key, key)) {
             entry->value = value;
             return entry;  // existed is overwritten
         }
@@ -68,7 +70,7 @@ _table_entry * _entry_set(_table_entry * array, size_t size, void * key, void * 
     return NULL;  // created new
 }
 
-void _table_rehash(_table * table, size_t new_size, bool (* eq)(void *, void *)) {
+void _table_rehash(_table * table, size_t new_size) {
     _table_entry * new_array = (_table_entry *)malloc(sizeof(_table_entry) * new_size);
     memset(new_array, 0, sizeof(_table_entry) * new_size);
 
@@ -76,7 +78,7 @@ void _table_rehash(_table * table, size_t new_size, bool (* eq)(void *, void *))
         _table_entry * e = table->array + i;
         if (e->key != NULL) {
             while (e != NULL) {
-                _entry_set(new_array, new_size, e->key, e->value, eq);
+                _entry_set(new_array, new_size, e->key, e->value, table->eq_fn);
                 e = e->next;
             }
         }
@@ -87,23 +89,23 @@ void _table_rehash(_table * table, size_t new_size, bool (* eq)(void *, void *))
     table->size = new_size;
 }
 
-void _table_add(_table * table, void * key, void * value, bool (* eq)(void *, void *)) {
-    _entry_set(table->array, table->size, key, value, eq);
+void _table_add(_table * table, void * key, void * value) {
+    _entry_set(table->array, table->size, key, value, table->eq_fn);
     table->num++;
 
     if (table->num / (float)table->size > 0.6) {
-        _table_rehash(table, table->size * 2, eq);
+        _table_rehash(table, table->size * 2);
     }
 }
 
-void _table_remove(_table * table, void * key, bool (* eq)(void *, void *)) {
+void _table_remove(_table * table, void * key) {
     size_t pos = _hash(key, table->size);
     _table_entry * base = table->array + pos;
     _table_entry * entry = base;
     _table_entry * prev = NULL;
 
     while (entry != NULL) {
-        if (eq(entry->key, key)) {
+        if (table->eq_fn(entry->key, key)) {
             if (prev != NULL) {
                 prev->next = entry->next;
             }

@@ -22,7 +22,7 @@ lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
     }
 
     lis_obj * pkg = _make_package(name_str);
-    _table_add(LIS_GENV(genv)->package_table, (void *)name_str, (void *)pkg, _table_string_eq);
+    _table_add(pkgtable, (void *)name_str, (void *)pkg);
 
     return pkg;
 }
