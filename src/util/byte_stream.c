@@ -54,7 +54,7 @@ void _stream_extend_buffer(_stream * stream) {
 bool _stream_listen_p(_stream * stream) {
     assert(stream != NULL);
 
-    return stream->tail < stream->head;
+    return _stream_filled(stream) <= 0;
 }
 
 bool _stream_peek_byte(_stream * stream, uint8_t * out, size_t n) {

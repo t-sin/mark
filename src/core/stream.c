@@ -260,6 +260,10 @@ lis_obj * stream_output_to_string(lis_stream * stream) {
     return str;
 }
 
+bool stream_listen_p(lis_stream * stream) {
+    return _stream_listen_p(stream->stream);
+}
+
 void stream_flush(lis_stream * stream) {
     //stream_fill_buffer(stream);
     stream_flush_buffer(stream);
