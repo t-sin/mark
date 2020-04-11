@@ -15,6 +15,7 @@ typedef struct _table {
     size_t size;
     _table_entry * array;
     size_t num;
+    size_t (* hash_fn)(void *, size_t);
     bool (* eq_fn)(void *, void *);
 } _table;
 
