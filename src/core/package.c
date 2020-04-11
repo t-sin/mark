@@ -79,6 +79,31 @@ lis_obj * package_list_all_packages(lis_obj * genv, lis_obj * args) {
     return _package_list_all_packages(genv);
 }
 
+lis_obj * _package_in_package(lis_obj * genv, lis_obj * name) {
+    if (LIS_TAG3(name) != LIS_TAG3_BUILTIN ||
+        LIS_TAG_TYPE(name) != LIS_TAG_TYPE_STR) {
+        not_string_error(genv, name);
+        return NULL;
+    }
+
+    _table_entry * res = _table_find(LIS_GENV(genv)->package_table, (void *)name);
+
+    if (res == NULL) {
+        // some error
+    }
+
+    lis_obj * pkg = (lis_obj *)res->value;
+    LIS_GENV(genv)->current_package = pkg;
+    return pkg;
+}
+
+lis_obj * package_in_package(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"in-package"))) {
+        return NULL;
+    }
+    return _package_in_package(genv, _list_nth(genv, _make_int(0), args));
+}
+
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
     assert(LIS_TAG3(package) == LIS_TAG3_BUILTIN);
     assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);

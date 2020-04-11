@@ -12,6 +12,9 @@ lis_obj * _package_list_all_packages(lis_obj * genv);
 lis_obj * package_make_package(lis_obj * genv, lis_obj * args);
 lis_obj * package_list_all_packages(lis_obj * genv, lis_obj * args);
 
+lis_obj * _package_in_package(lis_obj * genv, lis_obj * name);
+lis_obj * package_in_package(lis_obj * genv, lis_obj * args);
+
 typedef enum package_intern_status {
     PKG_INTERNAL, PKG_EXTERNAL, PKG_INHERITED
 } package_intern_status;
