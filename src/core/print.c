@@ -123,7 +123,12 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
             break;
 
         case LIS_TAG_TYPE_CLS:
+            break;
+
         case LIS_TAG_TYPE_PKG:
+            stream_write_string(stream, LSTR(U"#<PACKAGE:"));
+            stream_write_string(stream, LIS_PKG(obj)->name);
+            stream_write_char(stream, '>');
             break;
 
         case LIS_TAG_TYPE_STRM:
