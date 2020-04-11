@@ -137,6 +137,8 @@ lis_obj * init_global_env() {
     genv = (lis_global_env *)malloc(sizeof(lis_global_env));
     memset(genv, 0, sizeof(lis_global_env));
     genv->package_table = _make_table(256);
+    genv->package_table->hash_fn = _hash_string;
+    genv->package_table->eq_fn = _table_string_eq;
 
     lis_obj * genv_obj = _make_env(LIS_ENV_GLOBAL);
     genv_obj->data.env->env.global = genv;

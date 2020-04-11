@@ -11,7 +11,20 @@
 #include "package.h"
 
 bool _table_string_eq(void * a, void * b) {
+    if (a == NULL || b == NULL) {
+        return false;
+    }
+
     return _string_equal(LIS_STR((lis_obj *)a), LIS_STR((lis_obj *)b));
+}
+
+bool _hash_string(void * str_obj, size_t hash_size) {
+    lis_obj * str = (lis_obj *)str_obj;
+    uintptr_t v = 0;
+    for (size_t i=0; i<LIS_STR(str)->size; i++) {
+        v = (v + LIS_STR(str)->body[i]) % hash_size;
+    }
+    return v;
 }
 
 lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
@@ -19,6 +32,13 @@ lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
         LIS_TAG_TYPE(name_str) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, name_str);
         return NULL;
+    }
+
+    _table * pkgtable = LIS_GENV(genv)->package_table;
+    _table_entry * res = _table_find(pkgtable, (void *)name_str);
+
+    if (res != NULL) {
+        return (lis_obj *)res->value;
     }
 
     lis_obj * pkg = _make_package(name_str);

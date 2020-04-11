@@ -3,6 +3,9 @@
 
 #include "obj.h"
 
+bool _table_string_eq(void * a, void * b);
+bool _hash_string(void * str_obj, size_t hash_size);
+
 lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str);
 lis_obj * _package_list_all_packages(lis_obj * genv);
 
