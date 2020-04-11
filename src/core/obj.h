@@ -158,17 +158,14 @@ typedef struct lis_package {
     size_t size;
 } lis_package;
 
-typedef struct lis_package_table {
-    lis_package * packages;
-    size_t size;
-} lis_package_table;
+#define LIS_PKG(obj) ((obj)->data.pkg)
 
 typedef enum env_type {
     LIS_ENV_GLOBAL, LIS_ENV_DYNAMIC, LIS_ENV_LEXICAL,
 } env_type;
 
 typedef struct lis_global_env {
-    lis_package_table * package_table;
+    _table * package_table;
     lis_obj * current_package;
     lis_obj * keyword_package;
 

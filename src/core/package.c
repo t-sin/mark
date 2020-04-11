@@ -4,7 +4,28 @@
 
 #include "obj.h"
 #include "lstring.h"
+#include "lerror.h"
+#include "list.h"
+#include "eval.h"
+
 #include "package.h"
+
+bool _table_string_eq(void * a, void * b) {
+    return _string_equal(LIS_STR((lis_obj *)a), LIS_STR((lis_obj *)b));
+}
+
+lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
+    if (LIS_TAG3(name_str) != LIS_TAG3_BUILTIN ||
+        LIS_TAG_TYPE(name_str) != LIS_TAG_TYPE_STR) {
+        not_string_error(genv, name_str);
+        return NULL;
+    }
+
+    lis_obj * pkg = _make_package(name_str);
+    _table_add(LIS_GENV(genv)->package_table, (void *)name_str, (void *)pkg, _table_string_eq);
+
+    return pkg;
+}
 
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
     assert(LIS_TAG3(package) == LIS_TAG3_BUILTIN);

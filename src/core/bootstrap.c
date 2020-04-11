@@ -4,6 +4,8 @@
 #include <string.h>
 #include <uchar.h>
 
+#include "../util/table.h"
+
 #include "obj.h"
 #include "lstring.h"
 #include "stream.h"
@@ -130,13 +132,16 @@ lis_obj * init_global_env() {
     lis_global_env * genv;
     genv = (lis_global_env *)malloc(sizeof(lis_global_env));
     memset(genv, 0, sizeof(lis_global_env));
+    genv->package_table = _make_table(256);
 
-    lis_obj * pkgname = LSTR(U"lis");
-    lis_obj * pkg_lis = _make_package(pkgname);
+    lis_obj * genv_obj = _make_env(LIS_ENV_GLOBAL);
+    genv_obj->data.env->env.global = genv;
+
+
+    lis_obj * pkg_lis = _package_make_package(genv_obj, LSTR(U"lis"));
     genv->current_package = pkg_lis;
 
-    lis_obj * kwd_pkgname = LSTR(U"keyword");
-    lis_obj * pkg_keyword = _make_package(kwd_pkgname);
+    lis_obj * pkg_keyword = _package_make_package(genv_obj, LSTR(U"keyword"));
     genv->keyword_package = pkg_keyword;
 
     lis_obj * nilname = LSTR(U"nil");
@@ -159,7 +164,5 @@ lis_obj * init_global_env() {
     init_special_forms(genv);
     init_functions(genv);
 
-    lis_obj * env = _make_env(LIS_ENV_GLOBAL);
-    env->data.env->env.global = genv;
-    return env;
+    return genv_obj;
 }
