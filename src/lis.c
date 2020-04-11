@@ -78,7 +78,7 @@ void repl(lis_obj * genv) {
         stream_flush(stream_stdout);
 
         lis_obj * obj;
-        obj = read(stream_stdin, genv);
+        obj = read(genv, stream_stdin);
 
         if (obj == NULL) {
             stream_write_char(stream_stdout, '\n');

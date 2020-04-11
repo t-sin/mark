@@ -76,9 +76,9 @@ int skip_whitespaces(lis_stream * stream) {
     }
 }
 
-lis_obj * read(lis_stream * stream, lis_obj * genv);
+lis_obj * read(lis_obj * genv, lis_stream * stream);
 
-lis_obj * read_integer(lis_stream * stream) {
+lis_obj * read_integer(lis_obj * genv, lis_stream * stream) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(10, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -130,7 +130,7 @@ int get_char_from_name(lis_char * name, size_t size) {
     return EOF;
 }
 
-lis_obj * read_character(lis_stream * stream) {
+lis_obj * read_character(lis_obj * genv, lis_stream * stream) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(10, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -168,11 +168,11 @@ lis_obj * read_character(lis_stream * stream) {
     }
 }
 
-lis_obj * read_array(lis_stream * stream) {
+lis_obj * read_array(lis_obj * genv, lis_stream * stream) {
     return NULL;
 }
 
-lis_obj * read_sharpmacro(lis_stream * stream) {
+lis_obj * read_sharpmacro(lis_obj * genv, lis_stream * stream) {
     lis_char ch;
     if (!stream_peek_char(stream, &ch)) {
         return NULL;
@@ -181,17 +181,17 @@ lis_obj * read_sharpmacro(lis_stream * stream) {
     switch (ch) {
     case '\\':
         stream_read_char(stream, &ch);
-        return read_character(stream);
+        return read_character(genv, stream);
     case '(':
         stream_read_char(stream, &ch);
-        return read_array(stream);
+        return read_array(genv, stream);
     default:
         stream_read_char(stream, &ch);
         return NULL;
     }
 }
 
-lis_obj * read_string(lis_stream * stream) {
+lis_obj * read_string(lis_obj * genv, lis_stream * stream) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(100, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -221,7 +221,7 @@ lis_obj * read_string(lis_stream * stream) {
     return NULL;
 }
 
-lis_obj * read_symbol(lis_stream * stream, lis_obj * genv) {
+lis_obj * read_symbol(lis_obj * genv, lis_stream * stream) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(1000, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -256,7 +256,7 @@ lis_obj * read_symbol(lis_stream * stream, lis_obj * genv) {
     return NULL;
 }
 
-lis_obj * read_cons(lis_stream * stream, lis_obj * genv) {
+lis_obj * read_cons(lis_obj * genv, lis_stream * stream) {
     lis_obj * head = _make_cons();
     lis_obj * current = head;
     lis_obj * prev_current = NULL;
@@ -273,13 +273,13 @@ lis_obj * read_cons(lis_stream * stream, lis_obj * genv) {
             break;
 
         } else {
-            current->data.cons->car = read(stream, genv);
+            current->data.cons->car = read(genv, stream);
             skip_whitespaces(stream);
 
             if (stream_peek_char(stream, &ch) && is_cons_delimiter(ch)) {
                 // cons
                 stream_read_char(stream, &ch);
-                current->data.cons->cdr = read(stream, genv);
+                current->data.cons->cdr = read(genv, stream);
 
                 skip_whitespaces(stream);
                 stream_peek_char(stream, &ch);
@@ -303,7 +303,7 @@ lis_obj * read_cons(lis_stream * stream, lis_obj * genv) {
     return head;
 }
 
-lis_obj * read(lis_stream * stream, lis_obj * genv) {
+lis_obj * read(lis_obj * genv, lis_stream * stream) {
     if (skip_whitespaces(stream) == EOF) {
         return NULL;
     }
@@ -316,22 +316,22 @@ lis_obj * read(lis_stream * stream, lis_obj * genv) {
         obj = NULL;
 
     } else if (is_numeric(ch)) {
-        obj = read_integer(stream);
+        obj = read_integer(genv, stream);
 
     } else if (is_sharpmacro(ch)) {
         stream_read_char(stream, &ch);
-        obj = read_sharpmacro(stream);
+        obj = read_sharpmacro(genv, stream);
 
     } else if (is_string_delimiter(ch)) {
         stream_read_char(stream, &ch);
-        obj = read_string(stream);
+        obj = read_string(genv, stream);
 
     } else if (is_cons_open_delimiter(ch)) {
         stream_read_char(stream, &ch);
-        obj = read_cons(stream, genv);
+        obj = read_cons(genv, stream);
 
     } else {
-        obj = read_symbol(stream, genv);
+        obj = read_symbol(genv, stream);
     }
 
     return obj;
