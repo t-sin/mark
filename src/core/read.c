@@ -3,10 +3,18 @@
 #include <string.h>
 
 #include "obj.h"
+#include "lstring.h"
 #include "stream.h"
 #include "package.h"
 
 #include "read.h"
+
+
+void reader_error(lis_obj * genv, lis_obj * str) {
+    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+    stream_write_string(buffer, str);
+    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+}
 
 bool is_cons_open_delimiter(lis_char ch) {
     return ch == '(';
@@ -155,7 +163,9 @@ lis_obj * read_character(lis_obj * genv, lis_stream * stream) {
             }
 
             if (ch == EOF) {
+                reader_error(genv, LSTR(U"unexpected EOF while reading character."));
                 return NULL;
+
             } else {
                 return _make_char(ch);
             }
@@ -169,12 +179,14 @@ lis_obj * read_character(lis_obj * genv, lis_stream * stream) {
 }
 
 lis_obj * read_array(lis_obj * genv, lis_stream * stream) {
+    reader_error(genv, LSTR(U"array is not implemented."));
     return NULL;
 }
 
 lis_obj * read_sharpmacro(lis_obj * genv, lis_stream * stream) {
     lis_char ch;
     if (!stream_peek_char(stream, &ch)) {
+        reader_error(genv, LSTR(U"unexpected EOF while reading second character of sharp macro."));
         return NULL;
     }
 
@@ -187,6 +199,7 @@ lis_obj * read_sharpmacro(lis_obj * genv, lis_stream * stream) {
         return read_array(genv, stream);
     default:
         stream_read_char(stream, &ch);
+        reader_error(genv, LSTR(U"unknown sharp macro character."));
         return NULL;
     }
 }
@@ -218,6 +231,7 @@ lis_obj * read_string(lis_obj * genv, lis_stream * stream) {
         }
     }
 
+    reader_error(genv, LSTR(U"unexpected EOF while reading string."));
     return NULL;
 }
 
@@ -232,6 +246,11 @@ lis_obj * read_symbol(lis_obj * genv, lis_stream * stream) {
             is_newline(ch) ||
             is_string_delimiter(ch) ||
             is_cons_delimiters(ch)) {
+
+            if (size == 0) {
+                reader_error(genv, LSTR(U"symbol with zero-length name."));
+                return NULL;
+            }
 
             lis_obj * name = _make_string();
             name->data.str->size = size;
@@ -253,6 +272,7 @@ lis_obj * read_symbol(lis_obj * genv, lis_stream * stream) {
         }
     }
 
+    reader_error(genv, LSTR(U"unexpected EOF while reading symbol."));
     return NULL;
 }
 
@@ -284,6 +304,7 @@ lis_obj * read_cons(lis_obj * genv, lis_stream * stream) {
                 skip_whitespaces(stream);
                 stream_peek_char(stream, &ch);
                 if (!is_cons_close_delimiter(ch)) {
+                    reader_error(genv, LSTR(U"cons?"));
                     return NULL;
                 } else {
                     stream_read_char(stream, &ch);
