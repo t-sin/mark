@@ -20,7 +20,7 @@
   - [x] symbols (without packages)
   - [x] streams
   - [x] conses and lists
-  - [ ] environments
+  - [x] environments
   - [ ] function objects
   - [ ] lexical closures
   - [ ] packages
@@ -30,8 +30,8 @@
   - [ ] string operations
   - [ ] cons operations
 - [ ] REPL
-  - [ ] cheap reader
-  - [ ] eval
+  - [x] cheap reader
+  - [x] eval
   - [ ] print
   - [ ] reader with readtable
 - [ ] advanced features
