@@ -142,6 +142,8 @@ typedef struct lis_symbol {
     lis_obj * fn;
 } lis_symbol;
 
+#define LIS_SYM(obj) ((obj)->data.sym)
+
 typedef struct lis_cons {
     lis_obj * car;
     lis_obj * cdr;
