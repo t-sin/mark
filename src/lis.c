@@ -80,7 +80,20 @@ void repl(lis_obj * genv) {
         lis_obj * obj;
         obj = read(genv, stream_stdin);
 
-        if (obj == NULL) {
+        if (LIS_GENV(genv)->error) {
+            stream_write_string(stream_stderr, LSTR(U"READER ERROR: "));
+            stream_write_string(stream_stderr, LIS_ERR(LIS_GENV(genv)->error)->message);
+            stream_write_char(stream_stderr, '\n');
+            stream_flush(stream_stderr);
+            LIS_GENV(genv)->error = NULL;
+
+            while (!stream_listen_p(stream_stdin)) {
+                lis_char ch;
+                stream_read_char(stream_stdin, &ch);
+            }
+            continue;
+
+        } else if (obj == NULL) {
             stream_write_char(stream_stdout, '\n');
             stream_flush(stream_stdout);
             break;
