@@ -87,7 +87,8 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"elt", sym_seq_elt, seq_elt);
 
     // packages
-    define_builtin_function(U"list-all-packages", sym_package_list_all_packages, _package_list_all_packages);
+    define_builtin_function(U"list-all-packages", sym_package_list_all_packages, package_list_all_packages);
+    define_builtin_function(U"make-package", sym_package_make_package, package_make_package);
 }
 
 void init_streams(lis_global_env * genv) {
