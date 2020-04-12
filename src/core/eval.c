@@ -143,6 +143,8 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
 }
 
 lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
+    if (obj == NULL) return NULL;
+
     if (LIS_TAG3(obj) == LIS_TAG3_INT) {
         return obj;  // integer
     } else if (LIS_TAG3(obj) == LIS_TAG3_CHAR) {
