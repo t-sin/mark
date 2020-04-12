@@ -94,6 +94,16 @@ lis_obj * _make_raw_function(lis_obj * (*raw_fn)(lis_obj *, lis_obj *)) {
     return fn;
 }
 
+lis_obj * _make_lisp_function(lis_obj * lambdalist, lis_obj * body) {
+    lis_obj * fn = (lis_obj *)malloc(sizeof(lis_obj));
+    fn->tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_FN << 4;
+    fn->data.fn = (lis_function *)malloc(sizeof(lis_function));
+    fn->data.fn->type = LIS_FUNC_NORMAL;
+    fn->data.fn->lambdalist = lambdalist;
+    fn->data.fn->body.lisp = body;
+    return fn;
+}
+
 lis_obj * _make_lis_stream(lis_stream * s) {
     lis_obj * stream = (lis_obj *)malloc(sizeof(lis_obj));
     stream->tags = LIS_TAG3_BUILTIN << 1 | LIS_TAG_TYPE_STRM << 4;
