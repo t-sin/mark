@@ -154,12 +154,10 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
 
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:
-            return obj;
-
         case LIS_TAG_TYPE_STR:
+        case LIS_TAG_TYPE_TS:
             return obj;
 
-        case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
             val = get_lexical_value(lenv, obj);
             if (val != NULL) {
@@ -175,6 +173,7 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
         case LIS_TAG_TYPE_FN:
         case LIS_TAG_TYPE_CLS:
         case LIS_TAG_TYPE_PKG:
+            return obj;
             break;
         }
     } else {
