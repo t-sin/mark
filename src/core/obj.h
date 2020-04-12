@@ -203,7 +203,7 @@ typedef struct lis_env {
 #define LIS_LENV(obj) ((obj)->data.env->env.lexical)
 
 typedef enum lis_function_type {
-    LIS_FUNC_NORMAL, LIS_FUNC_SPECIAL_FORM, LIS_FUNC_MACRO
+    LIS_FUNC_RAW, LIS_FUNC_NORMAL,LIS_FUNC_SPECIAL_FORM, LIS_FUNC_MACRO
 } lis_function_type;
 
 typedef struct lis_function {

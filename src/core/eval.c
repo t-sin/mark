@@ -40,7 +40,8 @@ bool check_argeven(lis_obj * genv, lis_obj * args, lis_obj * opname) {
 }
 
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
-    if (LIS_FN(fn)->type != LIS_FUNC_NORMAL) {
+    if (LIS_FN(fn)->type != LIS_FUNC_RAW &&
+        LIS_FN(fn)->type != LIS_FUNC_NORMAL) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, fn, buffer);
         stream_write_string(buffer, LSTR(U" is not a lisp function."));
@@ -49,7 +50,7 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
         return NULL;
     }
 
-    if (LIS_FN(fn)->body.raw != NULL) {
+    if (LIS_FN(fn)->type == LIS_FUNC_RAW) {
         return fn->data.fn->body.raw(genv, args);
     } else {
         // do check lambda list
@@ -106,6 +107,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
         lis_obj * args;
         lis_obj * ret;
         switch (fn->data.fn->type) {
+        case LIS_FUNC_RAW:
         case LIS_FUNC_NORMAL:
             args = eval_args(genv, lenv, cdr);
             if (args == NULL) return NULL;

@@ -42,7 +42,7 @@ void init_special_forms(lis_global_env * genv) {
     lis_obj * symname = _make_symbol(LSTR(opname)); \
     symname->data.sym->package = genv->current_package; \
     symname->data.sym->fn = _make_raw_function(cfnname); \
-    symname->data.sym->fn->data.fn->type = LIS_FUNC_NORMAL; \
+    symname->data.sym->fn->data.fn->type = LIS_FUNC_RAW; \
     assert(add_symbol(genv->current_package, symname) != NULL)
 
 
