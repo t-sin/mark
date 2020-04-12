@@ -34,6 +34,7 @@ void init_special_forms(lis_global_env * genv) {
     define_special_form(U"progn", sym_progn, lis_sf_progn);
     define_special_form(U"if", sym_if, lis_sf_if);
     define_special_form(U"let", sym_let, lis_sf_let);
+    define_special_form(U"lambda", sym_lambda, lis_sf_lambda);
 
     // flet
 }

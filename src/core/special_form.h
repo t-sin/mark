@@ -9,5 +9,6 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * lenv, lis_obj * args);
 lis_obj * lis_sf_progn(lis_obj * genv, lis_obj * lenv, lis_obj * args);
 lis_obj * lis_sf_if(lis_obj * genv, lis_obj * lenv, lis_obj * args);
 lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args);
+lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args);
 
 #endif

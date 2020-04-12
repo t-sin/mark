@@ -111,3 +111,20 @@ lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 
     return lis_sf_progn(genv, new_lenv, _list_cdr(genv, args));
 }
+
+lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+    if (_list_length(genv, args)->data.num < 2) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        stream_write_string(buffer, LSTR(U"malformed lambda expression: "));
+        print(genv, args, buffer);
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return NULL;
+    }
+
+    lis_obj * lambdalist = _list_nth(genv, _make_int(0), args);
+    lis_obj * body = _list_nth(genv, _make_int(1), args);
+
+    // validate lambda list
+
+    return _make_lisp_function(lambdalist, body);
+}
