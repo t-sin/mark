@@ -254,7 +254,7 @@ lis_obj * stream_output_to_string(lis_stream * stream) {
     }
 
     lis_obj * str = _make_string();
-    LIS_STR(str)->size = idx - 1;
+    LIS_STR(str)->size = idx;
     LIS_STR(str)->body = buf;
 
     return str;
