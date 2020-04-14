@@ -384,9 +384,9 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
 
     } else {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-        stream_write_string(buffer, LSTR(U"unknown operator: "));
+        stream_write_string(buffer, LSTR(U"unknown operator: `"));
         stream_write_string(buffer, LIS_SYM(name)->name);
-        stream_write_string(buffer, LSTR(U"."));
+        stream_write_string(buffer, LSTR(U"`."));
 
         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
         return NULL;
