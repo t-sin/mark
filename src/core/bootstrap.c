@@ -138,6 +138,23 @@ void init_streams(lis_global_env * genv) {
     genv->stream_stderr = stream_stderr;
 }
 
+#define define_symbol(sym_name, pkg, name) \
+    lis_obj * sym_name = _make_symbol(LSTR(name)); \
+    sym_name->data.sym->constant_p = true; \
+    sym_name->data.sym->package = (pkg); \
+    assert(add_symbol((pkg), sym_name) != NULL);
+
+void init_symbols(lis_global_env * genv) {
+    define_symbol(sym_nil, genv->current_package, U"nil");
+    sym_nil->data.sym->value = sym_nil;
+    genv->symbol_nil = sym_nil;
+
+    define_symbol(sym_t, genv->current_package, U"t");
+    sym_t->data.sym->value = sym_t;
+    genv->symbol_t = sym_t;
+
+}
+
 lis_obj * init_global_env() {
     lis_global_env * genv;
     genv = (lis_global_env *)malloc(sizeof(lis_global_env));
@@ -156,22 +173,7 @@ lis_obj * init_global_env() {
     lis_obj * pkg_keyword = _package_make_package(genv_obj, LSTR(U"keyword"));
     genv->keyword_package = pkg_keyword;
 
-    lis_obj * nilname = LSTR(U"nil");
-    lis_obj * sym_nil = _make_symbol(nilname);
-    sym_nil->data.sym->constant_p = true;
-    sym_nil->data.sym->package = pkg_lis;
-    sym_nil->data.sym->value = sym_nil;
-    assert(add_symbol(pkg_lis, sym_nil) != NULL);
-    genv->symbol_nil = sym_nil;
-
-    lis_obj * tname = LSTR(U"t");
-    lis_obj * sym_t = _make_symbol(tname);
-    sym_t->data.sym->constant_p = true;
-    sym_t->data.sym->package = pkg_lis;
-    sym_t->data.sym->value = sym_t;
-    assert(add_symbol(pkg_lis, sym_t) != NULL);
-    genv->symbol_t = sym_t;
-
+    init_symbols(genv);
     init_streams(genv);
     init_special_forms(genv);
     init_functions(genv);
