@@ -21,18 +21,18 @@
   - [x] streams
   - [x] conses and lists
   - [x] environments
-  - [ ] function objects
+  - [x] function objects
   - [ ] lexical closures
-  - [ ] packages
+  - [x] packages
   - [ ] timestamps
 - [ ] operations
-  - [ ] arithmatic operations for integers
+  - [x] arithmatic operations for integers
   - [ ] string operations
-  - [ ] cons operations
+  - [x] cons operations
 - [ ] REPL
   - [x] cheap reader
   - [x] eval
-  - [ ] print
+  - [x] print
   - [ ] reader with readtable
 - [ ] advanced features
   - [ ] garbage collection
