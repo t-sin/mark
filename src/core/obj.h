@@ -209,9 +209,22 @@ typedef enum lis_function_type {
     LIS_FUNC_RAW, LIS_FUNC_NORMAL,LIS_FUNC_SPECIAL_FORM, LIS_FUNC_MACRO
 } lis_function_type;
 
+typedef struct lis_arg {
+    lis_obj * name;
+    lis_obj * default_value;
+    struct lis_arg * next;
+} lis_arg;
+
+typedef struct lis_lambdalist {
+    lis_obj * required;
+    lis_arg * optional;
+    lis_arg * keyword;
+    lis_obj * rest;
+} lis_lambdalist;
+
 typedef struct lis_function {
     lis_function_type type;
-    lis_obj * lambdalist;
+    lis_lambdalist * lambdalist;
     union {
         lis_obj * lisp;
         lis_obj * (* raw)(lis_obj *, lis_obj *);

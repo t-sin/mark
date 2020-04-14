@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "obj.h"
 #include "lstring.h"
@@ -39,8 +40,162 @@ bool check_argeven(lis_obj * genv, lis_obj * args, lis_obj * opname) {
     }
 }
 
-bool validate_lambdalist(lis_obj * genv, lis_obj * lambdalist) {
-    return true;
+lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * lambdalist) {
+    lis_obj * rest = lambdalist;
+    bool optional_p = false;
+    bool keyword_p = false;
+    bool rest_p = false;
+
+    lis_arg * optional_prev = NULL;
+    lis_arg * keyword_prev = NULL;
+
+    lis_lambdalist * llist = (lis_lambdalist *)malloc(sizeof(lis_lambdalist));
+    memset(llist, 0, sizeof(lis_lambdalist));
+    llist->required = LIS_GENV(genv)->symbol_nil;
+
+    while (rest != LIS_GENV(genv)->symbol_nil) {
+        lis_obj * car = _list_car(genv, rest);
+
+        if (car == LIS_GENV(genv)->symbol_optional) {
+            if (keyword_p || rest_p) {
+                lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                stream_write_string(buffer, LSTR(U"misplaced `&optional` in lambda list: "));
+                print(genv, lambdalist, buffer);
+                LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                return NULL;
+            }
+
+            optional_p = true;
+
+        } else if (car == LIS_GENV(genv)->symbol_key) {
+            if (rest_p) {
+                lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                stream_write_string(buffer, LSTR(U"misplaced `&key` in lambda list: "));
+                print(genv, lambdalist, buffer);
+                LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                return NULL;
+            }
+
+            keyword_p = true;
+
+        } else if (car == LIS_GENV(genv)->symbol_rest) {
+            rest_p = true;
+
+        } else {
+            if (rest_p) {
+                if (_list_length(genv, rest)->data.num == 1) {
+                    llist->rest = car;
+
+                } else {
+                    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                    stream_write_string(buffer, LSTR(U"too many &rest args in lambda list: "));
+                    print(genv, lambdalist, buffer);
+                    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                    return NULL;
+                }
+
+            } else if (keyword_p) {
+                lis_arg * arg = NULL;
+
+                if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                    LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
+                    arg = (lis_arg *)malloc(sizeof(lis_arg));
+                    arg->name = car;
+                    arg->default_value = NULL;
+                    arg->next = NULL;
+
+                } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                           LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
+
+                    if (_list_length(genv, car)->data.num != 2) {
+                        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                        stream_write_string(buffer, LSTR(U"malformed keyword arg: "));
+                        print(genv, car, buffer);
+                        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                    }
+
+                    arg = (lis_arg *)malloc(sizeof(lis_arg));
+                    arg->name = _list_nth(genv, _make_int(0), car);
+                    arg->default_value = eval(genv, lenv, _list_nth(genv, _make_int(1), car));
+                    arg->next = NULL;
+
+                } else {
+                    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                    print(genv, car, buffer);
+                    stream_write_string(buffer, LSTR(U" is nether symbol nor list."));
+                    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                    return NULL;
+                }
+
+                if (keyword_prev != NULL) {
+                    keyword_prev->next = arg;
+                }
+
+                if (llist->keyword == NULL) {
+                    llist->keyword = arg;
+                }
+
+            } else if (optional_p) {
+                lis_arg * arg = NULL;
+
+                if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                    LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
+                    arg = (lis_arg *)malloc(sizeof(lis_arg));
+                    arg->name = car;
+                    arg->default_value = NULL;
+                    arg->next = NULL;
+
+                } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                           LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
+
+                    if (_list_length(genv, car)->data.num != 2) {
+                        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                        stream_write_string(buffer, LSTR(U"malformed optional arg: "));
+                        print(genv, car, buffer);
+                        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                    }
+
+                    arg = (lis_arg *)malloc(sizeof(lis_arg));
+                    arg->name = _list_nth(genv, _make_int(0), car);
+                    arg->default_value = eval(genv, lenv, _list_nth(genv, _make_int(1), car));
+                    arg->next = NULL;
+
+                } else {
+                    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                    print(genv, car, buffer);
+                    stream_write_string(buffer, LSTR(U" is nether symbol nor list."));
+                    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                    return NULL;
+                }
+
+                if (optional_prev != NULL) {
+                    optional_prev->next = arg;
+                }
+
+                if (llist->optional == NULL) {
+                    llist->optional = arg;
+                }
+
+            } else {
+                if (LIS_TAG3(car) != LIS_TAG3_BUILTIN ||
+                    LIS_TAG_TYPE(car) != LIS_TAG_TYPE_SYM) {
+                    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                    print(genv, car, buffer);
+                    stream_write_string(buffer, LSTR(U" is not a symbol."));
+                    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                    return NULL;
+                }
+                llist->required = _list_cons(genv, car, llist->required);
+            }
+        }
+
+        rest = _list_cdr(genv, rest);
+    }
+
+    if (llist->required != LIS_GENV(genv)->symbol_nil) {
+        llist->required = _list_reverse(genv, llist->required);
+    }
+    return llist;
 }
 
 lis_obj * bind_lambdalist(lis_obj * fn, lis_obj * args) {
