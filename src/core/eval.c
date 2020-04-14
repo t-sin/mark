@@ -91,7 +91,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
                     lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->default_value = NULL;
+                    arg->default_value = LIS_GENV(genv)->symbol_nil;
                     _table_add(llist->keyword, (void *)car, (void *)arg);
 
                 } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
