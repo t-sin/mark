@@ -182,8 +182,90 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
     return llist;
 }
 
-lis_obj * bind_lambdalist(lis_obj * fn, lis_obj * args) {
-    return NULL;
+lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
+    lis_obj * lenv = _make_lexical_env(LIS_ENV_LEXICAL);
+    lis_obj * args_rest = args;
+    lis_lambdalist * lambdalist = LIS_FN(fn)->lambdalist;
+
+    lis_obj * required_rest = lambdalist->required;
+    while (required_rest != LIS_GENV(genv)->symbol_nil) {
+        if (args_rest == LIS_GENV(genv)->symbol_nil) {
+            LIS_GENV(genv)->error = _make_error(LSTR(U"too few argument."));
+            return NULL;
+        }
+
+        lis_obj * name = _list_car(genv, required_rest);
+        lis_obj * value = _list_car(genv, args_rest);
+        set_lexical_value(lenv, name, value);
+
+        args_rest = _list_cdr(genv, args_rest);
+        required_rest = _list_cdr(genv, required_rest);
+    }
+
+    lis_arg * optional_rest = lambdalist->optional;
+    while (optional_rest != NULL) {
+        lis_obj * name = optional_rest->name;
+
+        if (args_rest == LIS_GENV(genv)->symbol_nil) {
+            set_lexical_value(lenv, name, optional_rest->default_value);
+
+        } else {
+            lis_obj * value = _list_car(genv, args_rest);
+            set_lexical_value(lenv, name, value);
+            args_rest = _list_cdr(genv, args_rest);
+        }
+
+        optional_rest = optional_rest->next;
+    }
+
+    if (lambdalist->rest != NULL) {
+        set_lexical_value(lenv, lambdalist->rest, args_rest);
+    }
+
+    if (lambdalist->keyword != NULL) {
+        int keyword_arg_num = 0;
+
+        while (args_rest != LIS_GENV(genv)->symbol_nil) {
+            lis_obj * name = _list_car(genv, args_rest);
+            _table_entry * e = _table_find(lambdalist->keyword, (void *)name);
+
+            if (e == NULL) {
+                lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                stream_write_string(buffer, LSTR(U"unknown keyword arg: "));
+                print(genv, name, buffer);
+                LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                return NULL;
+            }
+
+            args_rest = _list_cdr(genv, args_rest);
+
+            if (args_rest == LIS_GENV(genv)->symbol_nil) {
+                LIS_GENV(genv)->error = _make_error(LSTR(U"odd nunber of &key argument."));
+                return NULL;
+            }
+
+            lis_obj * value = _list_car(genv, args_rest);
+            set_lexical_value(lenv, name, value);
+            keyword_arg_num++;
+
+            args_rest = _list_cdr(genv, args_rest);
+
+            if (keyword_arg_num == lambdalist->keyword->num) {
+                break;
+            }
+        }
+
+        for (size_t i=0; i<lambdalist->keyword->size; i++) {
+            _table_entry * e = lambdalist->keyword->array + i;
+            if (e == NULL) continue;
+        }
+    }
+
+    if (args_rest != LIS_GENV(genv)->symbol_nil) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"too many argument."));
+    }
+
+    return lenv;
 }
 
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
@@ -199,8 +281,13 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
 
     if (LIS_FN(fn)->type == LIS_FUNC_RAW) {
         return LIS_FN(fn)->body.raw(genv, args);
+
     } else {
-        lis_obj * new_lenv = bind_lambdalist(fn, args);
+        lis_obj * new_lenv = bind_lambdalist(genv, fn, args);
+        if (new_lenv == NULL) {
+            return NULL;
+        }
+
         return eval(genv, new_lenv, LIS_FN(fn)->body.lisp);
     }
 }
