@@ -153,6 +153,11 @@ void init_symbols(lis_global_env * genv) {
     sym_t->data.sym->value = sym_t;
     genv->symbol_t = sym_t;
 
+    define_symbol(sym_optional, genv->current_package, U"&optional");
+    genv->symbol_optional = sym_optional;
+
+    define_symbol(sym_key, genv->current_package, U"&key");
+    genv->symbol_key = sym_key;
 }
 
 lis_obj * init_global_env() {

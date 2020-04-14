@@ -173,6 +173,8 @@ typedef struct lis_global_env {
 
     lis_obj * symbol_t;
     lis_obj * symbol_nil;
+    lis_obj * symbol_optional;
+    lis_obj * symbol_key;
 
     lis_obj * stream_stdin;
     lis_obj * stream_stdout;
