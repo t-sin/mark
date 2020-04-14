@@ -210,15 +210,13 @@ typedef enum lis_function_type {
 } lis_function_type;
 
 typedef struct lis_arg {
-    lis_obj * name;
     lis_obj * default_value;
-    struct lis_arg * next;
 } lis_arg;
 
 typedef struct lis_lambdalist {
     lis_obj * required;
-    lis_arg * optional;
-    lis_arg * keyword;
+    _table * optional;
+    _table * keyword;
     lis_obj * rest;
 } lis_lambdalist;
 

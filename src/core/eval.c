@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../util/table.h"
+
 #include "obj.h"
 #include "lstring.h"
 #include "stream.h"
@@ -46,9 +48,6 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
     bool keyword_p = false;
     bool rest_p = false;
 
-    lis_arg * optional_prev = NULL;
-    lis_arg * keyword_prev = NULL;
-
     lis_lambdalist * llist = (lis_lambdalist *)malloc(sizeof(lis_lambdalist));
     memset(llist, 0, sizeof(lis_lambdalist));
     llist->required = LIS_GENV(genv)->symbol_nil;
@@ -66,6 +65,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
             }
 
             optional_p = true;
+            llist->optional = _make_table(256);
 
         } else if (car == LIS_GENV(genv)->symbol_key) {
             if (rest_p) {
@@ -77,6 +77,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
             }
 
             keyword_p = true;
+            llist->keyword = _make_table(256);
 
         } else if (car == LIS_GENV(genv)->symbol_rest) {
             rest_p = true;
@@ -95,14 +96,11 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 }
 
             } else if (keyword_p) {
-                lis_arg * arg = NULL;
-
                 if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
-                    arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->name = car;
+                    lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
                     arg->default_value = NULL;
-                    arg->next = NULL;
+                    _table_add(llist->keyword, (void *)car, (void *)arg);
 
                 } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
                            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
@@ -114,10 +112,10 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
                     }
 
-                    arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->name = _list_nth(genv, _make_int(0), car);
+                    lis_obj * name = _list_nth(genv, _make_int(0), car);
+                    lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
                     arg->default_value = eval(genv, lenv, _list_nth(genv, _make_int(1), car));
-                    arg->next = NULL;
+                    _table_add(llist->keyword, (void *)name, (void *)arg);
 
                 } else {
                     lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -127,23 +125,12 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                     return NULL;
                 }
 
-                if (keyword_prev != NULL) {
-                    keyword_prev->next = arg;
-                }
-
-                if (llist->keyword == NULL) {
-                    llist->keyword = arg;
-                }
-
             } else if (optional_p) {
-                lis_arg * arg = NULL;
-
                 if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
-                    arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->name = car;
+                    lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
                     arg->default_value = NULL;
-                    arg->next = NULL;
+                    _table_add(llist->optional, (void *)car, (void *)arg);
 
                 } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
                            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
@@ -155,10 +142,10 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
                     }
 
-                    arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->name = _list_nth(genv, _make_int(0), car);
+                    lis_obj * name = _list_nth(genv, _make_int(0), car);
+                    lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
                     arg->default_value = eval(genv, lenv, _list_nth(genv, _make_int(1), car));
-                    arg->next = NULL;
+                    _table_add(llist->optional, (void *)name, (void *)arg);
 
                 } else {
                     lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -166,14 +153,6 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                     stream_write_string(buffer, LSTR(U" is nether symbol nor list."));
                     LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
                     return NULL;
-                }
-
-                if (optional_prev != NULL) {
-                    optional_prev->next = arg;
-                }
-
-                if (llist->optional == NULL) {
-                    llist->optional = arg;
                 }
 
             } else {
