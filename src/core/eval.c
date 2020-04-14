@@ -429,8 +429,15 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
             val = get_lexical_value(lenv, obj);
             if (val != NULL) {
                 return val;
-            } else {
+            } else if (obj->data.sym->value != NULL) {
                 return obj->data.sym->value;
+            } else {
+                buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                stream_write_string(buffer, LSTR(U"unbound variable: `"));
+                print(genv, obj, buffer);
+                stream_write_string(buffer, LSTR(U"`."));
+                LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                return NULL;
             }
 
         case LIS_TAG_TYPE_CONS:
