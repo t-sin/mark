@@ -179,6 +179,13 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
         case LIS_TAG_TYPE_PKG:
             return obj;
             break;
+
+        default:
+            lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+            print(genv, obj, buffer);
+            stream_write_string(buffer, LSTR(U" is unknown type... it may be a bug!"));
+            LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+            return NULL;
         }
     } else {
         return obj;
