@@ -48,6 +48,8 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
     bool keyword_p = false;
     bool rest_p = false;
 
+    lis_arg * optional_rest = NULL;
+
     lis_lambdalist * llist = (lis_lambdalist *)malloc(sizeof(lis_lambdalist));
     memset(llist, 0, sizeof(lis_lambdalist));
     llist->required = LIS_GENV(genv)->symbol_nil;
@@ -65,26 +67,25 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
             }
 
             optional_p = true;
-            llist->optional = _make_table(256);
 
-        } else if (car == LIS_GENV(genv)->symbol_key) {
-            if (rest_p) {
+        } else if (car == LIS_GENV(genv)->symbol_rest) {
+            if (keyword_p) {
                 lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-                stream_write_string(buffer, LSTR(U"misplaced `&key` in lambda list: "));
+                stream_write_string(buffer, LSTR(U"misplaced `&rest` in lambda list: "));
                 print(genv, lambdalist, buffer);
                 LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
                 return NULL;
             }
 
+            rest_p = true;
+
+        } else if (car == LIS_GENV(genv)->symbol_key) {
             keyword_p = true;
             llist->keyword = _make_table(256);
 
-        } else if (car == LIS_GENV(genv)->symbol_rest) {
-            rest_p = true;
-
         } else {
             if (rest_p) {
-                if (_list_length(genv, rest)->data.num == 1) {
+                if (llist->rest == NULL) {
                     llist->rest = car;
 
                 } else {
@@ -126,11 +127,14 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 }
 
             } else if (optional_p) {
+                lis_arg * arg;
+
                 if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
-                    lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->default_value = NULL;
-                    _table_add(llist->optional, (void *)car, (void *)arg);
+                    arg = (lis_arg *)malloc(sizeof(lis_arg));
+                    arg->name = car;
+                    arg->default_value = LIS_GENV(genv)->symbol_nil;
+                    arg->next = NULL;
 
                 } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
                            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
@@ -142,10 +146,10 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
                     }
 
-                    lis_obj * name = _list_nth(genv, _make_int(0), car);
-                    lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
+                    arg = (lis_arg *)malloc(sizeof(lis_arg));
+                    arg->name = _list_nth(genv, _make_int(0), car);
                     arg->default_value = eval(genv, lenv, _list_nth(genv, _make_int(1), car));
-                    _table_add(llist->optional, (void *)name, (void *)arg);
+                    arg->next = NULL;
 
                 } else {
                     lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -154,6 +158,16 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                     LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
                     return NULL;
                 }
+
+                if (llist->optional == NULL) {
+                    llist->optional = arg;
+                }
+
+                if (optional_rest != NULL) {
+                    optional_rest->next = arg;
+                }
+
+                optional_rest = arg;
 
             } else {
                 if (LIS_TAG3(car) != LIS_TAG3_BUILTIN ||
