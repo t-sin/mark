@@ -28,6 +28,8 @@ lis_obj * list_third(lis_obj * genv, lis_obj * args);
 lis_obj * list_fourth(lis_obj * genv, lis_obj * args);
 lis_obj * list_fifth(lis_obj * genv, lis_obj * args);
 
+lis_obj * list_list(lis_obj * genv, lis_obj * args);
+
 lis_obj * _list_reverse(lis_obj * genv, lis_obj * list);
 
 #endif

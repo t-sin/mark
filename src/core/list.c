@@ -234,3 +234,17 @@ lis_obj * _list_reverse(lis_obj * genv, lis_obj * list) {
 
     return new_list;
 }
+
+lis_obj * list_list(lis_obj * genv, lis_obj * args) {
+    lis_obj * new_list = LIS_GENV(genv)->symbol_nil;
+    lis_obj * rest = args;
+
+    while (rest != LIS_GENV(genv)->symbol_nil) {
+        lis_obj * car = _list_car(genv, rest);
+        new_list = _list_cons(genv, car, new_list);
+        rest = _list_cdr(genv, rest);
+    }
+
+    return _list_reverse(genv, new_list);
+}
+
