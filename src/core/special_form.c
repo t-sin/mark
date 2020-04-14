@@ -48,10 +48,10 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return val;
     }
 
-    _table_entry * entry = _table_find(LIS_LENV(lenv)->var, (void *)sym);
+    lis_obj * value = get_lexical_value(lenv, sym);
 
-    if (entry != NULL) {
-        set_lexical_value(lenv, sym, val);
+    if (value != NULL) {
+        find_and_set_lexical_value(lenv, sym, val);
     } else {
         sym->data.sym->value = val;
     }
