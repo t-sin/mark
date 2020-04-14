@@ -155,6 +155,7 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
     } else if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN) {
         // built-in types
         lis_obj * val;
+        lis_stream * buffer;
 
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:
@@ -181,7 +182,7 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
             break;
 
         default:
-            lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+            buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
             print(genv, obj, buffer);
             stream_write_string(buffer, LSTR(U" is unknown type... it may be a bug!"));
             LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
