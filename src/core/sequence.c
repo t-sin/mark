@@ -114,3 +114,38 @@ lis_obj * seq_elt(lis_obj * genv, lis_obj * args) {
     lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
     return _seq_elt(genv, arg1, arg2);
 }
+
+lis_obj * _seq_reverse(lis_obj * genv, lis_obj * seq) {
+   if (seq == LIS_GENV(genv)->symbol_nil) {
+        return _make_int(0);
+
+    } else if (LIS_TAG3(seq) == LIS_TAG3_BUILTIN) {
+        switch (LIS_TAG_TYPE(seq)) {
+        case LIS_TAG_TYPE_ARY:
+            return NULL;
+
+        case LIS_TAG_TYPE_STR:
+            return NULL;
+
+        case LIS_TAG_TYPE_CONS:
+            return _list_reverse(genv, seq);
+
+        default:
+            not_seq_error(genv, seq);
+            return NULL;
+        }
+
+    } else {
+        // user defined sequences??
+        not_seq_error(genv, seq);
+        return NULL;
+    }
+}
+
+lis_obj * seq_reverse(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"reverse"))) {
+        return NULL;
+    }
+
+    return _seq_reverse(genv, _list_nth(genv, _make_int(0), args));
+}

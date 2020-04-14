@@ -221,3 +221,16 @@ lis_obj * list_fifth(lis_obj * genv, lis_obj * args) {
 
     return _list_nth(genv, _make_int(4), LIS_CONS(args)->car);
 }
+
+lis_obj * _list_reverse(lis_obj * genv, lis_obj * list) {
+    lis_obj * new_list = LIS_GENV(genv)->symbol_nil;
+    lis_obj * rest = list;
+
+    while (rest != LIS_GENV(genv)->symbol_nil) {
+        lis_obj * car = _list_car(genv, rest);
+        new_list = _list_cons(genv, car, new_list);
+        rest = _list_cdr(genv, rest);
+    }
+
+    return new_list;
+}

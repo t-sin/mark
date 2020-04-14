@@ -18,7 +18,8 @@ lis_obj * seq_elt(lis_obj * genv, lis_obj * args);
 // seq_map
 // seq_reduce
 
-// seq_reverse
+lis_obj * _seq_reverse(lis_obj * genv, lis_obj * seq);
+lis_obj * seq_reverse(lis_obj * genv, lis_obj * args);
 
 // seq_sort
 
