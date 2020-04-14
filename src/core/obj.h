@@ -235,9 +235,11 @@ typedef struct lis_function {
 #define LIS_FN(obj) ((obj)->data.fn)
 
 typedef struct lis_closure {
-    lis_function fn;
-    lis_env env;
+    lis_obj * fn;
+    lis_obj * env;
 } lis_closure;
+
+#define LIS_CLS(obj) ((obj)->data.cls)
 
 typedef enum lis_stream_direction_type {
     LIS_STREAM_IN, LIS_STREAM_OUT, LIS_STREAM_INOUT,
@@ -278,6 +280,7 @@ lis_obj * _make_env();
 lis_obj * _make_lexical_env();
 lis_obj * _make_raw_function();
 lis_obj * _make_lisp_function(lis_lambdalist * lambdalist, lis_obj * body);
+lis_obj * _make_lisp_closure(lis_lambdalist * lambdalist, lis_obj * body, lis_obj * lenv);
 lis_obj * _make_lis_stream(lis_stream * s);
 lis_obj * _make_error(lis_obj * msg);
 
