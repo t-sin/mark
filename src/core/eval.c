@@ -84,17 +84,8 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
             llist->keyword = _make_table(256);
 
         } else {
-            if (rest_p) {
-                if (llist->rest == NULL) {
-                    llist->rest = car;
-
-                } else {
-                    lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-                    stream_write_string(buffer, LSTR(U"too many &rest args in lambda list: "));
-                    print(genv, lambdalist, buffer);
-                    LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
-                    return NULL;
-                }
+            if (rest_p && llist->rest == NULL) {
+                llist->rest = car;
 
             } else if (keyword_p) {
                 if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
