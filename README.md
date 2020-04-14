@@ -22,7 +22,7 @@
   - [x] conses and lists
   - [x] environments
   - [x] function objects
-  - [ ] lexical closures
+  - [x] lexical closures
   - [x] packages
   - [ ] timestamps
 - [ ] operations
