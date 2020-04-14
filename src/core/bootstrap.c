@@ -158,6 +158,9 @@ void init_symbols(lis_global_env * genv) {
 
     define_symbol(sym_key, genv->current_package, U"&key");
     genv->symbol_key = sym_key;
+
+    define_symbol(sym_rest, genv->current_package, U"&rest");
+    genv->symbol_rest = sym_rest;
 }
 
 lis_obj * init_global_env() {
