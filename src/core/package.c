@@ -18,7 +18,7 @@ bool _table_string_eq(void * a, void * b) {
     return _string_equal(LIS_STR((lis_obj *)a), LIS_STR((lis_obj *)b));
 }
 
-bool _hash_string(void * str_obj, size_t hash_size) {
+size_t _hash_string(void * str_obj, size_t hash_size) {
     lis_obj * str = (lis_obj *)str_obj;
     uintptr_t v = 0;
     for (size_t i=0; i<LIS_STR(str)->size; i++) {
