@@ -257,7 +257,14 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
 
         for (size_t i=0; i<lambdalist->keyword->size; i++) {
             _table_entry * e = lambdalist->keyword->array + i;
-            if (e == NULL) continue;
+            if (e->key == NULL) continue;
+            while (e != NULL) {
+                if (_table_find(LIS_LENV(lenv)->var, e->key) == NULL) {
+                    lis_obj * value = ((lis_arg *)e->value)->default_value;
+                    set_lexical_value(lenv, e->key, value);
+                }
+                e = e->next;
+            }
         }
     }
 
