@@ -11,6 +11,7 @@
 #include "list.h"
 #include "print.h"
 #include "environment.h"
+#include "special_form.h"
 
 #include "eval.h"
 
@@ -276,8 +277,9 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
 }
 
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
-    if (LIS_FN(fn)->type != LIS_FUNC_RAW &&
-        LIS_FN(fn)->type != LIS_FUNC_NORMAL) {
+    if (LIS_TAG3(fn) != LIS_TAG3_BUILTIN ||
+        (LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN &&
+         LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_CLS)) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, fn, buffer);
         stream_write_string(buffer, LSTR(U" is not a lisp function."));
@@ -286,16 +288,27 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
         return NULL;
     }
 
-    if (LIS_FN(fn)->type == LIS_FUNC_RAW) {
+    if (LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN &&
+        LIS_FN(fn)->type == LIS_FUNC_RAW) {
         return LIS_FN(fn)->body.raw(genv, args);
 
-    } else {
+    } else if (LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN &&
+               LIS_FN(fn)->type == LIS_FUNC_NORMAL) {
         lis_obj * new_lenv = bind_lambdalist(genv, fn, args);
         if (new_lenv == NULL) {
             return NULL;
         }
 
-        return eval(genv, new_lenv, LIS_FN(fn)->body.lisp);
+        return lis_sf_progn(genv, new_lenv, LIS_FN(fn)->body.lisp);
+
+    } else if (LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_CLS) {
+        lis_obj * new_lenv = bind_lambdalist(genv, LIS_CLS(fn)->fn, args);
+        if (new_lenv == NULL) {
+            return NULL;
+        }
+        LIS_ENV(new_lenv)->parent = LIS_CLS(fn)->env;
+
+        return lis_sf_progn(genv, new_lenv, LIS_FN(LIS_CLS(fn)->fn)->body.lisp);
     }
 }
 
