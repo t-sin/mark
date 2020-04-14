@@ -112,6 +112,12 @@ lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     return lis_sf_progn(genv, new_lenv, _list_cdr(genv, args));
 }
 
+bool has_free_variables(lis_obj * genv, lis_obj * exp) {
+    // if (_list_consp(exp)) {
+    // } else if (
+    return true;
+}
+
 lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (_list_length(genv, args)->data.num < 2) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -123,11 +129,15 @@ lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 
     lis_obj * _lambdalist = _list_nth(genv, _make_int(0), args);
     lis_lambdalist * lambdalist = validate_lambdalist(genv, lenv, _lambdalist);
-    lis_obj * body = _list_nth(genv, _make_int(1), args);
+    lis_obj * body = _list_cdr(genv, args);
 
     if (lambdalist == NULL) {
         return NULL;
     }
 
-    return _make_lisp_function(lambdalist, body);
+    if (has_free_variables(genv, body)) {
+        return _make_lisp_closure(lambdalist, body, lenv);
+    } else {
+        return _make_lisp_function(lambdalist, body);
+    }
 }
