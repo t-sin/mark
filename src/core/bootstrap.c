@@ -91,6 +91,10 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"list-all-packages", sym_package_list_all_packages, package_list_all_packages);
     define_builtin_function(U"make-package", sym_package_make_package, package_make_package);
     define_builtin_function(U"in-package", sym_package_in_package, package_in_package);
+
+    // eval
+    define_builtin_function(U"apply", sym_eval_apply, eval_apply);
+    define_builtin_function(U"eval", sym_eval_eval, eval_eval);
 }
 
 void init_streams(lis_global_env * genv) {

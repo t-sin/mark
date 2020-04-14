@@ -39,6 +39,14 @@ bool check_argeven(lis_obj * genv, lis_obj * args, lis_obj * opname) {
     }
 }
 
+bool validate_lambdalist(lis_obj * genv, lis_obj * lambdalist) {
+    return true;
+}
+
+lis_obj * bind_lambdalist(lis_obj * fn, lis_obj * args) {
+    return NULL;
+}
+
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     if (LIS_FN(fn)->type != LIS_FUNC_RAW &&
         LIS_FN(fn)->type != LIS_FUNC_NORMAL) {
@@ -51,13 +59,21 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     }
 
     if (LIS_FN(fn)->type == LIS_FUNC_RAW) {
-        return fn->data.fn->body.raw(genv, args);
+        return LIS_FN(fn)->body.raw(genv, args);
     } else {
-        // do check lambda list
-        // do apply
-        printf("aaaaaaaaaaaaaaaaaa");
+        lis_obj * new_lenv = bind_lambdalist(fn, args);
+        return eval(genv, new_lenv, LIS_FN(fn)->body.lisp);
+    }
+}
+
+lis_obj * eval_apply(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 2, LSTR(U"apply"))) {
         return NULL;
     }
+
+    lis_obj * fn = _list_nth(genv, _make_int(0), args);
+    lis_obj * lambdalist = _list_nth(genv, _make_int(1), args);
+    return apply(genv, fn, lambdalist);
 }
 
 lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
@@ -191,4 +207,11 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
     } else {
         return obj;
     }
+}
+
+lis_obj * eval_eval(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"eval"))) {
+        return NULL;
+    }
+    return eval(genv, NULL, _list_nth(genv, _make_int(0), args));
 }

@@ -122,6 +122,11 @@ lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     }
 
     lis_obj * lambdalist = _list_nth(genv, _make_int(0), args);
+
+    if (!validate_lambdalist(genv, lambdalist)) {
+        return NULL;
+    }
+
     lis_obj * body = _list_nth(genv, _make_int(1), args);
 
     // validate lambda list
