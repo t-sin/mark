@@ -109,44 +109,31 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"print", sym_print, lisp_print);
 }
 
+#define define_standard_stream(sname, dir, type, symname, symstream, symsym) \
+    lis_obj * symname = LSTR(sname); \
+    lis_obj * symstream = _make_lis_stream(make_lis_stream(1024, dir, type)); \
+    symstream->data.stream->name = symname; \
+    lis_obj * symsym = _make_symbol(symname); \
+    symsym->data.sym->constant_p = true; \
+    symsym->data.sym->dynamic_p = true; \
+    symsym->data.sym->package = genv->current_package; \
+    symsym->data.sym->value = symstream; \
+    assert(add_symbol(genv->current_package, symsym) != NULL)
+
 void init_streams(lis_global_env * genv) {
-    lis_obj * stdin_name = LSTR(U"*stdin*");
-    lis_stream * _stream_stdin = make_lis_stream(1024, LIS_STREAM_IN, LIS_STREAM_TEXT);
-    _stream_stdin->name = stdin_name;
-    _stream_stdin->fin = stdin;
-    lis_obj * stream_stdin = _make_lis_stream(_stream_stdin);
-    lis_obj * sym_stdin = _make_symbol(stdin_name);
-    sym_stdin->data.sym->constant_p = true;
-    sym_stdin->data.sym->dynamic_p = true;
-    sym_stdin->data.sym->package = genv->current_package;
-    sym_stdin->data.sym->value = stream_stdin;
-    assert(add_symbol(genv->current_package, sym_stdin) != NULL);
+    define_standard_stream(U"*stdin*", LIS_STREAM_IN, LIS_STREAM_TEXT,
+                           name_stdin, stream_stdin, sym_stdin);
+    stream_stdin->data.stream->fin = stdin;
     genv->stream_stdin = stream_stdin;
 
-    lis_obj * stdout_name = LSTR(U"*stdout*");
-    lis_stream * _stream_stdout = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-    _stream_stdout->name = stdout_name;
-    _stream_stdout->fout = stdout;
-    lis_obj * stream_stdout = _make_lis_stream(_stream_stdout);
-    lis_obj * sym_stdout = _make_symbol(stdout_name);
-    sym_stdout->data.sym->constant_p = true;
-    sym_stdout->data.sym->dynamic_p = true;
-    sym_stdout->data.sym->package = genv->current_package;
-    sym_stdout->data.sym->value = stream_stdout;
-    assert(add_symbol(genv->current_package, sym_stdout) != NULL);
+    define_standard_stream(U"*stdout*", LIS_STREAM_INOUT, LIS_STREAM_TEXT,
+                           name_stdout, stream_stdout, sym_stdout);
+    stream_stdout->data.stream->fout = stdout;
     genv->stream_stdout = stream_stdout;
 
-    lis_obj * stderr_name = LSTR(U"*stderr*");
-    lis_stream * _stream_stderr = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-    _stream_stderr->name = stderr_name;
-    _stream_stderr->fout = stderr;
-    lis_obj * stream_stderr = _make_lis_stream(_stream_stderr);
-    lis_obj * sym_stderr = _make_symbol(stderr_name);
-    sym_stderr->data.sym->constant_p = true;
-    sym_stderr->data.sym->dynamic_p = true;
-    sym_stderr->data.sym->package = genv->current_package;
-    sym_stderr->data.sym->value = stream_stderr;
-    assert(add_symbol(genv->current_package, sym_stderr) != NULL);
+    define_standard_stream(U"*stderr*", LIS_STREAM_INOUT, LIS_STREAM_TEXT,
+                           name_stderr, stream_stderr, sym_stderr);
+    stream_stderr->data.stream->fout = stderr;
     genv->stream_stderr = stream_stderr;
 }
 
