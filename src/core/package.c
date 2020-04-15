@@ -161,3 +161,26 @@ package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym) 
     add_symbol(package, *sym);
     return PKG_INTERNAL;
 }
+
+lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
+    if (!check_argge(genv, args, 1, LSTR(U"intern"))) {
+        return NULL;
+    }
+
+    lis_obj * name = _list_nth(genv, INT(0), args);
+    lis_obj * pkg = _list_nth(genv, INT(1), args);
+    lis_obj * ret;
+
+    if (pkg == LIS_GENV(genv)->symbol_nil) {
+        pkg = LIS_GENV(genv)->current_package;
+    } else if (LIS_TAG3(pkg) != LIS_TAG3_BUILTIN ||
+               LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
+        not_package_error(genv, pkg);
+        return NULL;
+    }
+
+    // use status as multiple value
+    intern(pkg, name, &ret);
+
+    return ret;
+}

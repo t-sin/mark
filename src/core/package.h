@@ -21,6 +21,6 @@ typedef enum package_intern_status {
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol);
 
 package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym);
-
+lis_obj * lisp_intern(lis_obj * genv, lis_obj * args);
 
 #endif
