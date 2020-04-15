@@ -4,8 +4,10 @@
 
 #include "obj.h"
 #include "lstring.h"
+#include "list.h"
 #include "stream.h"
 #include "package.h"
+#include "eval.h"
 
 #include "read.h"
 
@@ -356,4 +358,17 @@ lis_obj * read(lis_obj * genv, lis_stream * stream) {
     }
 
     return obj;
+}
+
+lis_obj * read_read(lis_obj * genv, lis_obj * args) {
+    lis_obj * obj = _list_nth(genv, _make_int(0), args);
+    lis_stream * stream;
+
+    if (obj == LIS_GENV(genv)->symbol_nil) {
+        stream = LIS_STREAM(LIS_GENV(genv)->stream_stdin);
+    } else {
+        stream = LIS_STREAM(obj);
+    }
+
+    return read(genv, stream);
 }

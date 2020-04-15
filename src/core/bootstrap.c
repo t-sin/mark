@@ -14,6 +14,8 @@
 #include "arithmetic.h"
 #include "sequence.h"
 #include "package.h"
+#include "read.h"
+#include "print.h"
 #include "eval.h"
 #include "special_form.h"
 
@@ -97,6 +99,10 @@ void init_functions(lis_global_env * genv) {
     // eval
     define_builtin_function(U"apply", sym_eval_apply, eval_apply);
     define_builtin_function(U"eval", sym_eval_eval, eval_eval);
+    // read
+    define_builtin_function(U"read", sym_read_read, read_read);
+    // print
+    define_builtin_function(U"print", sym_print_print, print_print);
 }
 
 void init_streams(lis_global_env * genv) {

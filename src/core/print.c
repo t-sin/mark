@@ -4,7 +4,9 @@
 
 #include "obj.h"
 #include "lstring.h"
+#include "list.h"
 #include "stream.h"
+#include "eval.h"
 
 #include "print.h"
 
@@ -148,4 +150,24 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     } else {
         printf("unknown object: %x\n", obj->tags);
     }
+}
+
+lis_obj * print_print(lis_obj * genv, lis_obj * args) {
+    if (!check_argge(genv, args, 1, LSTR(U"print"))) {
+        return NULL;
+    }
+
+    lis_obj * obj = _list_nth(genv, _make_int(0), args);
+    lis_obj * stream_obj = _list_nth(genv, _make_int(1), args);
+    lis_stream * stream;
+
+    if (stream_obj == LIS_GENV(genv)->symbol_nil) {
+        stream = LIS_STREAM(LIS_GENV(genv)->stream_stdout);
+    } else {
+        stream = LIS_STREAM(obj);
+    }
+
+    print(genv, obj, stream);
+    stream_write_char(stream, '\n');
+    return LIS_GENV(genv)->symbol_nil;
 }

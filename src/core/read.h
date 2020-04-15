@@ -6,5 +6,6 @@
 
 int skip_whitespaces(lis_stream * stream);
 lis_obj * read(lis_obj * genv, lis_stream * stream);
+lis_obj * read_read(lis_obj * genv, lis_obj * args);
 
 #endif
