@@ -142,7 +142,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
             break;
 
         case LIS_TAG_TYPE_STRM:
-            stream_write_string(stream, LSTR(U"#<STREAM: "));
+            stream_write_string(stream, LSTR(U"#<STREAM:"));
             stream_write_string(stream, obj->data.stream->name);
             stream_write_char(stream, '>');
             break;
