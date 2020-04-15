@@ -4,6 +4,7 @@
 #include "obj.h"
 
 bool check_arglen(lis_obj * genv, lis_obj * args, int len, lis_obj * opname);
+bool check_argge(lis_obj * genv, lis_obj * args, int len, lis_obj * opname);
 bool check_argeven(lis_obj * genv, lis_obj * args, lis_obj * opname);
 
 lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * lambdalist);
