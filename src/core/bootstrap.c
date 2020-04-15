@@ -96,6 +96,10 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"make-package", sym_make_package, lisp_make_package);
     define_builtin_function(U"in-package", sym_in_package, lisp_in_package);
 
+    // streams
+    define_builtin_function(U"listen", sym_listen, lisp_listen);
+    define_builtin_function(U"force-output", sym_force_output, lisp_force_output);
+
     // eval
     define_builtin_function(U"apply", sym_apply, lisp_apply);
     define_builtin_function(U"eval", sym_eval, lisp_eval);

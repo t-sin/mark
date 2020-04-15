@@ -26,4 +26,19 @@ lis_obj * stream_output_to_string(lis_stream * stream);
 bool stream_listen_p(lis_stream * stream);
 void stream_flush(lis_stream * stream);
 
+lis_obj * lisp_listen(lis_obj * genv, lis_obj * args);
+
+lis_obj * lisp_force_output(lis_obj * genv, lis_obj * args);
+
+lis_obj * lisp_peek_byte(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_read_byte(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_write_byte(lis_obj * genv, lis_obj * args);
+
+lis_obj * lisp_peek_char(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_read_char(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_unread_char(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_write_char(lis_obj * genv, lis_obj * args);
+
+lis_obj * lisp_write_string(lis_obj * genv, lis_obj * args);
+
 #endif
