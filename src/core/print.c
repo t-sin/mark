@@ -164,7 +164,7 @@ lis_obj * lisp_print(lis_obj * genv, lis_obj * args) {
     if (stream_obj == LIS_GENV(genv)->symbol_nil) {
         stream = LIS_STREAM(LIS_GENV(genv)->stream_stdout);
     } else {
-        stream = LIS_STREAM(obj);
+        stream = LIS_STREAM(stream_obj);
     }
 
     print(genv, obj, stream);
