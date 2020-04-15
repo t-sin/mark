@@ -169,5 +169,6 @@ lis_obj * lisp_print(lis_obj * genv, lis_obj * args) {
 
     print(genv, obj, stream);
     stream_write_char(stream, '\n');
+    stream_flush(stream);
     return LIS_GENV(genv)->symbol_nil;
 }
