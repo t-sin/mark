@@ -1,4 +1,4 @@
-# Mark - A squirrel who implemented
+# Mark - A squirrel who is implemented
 
 > Mark wakes up.
 > --- "The Squirrel Awakes" by Toh Enjoe
