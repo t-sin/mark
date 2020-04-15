@@ -326,7 +326,7 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     }
 }
 
-lis_obj * eval_apply(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_apply(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 2, LSTR(U"apply"))) {
         return NULL;
     }
@@ -476,7 +476,7 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
     }
 }
 
-lis_obj * eval_eval(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_eval(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"eval"))) {
         return NULL;
     }

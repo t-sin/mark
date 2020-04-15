@@ -152,7 +152,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     }
 }
 
-lis_obj * print_print(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_print(lis_obj * genv, lis_obj * args) {
     if (!check_argge(genv, args, 1, LSTR(U"print"))) {
         return NULL;
     }

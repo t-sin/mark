@@ -35,7 +35,7 @@ lis_obj * _seq_copy_seq(lis_obj * genv, lis_obj * seq) {
     }
 }
 
-lis_obj * seq_copy_seq(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_copy_seq(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"copy-seq"))) {
         return NULL;
     }
@@ -70,7 +70,7 @@ lis_obj * _seq_length(lis_obj * genv, lis_obj * seq) {
     }
 }
 
-lis_obj * seq_length(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_length(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"length"))) {
         return NULL;
     }
@@ -105,7 +105,7 @@ lis_obj * _seq_elt(lis_obj * genv, lis_obj * seq, lis_obj * n) {
     }
 }
 
-lis_obj * seq_elt(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_elt(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 2, LSTR(U"elt"))) {
         return NULL;
     }
@@ -142,7 +142,7 @@ lis_obj * _seq_reverse(lis_obj * genv, lis_obj * seq) {
     }
 }
 
-lis_obj * seq_reverse(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_reverse(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"reverse"))) {
         return NULL;
     }

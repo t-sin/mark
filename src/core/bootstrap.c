@@ -51,58 +51,58 @@ void init_special_forms(lis_global_env * genv) {
 
 void init_functions(lis_global_env * genv) {
     // lists
-    define_builtin_function(U"atom", sym_list_atom, list_atom);
-    define_builtin_function(U"consp", sym_list_consp, list_consp);
-    define_builtin_function(U"listp", sym_list_listp, list_listp);
-    define_builtin_function(U"nth", sym_list_nth, list_nth);
-    define_builtin_function(U"cons", sym_list_cons, list_cons);
-    define_builtin_function(U"list", sym_list_list, list_list);
-    define_builtin_function(U"car", sym_list_car, list_car);
-    define_builtin_function(U"cdr", sym_list_cdr, list_cdr);
-    define_builtin_function(U"first", sym_list_first, list_first);
-    define_builtin_function(U"second", sym_list_second, list_second);
-    define_builtin_function(U"third", sym_list_third, list_third);
-    define_builtin_function(U"fourth", sym_list_fourth, list_fourth);
-    define_builtin_function(U"fifth", sym_list_fifth, list_fifth);
+    define_builtin_function(U"atom", sym_atom, lisp_atom);
+    define_builtin_function(U"consp", sym_consp, lisp_consp);
+    define_builtin_function(U"listp", sym_listp, lisp_listp);
+    define_builtin_function(U"nth", sym_nth, lisp_nth);
+    define_builtin_function(U"cons", sym_cons, lisp_cons);
+    define_builtin_function(U"list", sym_list, lisp_list);
+    define_builtin_function(U"car", sym_car, lisp_car);
+    define_builtin_function(U"cdr", sym_cdr, lisp_cdr);
+    define_builtin_function(U"first", sym_first, lisp_first);
+    define_builtin_function(U"second", sym_second, lisp_second);
+    define_builtin_function(U"third", sym_third, lisp_third);
+    define_builtin_function(U"fourth", sym_fourth, lisp_fourth);
+    define_builtin_function(U"fifth", sym_fifth, lisp_fifth);
 
     // integers
-    define_builtin_function(U"integerp", sym_integerp, int_integerp);
-    define_builtin_function(U"zerop", sym_int_zerop, int_zerop);
-    define_builtin_function(U"plusp", sym_int_plusp, int_plusp);
-    define_builtin_function(U"minusp", sym_int_minusp, int_minusp);
-    define_builtin_function(U"=", sym_int_equal, int_equal);
-    define_builtin_function(U"+", sym_int_add, int_add);
-    define_builtin_function(U"-", sym_int_sub, int_sub);
-    define_builtin_function(U"*", sym_int_mul, int_mul);
-    define_builtin_function(U"/", sym_int_div, int_div);
+    define_builtin_function(U"integerp", sym_integerp, lisp_integerp);
+    define_builtin_function(U"zerop", sym_zerop, lisp_zerop);
+    define_builtin_function(U"plusp", sym_plusp, lisp_plusp);
+    define_builtin_function(U"minusp", sym_minusp, lisp_minusp);
+    define_builtin_function(U"=", sym_equal, lisp_equal);
+    define_builtin_function(U"+", sym_add, lisp_add);
+    define_builtin_function(U"-", sym_sub, lisp_sub);
+    define_builtin_function(U"*", sym_mul, lisp_mul);
+    define_builtin_function(U"/", sym_div, lisp_div);
 
     // strings
-    define_builtin_function(U"string=", sym_string_equal, string_equal);
-    define_builtin_function(U"stringp", sym_stringp, stringp);
+    define_builtin_function(U"string=", sym_string_equal, lisp_string_equal);
+    define_builtin_function(U"stringp", sym_stringp, lisp_stringp);
 
     // arrays
-    define_builtin_function(U"arrayp", sym_arrayp, array_arrayp);
-    // define_builtin_function(U"make_array", sym_make_array, array_make_array);
-    // define_builtin_function(U"aref", sym_aref, array_aref);
+    define_builtin_function(U"arrayp", sym_arrayp, lisp_arrayp);
+    // define_builtin_function(U"make_array", sym_make_array, lisp_make_array);
+    // define_builtin_function(U"aref", sym_aref, lisp_aref);
 
     // sequences
-    define_builtin_function(U"copy-seq", sym_seq_copy_seq, seq_copy_seq);
-    define_builtin_function(U"length", sym_seq_length, seq_length);
-    define_builtin_function(U"elt", sym_seq_elt, seq_elt);
-    define_builtin_function(U"reverse", sym_seq_reverse, seq_reverse);
+    define_builtin_function(U"copy-seq", sym_copy_seq, lisp_copy_seq);
+    define_builtin_function(U"length", sym_length, lisp_length);
+    define_builtin_function(U"elt", sym_elt, lisp_elt);
+    define_builtin_function(U"reverse", sym_reverse, lisp_reverse);
 
     // packages
-    define_builtin_function(U"list-all-packages", sym_package_list_all_packages, package_list_all_packages);
-    define_builtin_function(U"make-package", sym_package_make_package, package_make_package);
-    define_builtin_function(U"in-package", sym_package_in_package, package_in_package);
+    define_builtin_function(U"list-all-packages", sym_list_all_packages, lisp_list_all_packages);
+    define_builtin_function(U"make-package", sym_make_package, lisp_make_package);
+    define_builtin_function(U"in-package", sym_in_package, lisp_in_package);
 
     // eval
-    define_builtin_function(U"apply", sym_eval_apply, eval_apply);
-    define_builtin_function(U"eval", sym_eval_eval, eval_eval);
+    define_builtin_function(U"apply", sym_apply, lisp_apply);
+    define_builtin_function(U"eval", sym_eval, lisp_eval);
     // read
-    define_builtin_function(U"read", sym_read_read, read_read);
+    define_builtin_function(U"read", sym_read, lisp_read);
     // print
-    define_builtin_function(U"print", sym_print_print, print_print);
+    define_builtin_function(U"print", sym_print, lisp_print);
 }
 
 void init_streams(lis_global_env * genv) {

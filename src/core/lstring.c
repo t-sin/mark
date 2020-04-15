@@ -44,7 +44,7 @@ bool _string_equal(lis_string * s1, lis_string * s2) {
     return true;
 }
 
-lis_obj * string_equal(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_string_equal(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 2, LSTR(U"string="))) {
         return NULL;
     }
@@ -70,7 +70,7 @@ lis_obj * string_equal(lis_obj * genv, lis_obj * args) {
     }
 }
 
-lis_obj * stringp(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_stringp(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"stringp"))) {
         return NULL;
     }

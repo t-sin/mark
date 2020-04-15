@@ -47,14 +47,6 @@ lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
     return pkg;
 }
 
-lis_obj * package_make_package(lis_obj * genv, lis_obj * args) {
-    // this does not have `use` and `nicknames` because of there's no optional args feature...
-    if (!check_arglen(genv, args, 1, LSTR(U"make-package"))) {
-        return NULL;
-    }
-    return _package_make_package(genv, _list_nth(genv, _make_int(0), args));
-}
-
 lis_obj * _package_list_all_packages(lis_obj * genv) {
     lis_obj * pkg_list = LIS_GENV(genv)->symbol_nil;
     _table * table = LIS_GENV(genv)->package_table;
@@ -70,13 +62,6 @@ lis_obj * _package_list_all_packages(lis_obj * genv) {
     }
 
     return pkg_list;
-}
-
-lis_obj * package_list_all_packages(lis_obj * genv, lis_obj * args) {
-    if (!check_arglen(genv, args, 0, LSTR(U"list-all-packages"))) {
-        return NULL;
-    }
-    return _package_list_all_packages(genv);
 }
 
 lis_obj * _package_in_package(lis_obj * genv, lis_obj * name) {
@@ -97,7 +82,22 @@ lis_obj * _package_in_package(lis_obj * genv, lis_obj * name) {
     return pkg;
 }
 
-lis_obj * package_in_package(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_make_package(lis_obj * genv, lis_obj * args) {
+    // this does not have `use` and `nicknames` because of there's no optional args feature...
+    if (!check_arglen(genv, args, 1, LSTR(U"make-package"))) {
+        return NULL;
+    }
+    return _package_make_package(genv, _list_nth(genv, _make_int(0), args));
+}
+
+lis_obj * lisp_list_all_packages(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 0, LSTR(U"list-all-packages"))) {
+        return NULL;
+    }
+    return _package_list_all_packages(genv);
+}
+
+lis_obj * lisp_in_package(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"in-package"))) {
         return NULL;
     }

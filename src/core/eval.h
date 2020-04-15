@@ -13,7 +13,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args);
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args);
 lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj);
 
-lis_obj * eval_apply(lis_obj * genv, lis_obj * args);
-lis_obj * eval_eval(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_apply(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_eval(lis_obj * genv, lis_obj * args);
 
 #endif

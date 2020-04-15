@@ -6,10 +6,10 @@
 #include "eval.h"
 
 lis_obj * _list_length(lis_obj * genv, lis_obj * list);
-lis_obj * list_length(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_length(lis_obj * genv, lis_obj * args);
 
 lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list);
-lis_obj * list_nth(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_nth(lis_obj * genv, lis_obj * args);
 
 bool _list_atom(lis_obj * genv, lis_obj * obj) {
     if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN &&
@@ -20,7 +20,7 @@ bool _list_atom(lis_obj * genv, lis_obj * obj) {
     }
 }
 
-lis_obj * list_atom(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_atom(lis_obj * genv, lis_obj * args) {
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
     if (_list_atom(genv, arg)) {
         return LIS_GENV(genv)->symbol_t;
@@ -38,7 +38,7 @@ bool _list_consp(lis_obj * genv, lis_obj * cons) {
     }
 }
 
-lis_obj * list_consp(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_consp(lis_obj * genv, lis_obj * args) {
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
     if (_list_consp(genv, arg)) {
         return LIS_GENV(genv)->symbol_t;
@@ -59,7 +59,7 @@ bool _list_listp(lis_obj * genv, lis_obj * obj) {
     return _list_listp(genv, LIS_CONS(obj)->cdr);
 }
 
-lis_obj * list_listp(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_listp(lis_obj * genv, lis_obj * args) {
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
     if(_list_listp(genv, arg)) {
         return LIS_GENV(genv)->symbol_t;
@@ -115,7 +115,7 @@ lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list) {
     }
 }
 
-lis_obj * list_nth(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_nth(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 2, LSTR(U"nth"))) {
         return NULL;
     }
@@ -132,7 +132,7 @@ lis_obj * _list_cons(lis_obj * genv, lis_obj * a, lis_obj * b) {
     return cons;
 }
 
-lis_obj * list_cons(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_cons(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 2, LSTR(U"cons"))) {
         return NULL;
     }
@@ -154,7 +154,7 @@ lis_obj * _list_car(lis_obj * genv, lis_obj * cons) {
     return LIS_CONS(cons)->car;
 }
 
-lis_obj * list_car(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_car(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"car"))) {
         return NULL;
     }
@@ -174,7 +174,7 @@ lis_obj * _list_cdr(lis_obj * genv, lis_obj * cons) {
     return LIS_CONS(cons)->cdr;
 }
 
-lis_obj * list_cdr(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_cdr(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"cdr"))) {
         return NULL;
     }
@@ -182,7 +182,7 @@ lis_obj * list_cdr(lis_obj * genv, lis_obj * args) {
     return _list_cdr(genv, _list_nth(genv, _make_int(0), args));
 }
 
-lis_obj * list_first(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_first(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"first"))) {
         return NULL;
     }
@@ -190,7 +190,7 @@ lis_obj * list_first(lis_obj * genv, lis_obj * args) {
     return _list_nth(genv, _make_int(0), LIS_CONS(args)->car);
 }
 
-lis_obj * list_second(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_second(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"second"))) {
         return NULL;
     }
@@ -198,7 +198,7 @@ lis_obj * list_second(lis_obj * genv, lis_obj * args) {
     return _list_nth(genv, _make_int(1), LIS_CONS(args)->car);
 }
 
-lis_obj * list_third(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_third(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"third"))) {
         return NULL;
     }
@@ -206,7 +206,7 @@ lis_obj * list_third(lis_obj * genv, lis_obj * args) {
     return _list_nth(genv, _make_int(2), LIS_CONS(args)->car);
 }
 
-lis_obj * list_fourth(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_fourth(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"fourth"))) {
         return NULL;
     }
@@ -214,7 +214,7 @@ lis_obj * list_fourth(lis_obj * genv, lis_obj * args) {
     return _list_nth(genv, _make_int(3), LIS_CONS(args)->car);
 }
 
-lis_obj * list_fifth(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_fifth(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"fifth"))) {
         return NULL;
     }
@@ -235,7 +235,7 @@ lis_obj * _list_reverse(lis_obj * genv, lis_obj * list) {
     return new_list;
 }
 
-lis_obj * list_list(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_list(lis_obj * genv, lis_obj * args) {
     lis_obj * new_list = LIS_GENV(genv)->symbol_nil;
     lis_obj * rest = args;
 

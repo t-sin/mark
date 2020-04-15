@@ -360,7 +360,7 @@ lis_obj * read(lis_obj * genv, lis_stream * stream) {
     return obj;
 }
 
-lis_obj * read_read(lis_obj * genv, lis_obj * args) {
+lis_obj * lisp_read(lis_obj * genv, lis_obj * args) {
     lis_obj * obj = _list_nth(genv, _make_int(0), args);
     lis_stream * stream;
 
