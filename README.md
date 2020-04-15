@@ -14,6 +14,7 @@
   - [x] byte streams
   - [x] UTF-8 encode/decode
   - [x] object layout
+  - [x] hash tables
 - [x] primitive types
   - [x] characters and strings
   - [x] integers
