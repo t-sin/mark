@@ -11,45 +11,31 @@
 /* tags
  * 
  * least significant bit 'g' is a GC-bit
- * it is imeddiate value if the second least bit is 1
+ * it is multiple value if the second least bit 'm' is 1
  * 
- * 0000000g => pointer
- * 0000001g => int
- * 0000011g => char
- * xxxx100g => special values (NOT USED)
- * xxxx101g => built-in types
- * 0000110g => other types
- *
- * // special values (NOT USED):
- * // 
- * // 1111100g => nil
- * // 1110100g => t
+ * 000000mg => int
+ * 000001mg => char
+ * xxxx10mg => built-in types
+ * 0000xxmg => multiple value
  *
  * built-in types
  * 
- * 0000101g => array
- * 0001101g => string
- * 0010101g => timestamp
- * 0011101g => symbol
- * 0100101g => cons
- * 0101101g => environment
- * 0110101g => function
- * 0111101g => closure
- * 1000101g => pakcage
- * 1001101g => stream
- * 1010101g => error
-
- *
- * other types
- * 1000110g => other classes?
+ * 000010mg => array
+ * 000110mg => string
+ * 001010mg => timestamp
+ * 001110mg => symbol
+ * 010010mg => cons
+ * 010110mg => environment
+ * 011010mg => function
+ * 011110mg => closure
+ * 100010mg => pakcage
+ * 100110mg => stream
+ * 101010mg => error
  */
 
-#define LIS_TAG3_PTR      0x00
-#define LIS_TAG3_INT      0x01
-#define LIS_TAG3_CHAR     0x03
-#define LIS_TAG3_SPECIAL  0x04  // NOT USED
-#define LIS_TAG3_BUILTIN  0x05
-#define LIS_TAG3_OTHER    0x06
+#define LIS_TAG_BASE_INT      0x00
+#define LIS_TAG_BASE_CHAR     0x01
+#define LIS_TAG_BASE_BUILTIN  0x02
 
 #define LIS_TAG_TYPE_ARY  0x00
 #define LIS_TAG_TYPE_STR  0x01
@@ -62,6 +48,7 @@
 #define LIS_TAG_TYPE_PKG  0x08
 #define LIS_TAG_TYPE_STRM 0x09
 #define LIS_TAG_TYPE_ERR  0x10
+
 
 typedef uint8_t lis_byte;
 typedef int32_t lis_int;
@@ -103,13 +90,13 @@ typedef struct {
 #define LIS_GC_MARKEDP(o) (LIS_GC_TAG(o) == 1)
 #define LIS_GC_FLIP(o) (o)->tags ^= 0x01
 
-#define LIS_TAG(o) ((o)->tags >> 1)
-#define LIS_TAG1(o) (LIS_TAG(o) & 0x01)
-#define LIS_TAG2(o) (LIS_TAG(o) & 0x03)
-#define LIS_TAG3(o) (LIS_TAG(o) & 0x07)
-#define LIS_TAG7(o) (LIS_TAG(o) & 0x7f)
+#define LIS_MV_TAG(o) ((o)->tags & 0x02)
+#define LIS_MV_MARKEDP(o) (LIS_MV_TAG(o) != 0)
+#define LIS_MV_FLIP(o) (o)->tags ^= 0x02
 
-#define LIS_TAG_TYPE(o) (LIS_TAG(o) >> 3)
+#define LIS_TAG(o) ((o)->tags >> 2)
+#define LIS_TAG_BASE(o) (LIS_TAG(o) & 0x03)
+#define LIS_TAG_TYPE(o) (LIS_TAG(o) >> 2)
 
 typedef struct lis_array {
     lis_obj * body;
