@@ -284,4 +284,6 @@ lis_obj * _make_lisp_closure(lis_lambdalist * lambdalist, lis_obj * body, lis_ob
 lis_obj * _make_lis_stream(lis_stream * s);
 lis_obj * _make_error(lis_obj * msg);
 
+#define INT(integer) _make_int(integer)
+
 #endif
