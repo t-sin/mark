@@ -140,6 +140,64 @@ lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     }
 }
 
+lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+   if (!check_argge(genv, args, 1, LSTR(U"multiple-value-call"))) {
+        return NULL;
+    }
+
+    lis_obj * fn = eval(genv, lenv, _list_nth(genv, INT(0), args));
+    if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
+        !(LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN ||
+          LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_CLS)) {
+        not_function_error(genv, fn);
+        return NULL;
+    }
+
+    lis_obj * rest = _list_cdr(genv, args);
+    lis_obj * new_args = LIS_NIL;
+    lis_obj * tail = new_args;
+    while (rest != LIS_NIL) {
+        // print(genv, new_args, LIS_STREAM(LIS_GENV(genv)->stream_stdout));
+        // stream_flush(LIS_STREAM(LIS_GENV(genv)->stream_stdout));
+        lis_obj * car = eval(genv, lenv, _list_car(genv, rest));
+
+        if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
+            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_MVAL) {
+
+            lis_obj * mval_rest = LIS_MVAL(car);
+            while (mval_rest != LIS_NIL) {
+                lis_obj * val = _list_car(genv, mval_rest);
+                lis_obj * cons = _list_cons(genv, val, LIS_NIL);
+
+                if (new_args == LIS_NIL) {
+                    tail = new_args = cons;
+                } else {
+                    LIS_CONS(tail)->cdr = cons;
+                    tail = cons;
+                }
+
+                mval_rest = _list_cdr(genv, mval_rest);
+            }
+
+        } else {
+            lis_obj * cons = _list_cons(genv, car, LIS_NIL);
+
+            if (new_args == LIS_NIL) {
+                tail = new_args = cons;
+
+            } else {
+                LIS_CONS(tail)->cdr = cons;
+                tail = cons;
+            }
+        }
+
+        rest = _list_cdr(genv, rest);
+    }
+
+    printf("len = %d\n", _list_length(genv, new_args)->data.num);
+    return apply(genv, fn, new_args);
+}
+
 lis_obj * lisp_values(lis_obj * genv, lis_obj * args) {
     if (args == LIS_NIL) {
         return LIS_NIL;
