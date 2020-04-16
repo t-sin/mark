@@ -157,8 +157,6 @@ lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * a
     lis_obj * new_args = LIS_NIL;
     lis_obj * tail = new_args;
     while (rest != LIS_NIL) {
-        // print(genv, new_args, LIS_STREAM(LIS_GENV(genv)->stream_stdout));
-        // stream_flush(LIS_STREAM(LIS_GENV(genv)->stream_stdout));
         lis_obj * car = eval(genv, lenv, _list_car(genv, rest));
 
         if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
@@ -194,7 +192,6 @@ lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * a
         rest = _list_cdr(genv, rest);
     }
 
-    printf("len = %d\n", _list_length(genv, new_args)->data.num);
     return apply(genv, fn, new_args);
 }
 
