@@ -283,7 +283,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
         }
     }
 
-    if (args_rest != LIS_GENV(genv)->symbol_nil) {
+    if (lambdalist->rest == NULL && args_rest != LIS_GENV(genv)->symbol_nil) {
         LIS_GENV(genv)->error = _make_error(LSTR(U"too many argument."));
     }
 
