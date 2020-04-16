@@ -1,5 +1,6 @@
 src = [
   'obj.c',
+  'data.c',
   'lerror.c',
   'stream.c',
   'lstring.c',

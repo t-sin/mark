@@ -7,6 +7,7 @@
 #include "../util/table.h"
 
 #include "obj.h"
+#include "data.h"
 #include "lstring.h"
 #include "stream.h"
 #include "list.h"
@@ -108,6 +109,9 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"read", sym_read, lisp_read);
     // print
     define_builtin_function(U"print", sym_print, lisp_print);
+
+    // data
+    define_builtin_function(U"values", sym_values, lisp_values);
 }
 
 #define define_standard_stream(sname, dir, type, symname, symstream, symsym) \
