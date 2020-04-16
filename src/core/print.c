@@ -78,7 +78,10 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
 
         case LIS_TAG_TYPE_TS:
         case LIS_TAG_TYPE_SYM:
-            print_string(stream, obj->data.sym->name);
+            if (LIS_SYM(obj)->package == LIS_GENV(genv)->keyword_package) {
+                stream_write_char(stream, ':');
+            }
+            stream_write_string(stream, LIS_SYM(obj)->name);
             break;
 
         case LIS_TAG_TYPE_CONS:
