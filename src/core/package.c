@@ -196,8 +196,7 @@ lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
         ;
     }
 
-    LIS_MV_FLIP(ret);
-    ret->mv_next = key;
-
-    return ret;
+    lis_obj * mv = _make_multiple_value();
+    LIS_MVAL(mv) = _list_cons(genv, ret, _list_cons(genv, key, LIS_NIL));
+    return mv;
 }
