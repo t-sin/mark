@@ -5,7 +5,7 @@
 #include "obj.h"
 #include "lstring.h"
 #include "list.h"
-#include "stream.h"
+#include "basic_stream.h"
 #include "eval.h"
 
 #include "print.h"

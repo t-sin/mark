@@ -8,7 +8,7 @@
 
 #include "obj.h"
 #include "lstring.h"
-#include "stream.h"
+#include "basic_stream.h"
 #include "list.h"
 #include "array.h"
 #include "arithmetic.h"
@@ -18,6 +18,7 @@
 #include "print.h"
 #include "eval.h"
 #include "data.h"
+#include "stream.h"
 
 #include "bootstrap.h"
 

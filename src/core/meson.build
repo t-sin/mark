@@ -1,7 +1,7 @@
 src = [
   'obj.c',
   'lerror.c',
-  'stream.c',
+  'basic_stream.c',
   'lstring.c',
   'package.c',
   'read.c',
@@ -13,6 +13,7 @@ src = [
   'sequence.c',
   'environment.c',
   'data.c',
+  'stream.c',
   'bootstrap.c',
 ]
 
