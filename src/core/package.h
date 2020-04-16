@@ -21,12 +21,15 @@ lis_obj * lisp_use_package(lis_obj * genv, lis_obj * args);
 lis_obj * lisp_package_use_list(lis_obj * genv, lis_obj * args);
 
 typedef enum package_intern_status {
-    PKG_INTERNAL, PKG_EXTERNAL, PKG_INHERITED
+    PKG_NOT_FOUND, PKG_INTERNAL, PKG_EXTERNAL, PKG_INHERITED
 } package_intern_status;
 
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol);
 
-package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym);
+package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * name, lis_obj ** sym);
+package_intern_status intern(lis_obj * genv, lis_obj * package, lis_obj * name, lis_obj ** sym);
+
 lis_obj * lisp_intern(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_find_symbol(lis_obj * genv, lis_obj * args);
 
 #endif

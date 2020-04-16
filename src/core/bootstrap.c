@@ -99,6 +99,7 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"make-package", sym_make_package, lisp_make_package);
     define_builtin_function(U"in-package", sym_in_package, lisp_in_package);
     define_builtin_function(U"find-package", sym_find_package, lisp_find_package);
+    define_builtin_function(U"find-symbol", sym_find_symbol, lisp_find_symbol);
     define_builtin_function(U"intern", sym_intern, lisp_intern);
     define_builtin_function(U"use-package", sym_use_package, lisp_use_package);
     define_builtin_function(U"package-use-list", sym_package_use_list, lisp_package_use_list);
