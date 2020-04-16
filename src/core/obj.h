@@ -68,7 +68,7 @@ struct lis_closure;
 struct lis_package;
 struct lis_error;
 
-typedef struct {
+typedef struct lis_obj {
     lis_byte tags;
     union {
         lis_int num;
