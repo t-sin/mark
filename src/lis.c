@@ -15,6 +15,7 @@
 #include "core/bootstrap.h"
 
 void print_usage() {
+    printf("Sciurus Lisp\n");
     printf("usage: lis LISPATH\n");
     printf("\n");
     printf("OPTIONS\n");
@@ -45,7 +46,6 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
             }
 
             if (optcmp("h", "help")) {
-                printf("aaaa\n");
                 opt->help = true;
             }
 
@@ -67,6 +67,8 @@ void repl(lis_obj * genv) {
     assert(LIS_TAG_BASE(genv) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
     assert(genv->data.env->type == LIS_ENV_GLOBAL);
+
+    printf("Sciurus Lisp, v0.0.0\n");
 
     lis_obj * prompt = LSTR(U"? ");
     lis_stream * stream_stdin = genv->data.env->env.global->stream_stdin->data.stream;
