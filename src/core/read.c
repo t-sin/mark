@@ -263,7 +263,7 @@ lis_obj * read_symbol(lis_obj * genv, lis_stream * stream) {
             }
 
             lis_obj * sym;
-            intern(genv->data.env->env.global->current_package, name, &sym);
+            intern(genv, LIS_GENV(genv)->current_package, name, &sym);
 
             return sym;
 
