@@ -159,6 +159,21 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     }
 }
 
+void print_mval(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
+    if (LIS_TAG_BASE(obj) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(obj) != LIS_TAG_TYPE_MVAL) {
+        print(genv, obj, stream);
+        return;
+    }
+
+    lis_obj * rest = LIS_MVAL(obj);
+    while (rest != LIS_NIL) {
+        print(genv, _list_car(genv, rest), stream);
+        rest = _list_cdr(genv, rest);
+        if (rest != LIS_NIL) stream_write_char(stream, '\n');
+    }
+}
+
 lis_obj * lisp_print(lis_obj * genv, lis_obj * args) {
     if (!check_argge(genv, args, 1, LSTR(U"print"))) {
         return NULL;

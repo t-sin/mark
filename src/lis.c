@@ -8,6 +8,7 @@
 #include "core/obj.h"
 #include "core/lstring.h"
 #include "core/stream.h"
+#include "core/list.h"
 #include "core/eval.h"
 #include "core/print.h"
 #include "core/read.h"
@@ -109,20 +110,9 @@ void repl(lis_obj * genv) {
             LIS_GENV(genv)->error = NULL;
         }
 
-        print(genv, obj, stream_stdout);
+        print_mval(genv, obj, stream_stdout);
         stream_write_char(stream_stdout, '\n');
-
-        if (LIS_MV_MARKEDP(obj)) {
-            obj = obj->mv_next;
-            while (obj != NULL) {
-                print(genv, obj, stream_stdout);
-                stream_write_char(stream_stdout, '\n');
-                obj = obj->mv_next;
-            }
-        }
-
         stream_flush(stream_stdout);
-
     }
 }
 
