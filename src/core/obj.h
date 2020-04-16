@@ -11,7 +11,7 @@
 /* tags
  * 
  * least significant bit 'g' is a GC-bit
- * it is multiple value if the second least bit 'm' is 1
+ * second least bit 'm' is not used but reserved
  * 
  * 000000mg => int
  * 000001mg => char
@@ -31,6 +31,7 @@
  * 100010mg => pakcage
  * 100110mg => stream
  * 101010mg => error
+ * 101110mg => multiple value
  */
 
 #define LIS_TAG_BASE_INT      0x00
@@ -48,6 +49,7 @@
 #define LIS_TAG_TYPE_PKG  0x08
 #define LIS_TAG_TYPE_STRM 0x09
 #define LIS_TAG_TYPE_ERR  0x10
+#define LIS_TAG_TYPE_MVAL 0x0b
 
 
 typedef uint8_t lis_byte;
@@ -82,17 +84,13 @@ typedef struct {
         struct lis_package * pkg;
         struct lis_stream * stream;
         struct lis_error * err;
+        struct lis_obj * mval;
     } data;
-    struct lis_obj * mv_next;
 } lis_obj;
 
 #define LIS_GC_TAG(o) ((o)->tags & 0x01)
 #define LIS_GC_MARKEDP(o) (LIS_GC_TAG(o) == 1)
 #define LIS_GC_FLIP(o) (o)->tags ^= 0x01
-
-#define LIS_MV_TAG(o) ((o)->tags & 0x02)
-#define LIS_MV_MARKEDP(o) (LIS_MV_TAG(o) != 0)
-#define LIS_MV_FLIP(o) (o)->tags ^= 0x02
 
 #define LIS_TAG(o) ((o)->tags >> 2)
 #define LIS_TAG_BASE(o) (LIS_TAG(o) & 0x03)
@@ -168,6 +166,8 @@ typedef struct lis_global_env {
     lis_obj * stream_stdout;
     lis_obj * stream_stderr;
 } lis_global_env;
+
+#define LIS_NIL LIS_GENV(genv)->symbol_nil
 
 typedef struct lis_dynamic_env {
 } lis_dynamic_env;
@@ -256,6 +256,8 @@ typedef struct lis_error {
 
 #define LIS_ERR(obj) ((obj)->data.err)
 
+#define LIS_MVAL(obj) ((obj)->data.mval)
+
 lis_obj * _make_int(lis_int n);
 lis_obj * _make_char(lis_int ch);
 lis_obj * _make_array();
@@ -270,6 +272,7 @@ lis_obj * _make_lisp_function(lis_lambdalist * lambdalist, lis_obj * body);
 lis_obj * _make_lisp_closure(lis_lambdalist * lambdalist, lis_obj * body, lis_obj * lenv);
 lis_obj * _make_lis_stream(lis_stream * s);
 lis_obj * _make_error(lis_obj * msg);
+lis_obj * _make_multiple_value();
 
 #define INT(integer) _make_int(integer)
 

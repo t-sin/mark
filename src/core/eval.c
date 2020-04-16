@@ -466,7 +466,9 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
         case LIS_TAG_TYPE_CLS:
         case LIS_TAG_TYPE_PKG:
             return obj;
-            break;
+
+        case LIS_TAG_TYPE_MVAL:
+            return eval(genv, lenv, _list_car(genv, LIS_MVAL(obj)));
 
         default:
             buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);

@@ -127,3 +127,9 @@ lis_obj * _make_error(lis_obj * msg) {
     err->data.err->message = msg;
     return err;
 }
+
+lis_obj * _make_multiple_value() {
+    lis_obj * mval = (lis_obj *)malloc(sizeof(lis_obj));
+    mval->tags = LIS_TAG_BASE_BUILTIN << 2 | LIS_TAG_TYPE_MVAL << 4;
+    return mval;
+}
