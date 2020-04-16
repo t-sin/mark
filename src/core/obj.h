@@ -71,7 +71,6 @@ typedef struct {
     union {
         lis_int num;
         lis_char ch;
-        lis_ptr ptr;
         struct lis_array * array;
         struct lis_string * str;
         struct lis_tstamp * ts;
