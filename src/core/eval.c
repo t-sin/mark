@@ -7,7 +7,7 @@
 
 #include "obj.h"
 #include "lstring.h"
-#include "stream.h"
+#include "basic_stream.h"
 #include "list.h"
 #include "print.h"
 #include "environment.h"
