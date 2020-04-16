@@ -158,6 +158,7 @@ package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym) 
     }
 
     *sym = _make_symbol(name);
+    LIS_SYM(*sym)->package = package;
     add_symbol(package, *sym);
     return PKG_INTERNAL;
 }
