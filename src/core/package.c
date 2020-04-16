@@ -179,8 +179,24 @@ lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    // use status as multiple value
-    intern(pkg, name, &ret);
+    package_intern_status status = intern(pkg, name, &ret);
+    lis_obj * key;
+    switch (status) {
+    case PKG_INTERNAL:
+        intern(LIS_GENV(genv)->keyword_package, LSTR(U"internal"), &key);
+        break;
+    case PKG_EXTERNAL:
+        intern(LIS_GENV(genv)->keyword_package, LSTR(U"external"), &key);
+        break;
+    case PKG_INHERITED:
+        intern(LIS_GENV(genv)->keyword_package, LSTR(U"inherited"), &key);
+        break;
+    default:
+        ;
+    }
+
+    LIS_MV_FLIP(ret);
+    ret->mv_next = key;
 
     return ret;
 }

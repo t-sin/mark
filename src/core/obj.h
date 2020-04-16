@@ -83,6 +83,7 @@ typedef struct {
         struct lis_stream * stream;
         struct lis_error * err;
     } data;
+    struct lis_obj * mv_next;
 } lis_obj;
 
 #define LIS_GC_TAG(o) ((o)->tags & 0x01)

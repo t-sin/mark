@@ -111,6 +111,16 @@ void repl(lis_obj * genv) {
 
         print(genv, obj, stream_stdout);
         stream_write_char(stream_stdout, '\n');
+
+        if (LIS_MV_MARKEDP(obj)) {
+            obj = obj->mv_next;
+            while (obj != NULL) {
+                print(genv, obj, stream_stdout);
+                stream_write_char(stream_stdout, '\n');
+                obj = obj->mv_next;
+            }
+        }
+
         stream_flush(stream_stdout);
 
     }
