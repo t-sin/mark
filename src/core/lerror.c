@@ -1,6 +1,6 @@
 #include "obj.h"
 #include "lstring.h"
-#include "stream.h"
+#include "basic_stream.h"
 #include "print.h"
 
 #include "lerror.h"

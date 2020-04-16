@@ -1,7 +1,7 @@
 #include "obj.h"
 #include "lerror.h"
 #include "lstring.h"
-#include "stream.h"
+#include "basic_stream.h"
 #include "list.h"
 #include "print.h"
 #include "eval.h"
