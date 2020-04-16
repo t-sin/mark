@@ -63,6 +63,7 @@ lis_obj * _make_package(lis_obj * name) {
     pkg->data.pkg->num = 0;
     pkg->data.pkg->size = DEFAULT_PACKAGE_LEN;
     pkg->data.pkg->symbols = (lis_obj **)malloc(sizeof(lis_obj) * DEFAULT_PACKAGE_LEN);
+    pkg->data.pkg->uselist = NULL;
     return pkg;
 }
 

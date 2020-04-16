@@ -139,6 +139,7 @@ typedef struct lis_cons {
 typedef struct lis_package {
     lis_obj * name;
     lis_obj ** symbols;
+    lis_obj * uselist;
     size_t num;
     size_t size;
 } lis_package;
