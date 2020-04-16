@@ -27,11 +27,19 @@ size_t _hash_string(void * str_obj, size_t hash_size) {
     return v;
 }
 
-lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
-    if (LIS_TAG_BASE(name_str) != LIS_TAG_BASE_BUILTIN ||
-        LIS_TAG_TYPE(name_str) != LIS_TAG_TYPE_STR) {
-        not_string_error(genv, name_str);
+lis_obj * _package_make_package(lis_obj * genv, lis_obj * name) {
+    if (LIS_TAG_BASE(name) != LIS_TAG_BASE_BUILTIN ||
+        !(LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR ||
+          LIS_TAG_TYPE(name) == LIS_TAG_TYPE_SYM)) {
+        not_string_error(genv, name);
         return NULL;
+    }
+
+    lis_obj * name_str;
+    if (LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR) {
+        name_str = name;
+    } else {
+        name_str = LIS_SYM(name)->name;
     }
 
     _table * pkgtable = LIS_GENV(genv)->package_table;
@@ -42,6 +50,7 @@ lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
     }
 
     lis_obj * pkg = _make_package(name_str);
+    LIS_PKG(pkg)->uselist = LIS_NIL;
     _table_add(pkgtable, (void *)name_str, (void *)pkg);
 
     return pkg;
@@ -66,12 +75,18 @@ lis_obj * _package_list_all_packages(lis_obj * genv) {
 
 lis_obj * _package_in_package(lis_obj * genv, lis_obj * name) {
     if (LIS_TAG_BASE(name) != LIS_TAG_BASE_BUILTIN ||
-        LIS_TAG_TYPE(name) != LIS_TAG_TYPE_STR) {
+        !(LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR ||
+          LIS_TAG_TYPE(name) == LIS_TAG_TYPE_SYM)) {
         not_string_error(genv, name);
         return NULL;
     }
 
-    _table_entry * res = _table_find(LIS_GENV(genv)->package_table, (void *)name);
+    _table_entry * res;
+    if (LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR) {
+        res = _table_find(LIS_GENV(genv)->package_table, (void *)name);
+    } else {
+        res = _table_find(LIS_GENV(genv)->package_table, (void *)LIS_SYM(name)->name);
+    }
 
     if (res == NULL) {
         // some error
@@ -80,6 +95,77 @@ lis_obj * _package_in_package(lis_obj * genv, lis_obj * name) {
     lis_obj * pkg = (lis_obj *)res->value;
     LIS_GENV(genv)->current_package = pkg;
     return pkg;
+}
+
+lis_obj * _package_find_package(lis_obj * genv, lis_obj * name) {
+    if (LIS_TAG_BASE(name) != LIS_TAG_BASE_BUILTIN ||
+        !(LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR ||
+          LIS_TAG_TYPE(name) == LIS_TAG_TYPE_SYM)) {
+        not_string_error(genv, name);
+        return NULL;
+    }
+
+    _table_entry * res;
+    if (LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR) {
+        res = _table_find(LIS_GENV(genv)->package_table, (void *)name);
+    } else {
+        res = _table_find(LIS_GENV(genv)->package_table, (void *)LIS_SYM(name)->name);
+    }
+
+    if (res == NULL) {
+        return LIS_NIL;
+    }
+
+    lis_obj * pkg = (lis_obj *)res->value;
+    return pkg;
+}
+
+lis_obj * _package_use_package(lis_obj * genv, lis_obj * pkg, lis_obj * to_use) {
+    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
+        not_package_error(genv, pkg);
+        return NULL;
+    }
+
+    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
+        not_package_error(genv, pkg);
+        return NULL;
+    }
+
+    if (pkg == to_use) {
+        return to_use;
+    }
+
+    lis_obj * rest = LIS_PKG(pkg)->uselist;
+
+    if (rest == LIS_NIL) {
+        LIS_PKG(pkg)->uselist = _list_cons(genv, to_use, LIS_NIL);
+    }
+
+    while (rest != LIS_NIL) {
+        if (_list_car(genv, rest) == to_use) {
+            return to_use;
+        }
+
+        lis_obj * next = _list_cdr(genv, rest);
+        if (next == LIS_NIL) {
+            LIS_CONS(rest)->cdr = _list_cons(genv, to_use, LIS_NIL);
+        }
+        rest = next;
+    }
+
+    return to_use;
+}
+
+lis_obj * _package_package_use_list(lis_obj * genv, lis_obj * pkg) {
+    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
+        not_package_error(genv, pkg);
+        return NULL;
+    }
+
+    return LIS_PKG(pkg)->uselist;
 }
 
 lis_obj * lisp_make_package(lis_obj * genv, lis_obj * args) {
@@ -102,6 +188,13 @@ lis_obj * lisp_in_package(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
     return _package_in_package(genv, _list_nth(genv, _make_int(0), args));
+}
+
+lis_obj * lisp_find_package(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"find-package"))) {
+        return NULL;
+    }
+    return _package_find_package(genv, _list_nth(genv, _make_int(0), args));
 }
 
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
@@ -199,4 +292,27 @@ lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
     lis_obj * mv = _make_multiple_value();
     LIS_MVAL(mv) = _list_cons(genv, ret, _list_cons(genv, key, LIS_NIL));
     return mv;
+}
+
+lis_obj * lisp_use_package(lis_obj * genv, lis_obj * args) {
+    if (!check_argge(genv, args, 1, LSTR(U"use-package"))) {
+        return NULL;
+    }
+
+    lis_obj * to_use = _package_find_package(genv, _list_nth(genv, INT(0), args));
+    lis_obj * pkg = _list_nth(genv, INT(1), args);
+
+    if (pkg == LIS_NIL) {
+        pkg = LIS_GENV(genv)->current_package;
+    }
+
+    return _package_use_package(genv, pkg, to_use);
+}
+
+lis_obj * lisp_package_use_list(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"package-use-list"))) {
+        return NULL;
+    }
+
+    return _package_package_use_list(genv, _list_nth(genv, INT(0), args));
 }
