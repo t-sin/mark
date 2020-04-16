@@ -20,7 +20,7 @@ lis_obj * lis_sf_quote(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 
 lis_obj * lis_sf_function(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     lis_obj * sym = args->data.cons->car;
-    if (LIS_TAG3(sym) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(sym) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(sym) != LIS_TAG_TYPE_SYM) {
         lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;
         print(genv, sym, stream);

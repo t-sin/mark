@@ -18,7 +18,7 @@ void print_string(lis_stream * stream, lis_obj * str) {
 
 void print_cons(lis_obj * genv, lis_obj * car, lis_obj * cdr, lis_stream * stream) {
     print(genv, car, stream);
-    if (LIS_TAG3(cdr) == LIS_TAG3_BUILTIN && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS) {
+    if (LIS_TAG_BASE(cdr) == LIS_TAG_BASE_BUILTIN && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS) {
         stream_write_char(stream, ' ');
         print_cons(genv, cdr->data.cons->car, cdr->data.cons->cdr, stream);
     } else if (cdr == genv->data.env->env.global->symbol_nil) {
@@ -33,7 +33,7 @@ void print_cons(lis_obj * genv, lis_obj * car, lis_obj * cdr, lis_stream * strea
 
 #define BUF_SIZE 256
 void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
-    assert(LIS_TAG3(genv) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_BASE(genv) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
     assert(genv->data.env->type == LIS_ENV_GLOBAL);
 
@@ -43,19 +43,19 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
 
     char buf[BUF_SIZE];
 
-    if (LIS_TAG3(obj) == LIS_TAG3_INT) {
+    if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_INT) {
         snprintf(buf, BUF_SIZE, "%d", obj->data.num);
         for (int i=0; i<BUF_SIZE; i++) {
             if (buf[i] == '\0') return;
             stream_write_char(stream, buf[i]);
         }
 
-    } else if (LIS_TAG3(obj) == LIS_TAG3_CHAR) {
+    } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_CHAR) {
         stream_write_char(stream, '#');
         stream_write_char(stream, '\\');
         stream_write_char(stream, obj->data.ch);
 
-    } else if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN) {
+    } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_BUILTIN) {
         // built-in types
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ARY:

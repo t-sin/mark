@@ -12,7 +12,7 @@ lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list);
 lis_obj * lisp_nth(lis_obj * genv, lis_obj * args);
 
 bool _list_atom(lis_obj * genv, lis_obj * obj) {
-    if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN &&
+    if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_BUILTIN &&
         LIS_TAG_TYPE(obj) == LIS_TAG_TYPE_CONS) {
         return false;
     } else {
@@ -30,7 +30,7 @@ lis_obj * lisp_atom(lis_obj * genv, lis_obj * args) {
 }
 
 bool _list_consp(lis_obj * genv, lis_obj * cons) {
-    if (LIS_TAG3(cons) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(cons) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
         return false;
     } else {
@@ -71,7 +71,7 @@ lis_obj * lisp_listp(lis_obj * genv, lis_obj * args) {
 lis_obj * _list_length(lis_obj * genv, lis_obj * list) {
     if (list == LIS_GENV(genv)->symbol_nil) {
         return _make_int(0);
-    } else if (LIS_TAG3(list) != LIS_TAG3_BUILTIN ||
+    } else if (LIS_TAG_BASE(list) != LIS_TAG_BASE_BUILTIN ||
                LIS_TAG_TYPE(list) != LIS_TAG_TYPE_CONS) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, list, buffer);
@@ -84,7 +84,7 @@ lis_obj * _list_length(lis_obj * genv, lis_obj * list) {
 }
 
 lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list) {
-    if (LIS_TAG3(n) != LIS_TAG3_INT) {
+    if (LIS_TAG_BASE(n) != LIS_TAG_BASE_INT) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, n, buffer);
         stream_write_string(buffer, LSTR(U" is not an integer."));
@@ -95,7 +95,7 @@ lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list) {
     if (list == LIS_GENV(genv)->symbol_nil) {
         return LIS_GENV(genv)->symbol_nil;
 
-    } else if (LIS_TAG3(list) != LIS_TAG3_BUILTIN ||
+    } else if (LIS_TAG_BASE(list) != LIS_TAG_BASE_BUILTIN ||
                LIS_TAG_TYPE(list) != LIS_TAG_TYPE_CONS) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, list, buffer);
@@ -143,7 +143,7 @@ lis_obj * lisp_cons(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * _list_car(lis_obj * genv, lis_obj * cons) {
-    if (LIS_TAG3(cons) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(cons) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, cons, buffer);
@@ -163,7 +163,7 @@ lis_obj * lisp_car(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * _list_cdr(lis_obj * genv, lis_obj * cons) {
-    if (LIS_TAG3(cons) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(cons) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, cons, buffer);

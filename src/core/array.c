@@ -5,7 +5,7 @@
 #include "array.h"
 
 bool _array_arrayp(lis_obj * genv, lis_obj * obj) {
-    if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN &&
+    if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_BUILTIN &&
         LIS_TAG_TYPE(obj) == LIS_TAG_TYPE_ARY) {
         return true;
     } else {

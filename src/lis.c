@@ -63,7 +63,7 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
 }
 
 void repl(lis_obj * genv) {
-    assert(LIS_TAG3(genv) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_BASE(genv) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
     assert(genv->data.env->type == LIS_ENV_GLOBAL);
 

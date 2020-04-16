@@ -51,13 +51,13 @@ lis_obj * lisp_string_equal(lis_obj * genv, lis_obj * args) {
 
     lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
     lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
-    if (LIS_TAG3(arg1) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(arg1) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(arg1) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, arg1);
         return NULL;
     }
 
-    if (LIS_TAG3(arg2) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(arg2) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(arg2) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, arg2);
         return NULL;
@@ -76,7 +76,7 @@ lis_obj * lisp_stringp(lis_obj * genv, lis_obj * args) {
     }
 
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
-    if (LIS_TAG3(arg) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(arg) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(arg) != LIS_TAG_TYPE_STR) {
         return LIS_GENV(genv)->symbol_nil;
     } else {
@@ -85,7 +85,7 @@ lis_obj * lisp_stringp(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * _string_length(lis_obj * genv, lis_obj * str) {
-    if (LIS_TAG3(str) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(str) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(str) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, str);
         return NULL;
@@ -95,13 +95,13 @@ lis_obj * _string_length(lis_obj * genv, lis_obj * str) {
 }
 
 lis_obj * _string_char(lis_obj * genv, lis_obj * str, lis_obj * n) {
-    if (LIS_TAG3(str) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(str) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(str) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, str);
         return NULL;
     }
 
-    if (LIS_TAG3(str) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(str) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(str) != LIS_TAG_TYPE_STR) {
         not_int_error(genv, n);
         return NULL;

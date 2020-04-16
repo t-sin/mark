@@ -12,7 +12,7 @@ lis_obj * _seq_copy_seq(lis_obj * genv, lis_obj * seq) {
     if (seq == LIS_GENV(genv)->symbol_nil) {
         return seq;
 
-    } else if (LIS_TAG3(seq) == LIS_TAG3_BUILTIN) {
+    } else if (LIS_TAG_BASE(seq) == LIS_TAG_BASE_BUILTIN) {
         switch (LIS_TAG_TYPE(seq)) {
         case LIS_TAG_TYPE_ARY:
             return NULL;
@@ -47,7 +47,7 @@ lis_obj * _seq_length(lis_obj * genv, lis_obj * seq) {
     if (seq == LIS_GENV(genv)->symbol_nil) {
         return _make_int(0);
 
-    } else if (LIS_TAG3(seq) == LIS_TAG3_BUILTIN) {
+    } else if (LIS_TAG_BASE(seq) == LIS_TAG_BASE_BUILTIN) {
         switch (LIS_TAG_TYPE(seq)) {
         case LIS_TAG_TYPE_ARY:
             return NULL;
@@ -82,7 +82,7 @@ lis_obj * _seq_elt(lis_obj * genv, lis_obj * seq, lis_obj * n) {
     if (seq == LIS_GENV(genv)->symbol_nil) {
         return seq;
 
-    } else if (LIS_TAG3(seq) == LIS_TAG3_BUILTIN) {
+    } else if (LIS_TAG_BASE(seq) == LIS_TAG_BASE_BUILTIN) {
         switch (LIS_TAG_TYPE(seq)) {
         case LIS_TAG_TYPE_ARY:
             return NULL;
@@ -119,7 +119,7 @@ lis_obj * _seq_reverse(lis_obj * genv, lis_obj * seq) {
    if (seq == LIS_GENV(genv)->symbol_nil) {
         return _make_int(0);
 
-    } else if (LIS_TAG3(seq) == LIS_TAG3_BUILTIN) {
+    } else if (LIS_TAG_BASE(seq) == LIS_TAG_BASE_BUILTIN) {
         switch (LIS_TAG_TYPE(seq)) {
         case LIS_TAG_TYPE_ARY:
             return NULL;

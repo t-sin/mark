@@ -103,13 +103,13 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 llist->rest = car;
 
             } else if (keyword_p) {
-                if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
                     lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
                     arg->default_value = LIS_GENV(genv)->symbol_nil;
                     _table_add(llist->keyword, (void *)car, (void *)arg);
 
-                } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                } else if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
                            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
 
                     if (_list_length(genv, car)->data.num != 2) {
@@ -135,14 +135,14 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
             } else if (optional_p) {
                 lis_arg * arg;
 
-                if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
                     arg = (lis_arg *)malloc(sizeof(lis_arg));
                     arg->name = car;
                     arg->default_value = LIS_GENV(genv)->symbol_nil;
                     arg->next = NULL;
 
-                } else if (LIS_TAG3(car) == LIS_TAG3_BUILTIN &&
+                } else if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
                            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
 
                     if (_list_length(genv, car)->data.num != 2) {
@@ -176,7 +176,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 optional_rest = arg;
 
             } else {
-                if (LIS_TAG3(car) != LIS_TAG3_BUILTIN ||
+                if (LIS_TAG_BASE(car) != LIS_TAG_BASE_BUILTIN ||
                     LIS_TAG_TYPE(car) != LIS_TAG_TYPE_SYM) {
                     lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
                     print(genv, car, buffer);
@@ -291,7 +291,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
 }
 
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
-    if (LIS_TAG3(fn) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
         (LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN &&
          LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_CLS)) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -339,7 +339,7 @@ lis_obj * lisp_apply(lis_obj * genv, lis_obj * args) {
 lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (args == LIS_GENV(genv)->symbol_nil) {
         return LIS_GENV(genv)->symbol_nil;
-    } else if (LIS_TAG3(args) != LIS_TAG3_BUILTIN ||
+    } else if (LIS_TAG_BASE(args) != LIS_TAG_BASE_BUILTIN ||
                LIS_TAG_TYPE(args) != LIS_TAG_TYPE_CONS) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
         print(genv, args, buffer);
@@ -359,14 +359,14 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
     lis_obj * name = cons->data.cons->car;
     lis_obj * cdr = cons->data.cons->cdr;
 
-    if (LIS_TAG3(name) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(name) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(name) != LIS_TAG_TYPE_SYM) {
         printf("eval_cons(): is's not a symbol!\n");
         return NULL;
     }
 
     if (cdr != LIS_GENV(genv)->symbol_nil &&
-        !(LIS_TAG3(cdr) == LIS_TAG3_BUILTIN &&
+        !(LIS_TAG_BASE(cdr) == LIS_TAG_BASE_BUILTIN &&
           LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS)) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
         print(genv, cdr, buffer);
@@ -377,7 +377,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
 
     if (name->data.sym->fn != NULL) {
         lis_obj * fn = name->data.sym->fn;
-        assert(LIS_TAG3(fn) == LIS_TAG3_BUILTIN);
+        assert(LIS_TAG_BASE(fn) == LIS_TAG_BASE_BUILTIN);
         assert(LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN);
 
         lis_obj * args;
@@ -423,12 +423,12 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
 lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
     if (obj == NULL) return NULL;
 
-    if (LIS_TAG3(obj) == LIS_TAG3_INT) {
+    if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_INT) {
         return obj;  // integer
-    } else if (LIS_TAG3(obj) == LIS_TAG3_CHAR) {
+    } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_CHAR) {
         return obj;  // char
 
-    } else if (LIS_TAG3(obj) == LIS_TAG3_BUILTIN) {
+    } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_BUILTIN) {
         // built-in types
         lis_obj * val;
         lis_stream * buffer;

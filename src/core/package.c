@@ -28,7 +28,7 @@ size_t _hash_string(void * str_obj, size_t hash_size) {
 }
 
 lis_obj * _package_make_package(lis_obj * genv, lis_obj * name_str) {
-    if (LIS_TAG3(name_str) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(name_str) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(name_str) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, name_str);
         return NULL;
@@ -65,7 +65,7 @@ lis_obj * _package_list_all_packages(lis_obj * genv) {
 }
 
 lis_obj * _package_in_package(lis_obj * genv, lis_obj * name) {
-    if (LIS_TAG3(name) != LIS_TAG3_BUILTIN ||
+    if (LIS_TAG_BASE(name) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(name) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, name);
         return NULL;
@@ -105,10 +105,10 @@ lis_obj * lisp_in_package(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
-    assert(LIS_TAG3(package) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);
 
-    assert(LIS_TAG3(symbol) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_BASE(symbol) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(symbol) == LIS_TAG_TYPE_SYM);
 
     lis_package * pkg = package->data.pkg;
@@ -141,10 +141,10 @@ lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
 }
 
 package_intern_status intern(lis_obj * package, lis_obj * name, lis_obj ** sym) {
-    assert(LIS_TAG3(package) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);
 
-    assert(LIS_TAG3(name) == LIS_TAG3_BUILTIN);
+    assert(LIS_TAG_BASE(name) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR);
 
     lis_package * pkg = package->data.pkg;
@@ -173,7 +173,7 @@ lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
 
     if (pkg == LIS_GENV(genv)->symbol_nil) {
         pkg = LIS_GENV(genv)->current_package;
-    } else if (LIS_TAG3(pkg) != LIS_TAG3_BUILTIN ||
+    } else if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
                LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
         not_package_error(genv, pkg);
         return NULL;
