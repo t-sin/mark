@@ -323,6 +323,10 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
         LIS_ENV(new_lenv)->parent = LIS_CLS(fn)->env;
 
         return lis_sf_progn(genv, new_lenv, LIS_FN(LIS_CLS(fn)->fn)->body.lisp);
+
+    } else {
+        printf("something wrong...\n");
+        return NULL;
     }
 }
 
