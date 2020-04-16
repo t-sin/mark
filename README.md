@@ -36,6 +36,7 @@
   - [x] print
   - [ ] reader with readtable
 - [ ] advanced features
+  - [x] multiple values
   - [ ] garbage collection
   - [ ] multi-threading? (to interact with Mark)
   - [ ] macro system?
