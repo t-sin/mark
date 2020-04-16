@@ -1,6 +1,5 @@
 src = [
   'obj.c',
-  'data.c',
   'lerror.c',
   'stream.c',
   'lstring.c',
@@ -13,7 +12,7 @@ src = [
   'arithmetic.c',
   'sequence.c',
   'environment.c',
-  'special_form.c',
+  'data.c',
   'bootstrap.c',
 ]
 

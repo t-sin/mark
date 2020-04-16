@@ -7,7 +7,6 @@
 #include "../util/table.h"
 
 #include "obj.h"
-#include "data.h"
 #include "lstring.h"
 #include "stream.h"
 #include "list.h"
@@ -18,7 +17,7 @@
 #include "read.h"
 #include "print.h"
 #include "eval.h"
-#include "special_form.h"
+#include "data.h"
 
 #include "bootstrap.h"
 
