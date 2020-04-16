@@ -3,6 +3,9 @@
 > Mark wakes up.
 > --- "The Squirrel Awakes" by Toh Enjoe
 
+*Mark* is an experimental project to understanding Toh Enjoe and Lisp.
+*Mark* will be a program on top of *Sciurus Lisp*, Common Lisp like lisp imprementation written in C language (C11).
+
 ## Goals
 
 * Understanting Mark
