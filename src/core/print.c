@@ -149,6 +149,10 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
             stream_write_string(stream, obj->data.stream->name);
             stream_write_char(stream, '>');
             break;
+
+        case LIS_TAG_TYPE_MVAL:
+            print(genv, _list_car(genv, LIS_MVAL(obj)), stream);
+            break;
         }
     } else {
         printf("unknown object: %x\n", obj->tags);
