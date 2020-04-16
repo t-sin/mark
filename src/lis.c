@@ -108,6 +108,9 @@ void repl(lis_obj * genv) {
             stream_write_char(stream_stderr, '\n');
             stream_flush(stream_stderr);
             LIS_GENV(genv)->error = NULL;
+            continue;
+        } else if (obj == NULL) {
+            continue;
         }
 
         print_mval(genv, obj, stream_stdout);
