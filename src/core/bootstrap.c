@@ -187,10 +187,12 @@ lis_obj * init_global_env() {
     lis_obj * pkg_lis = _package_make_package(genv_obj, LSTR(U"lis"));
     genv->current_package = pkg_lis;
 
+    init_symbols(genv);
+    LIS_PKG(pkg_lis)->uselist = genv->symbol_nil;
+
     lis_obj * pkg_keyword = _package_make_package(genv_obj, LSTR(U"keyword"));
     genv->keyword_package = pkg_keyword;
 
-    init_symbols(genv);
     init_streams(genv);
     init_special_forms(genv);
     init_functions(genv);
