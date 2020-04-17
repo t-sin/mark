@@ -2,6 +2,7 @@
 
 #include "obj.h"
 #include "lstring.h"
+#include "lerror.h"
 #include "list.h"
 #include "eval.h"
 
@@ -16,6 +17,24 @@ bool _symbol_symbolp(lis_obj * genv, lis_obj * obj) {
     }
 }
 
+lis_obj * _symbol_symbol_value(lis_obj * genv, lis_obj * sym) {
+    if (!_symbol_symbolp(genv, sym)) {
+        not_symbol_error(genv, sym);
+        return NULL;
+    }
+
+    return LIS_SYM(sym)->value;
+}
+
+lis_obj * _symbol_symbol_name(lis_obj * genv, lis_obj * sym) {
+    if (!_symbol_symbolp(genv, sym)) {
+        not_symbol_error(genv, sym);
+        return NULL;
+    }
+
+    return LIS_SYM(sym)->name;
+}
+
 lis_obj * lisp_symbolp(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"symbolp"))) {
         return NULL;
@@ -26,4 +45,20 @@ lis_obj * lisp_symbolp(lis_obj * genv, lis_obj * args) {
     } else {
         return LIS_GENV(genv)->symbol_nil;
     }
+}
+
+lis_obj * lisp_symbol_name(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"symbol-name"))) {
+        return NULL;
+    }
+    
+    return _symbol_symbol_name(genv, _list_nth(genv, INT(0), args));
+}
+
+lis_obj * lisp_symbol_value(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"symbol-value"))) {
+        return NULL;
+    }
+    
+    return _symbol_symbol_value(genv, _list_nth(genv, INT(0), args));
 }
