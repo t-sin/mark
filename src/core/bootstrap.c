@@ -62,6 +62,8 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"list", sym_list, lisp_list);
     define_builtin_function(U"car", sym_car, lisp_car);
     define_builtin_function(U"cdr", sym_cdr, lisp_cdr);
+    define_builtin_function(U"rplaca", sym_rplaca, lisp_rplaca);
+    define_builtin_function(U"rplacd", sym_rplacd, lisp_rplacd);
     define_builtin_function(U"first", sym_first, lisp_first);
     define_builtin_function(U"second", sym_second, lisp_second);
     define_builtin_function(U"third", sym_third, lisp_third);

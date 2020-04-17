@@ -182,6 +182,54 @@ lis_obj * lisp_cdr(lis_obj * genv, lis_obj * args) {
     return _list_cdr(genv, _list_nth(genv, _make_int(0), args));
 }
 
+lis_obj * _list_rplaca(lis_obj * genv, lis_obj * cons, lis_obj * obj) {
+    if (LIS_TAG_BASE(cons) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        print(genv, cons, buffer);
+        stream_write_string(buffer, LSTR(U" is not a cons."));
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return NULL;
+    }
+
+    LIS_CONS(cons)->car = obj;
+    return cons;
+}
+
+lis_obj * lisp_rplaca(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 2, LSTR(U"rplaca"))) {
+        return NULL;
+    }
+
+    lis_obj * cons = _list_nth(genv, INT(0), args);
+    lis_obj * obj = _list_nth(genv, INT(1), args);
+    return _list_rplaca(genv, cons, obj);
+}
+
+lis_obj * _list_rplacd(lis_obj * genv, lis_obj * cons, lis_obj * obj) {
+    if (LIS_TAG_BASE(cons) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        print(genv, cons, buffer);
+        stream_write_string(buffer, LSTR(U" is not a cons."));
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return NULL;
+    }
+
+    LIS_CONS(cons)->cdr = obj;
+    return cons;
+}
+
+lis_obj * lisp_rplacd(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 2, LSTR(U"rplacd"))) {
+        return NULL;
+    }
+
+    lis_obj * cons = _list_nth(genv, INT(0), args);
+    lis_obj * obj = _list_nth(genv, INT(1), args);
+    return _list_rplacd(genv, cons, obj);
+}
+
 lis_obj * lisp_first(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"first"))) {
         return NULL;
