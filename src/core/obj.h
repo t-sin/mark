@@ -154,6 +154,7 @@ typedef struct lis_global_env {
     _table * package_table;
     lis_obj * current_package;
     lis_obj * keyword_package;
+    lis_obj * lis_package;
 
     lis_obj * error;
 

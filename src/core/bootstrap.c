@@ -196,6 +196,7 @@ lis_obj * init_global_env() {
 
     lis_obj * pkg_lis = _package_make_package(genv_obj, LSTR(U"lis"));
     genv->current_package = pkg_lis;
+    genv->lis_package = pkg_lis;
 
     init_symbols(genv);
     LIS_PKG(pkg_lis)->uselist = genv->symbol_nil;
