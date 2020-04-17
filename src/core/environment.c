@@ -3,6 +3,18 @@
 
 #include "environment.h"
 
+bool find_from_lexical_env(lis_obj * lenv, lis_obj * name) {
+    if (lenv == NULL) {
+        return NULL;
+    }
+
+    if (_table_find(LIS_LENV(lenv)->var, (void *)name) == NULL) {
+        return find_from_lexical_env(LIS_ENV(lenv)->parent, name);
+    }
+
+    return true;
+}
+
 lis_obj * get_lexical_value(lis_obj * lenv, lis_obj * name) {
     if (lenv == NULL) {
         return NULL;
