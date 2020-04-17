@@ -111,6 +111,7 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"symbolp", sym_symbolp, lisp_symbolp);
     define_builtin_function(U"symbol-name", sym_symbol_name, lisp_symbol_name);
     define_builtin_function(U"symbol-value", sym_symbol_value, lisp_symbol_value);
+    define_builtin_function(U"symbol-function", sym_symbol_function, lisp_symbol_function);
 
     // streams
     define_builtin_function(U"listen", sym_listen, lisp_listen);
