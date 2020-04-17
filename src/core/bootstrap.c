@@ -14,6 +14,7 @@
 #include "arithmetic.h"
 #include "sequence.h"
 #include "package.h"
+#include "symbol.h"
 #include "read.h"
 #include "print.h"
 #include "eval.h"
@@ -105,6 +106,9 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"intern", sym_intern, lisp_intern);
     define_builtin_function(U"use-package", sym_use_package, lisp_use_package);
     define_builtin_function(U"package-use-list", sym_package_use_list, lisp_package_use_list);
+
+    // symbols
+    define_builtin_function(U"symbolp", sym_symbolp, lisp_symbolp);
 
     // streams
     define_builtin_function(U"listen", sym_listen, lisp_listen);

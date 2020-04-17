@@ -4,6 +4,7 @@ src = [
   'basic_stream.c',
   'lstring.c',
   'package.c',
+  'symbol.c',
   'read.c',
   'print.c',
   'eval.c',
