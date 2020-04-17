@@ -17,15 +17,6 @@ bool _symbol_symbolp(lis_obj * genv, lis_obj * obj) {
     }
 }
 
-lis_obj * _symbol_symbol_value(lis_obj * genv, lis_obj * sym) {
-    if (!_symbol_symbolp(genv, sym)) {
-        not_symbol_error(genv, sym);
-        return NULL;
-    }
-
-    return LIS_SYM(sym)->value;
-}
-
 lis_obj * _symbol_symbol_name(lis_obj * genv, lis_obj * sym) {
     if (!_symbol_symbolp(genv, sym)) {
         not_symbol_error(genv, sym);
@@ -33,6 +24,15 @@ lis_obj * _symbol_symbol_name(lis_obj * genv, lis_obj * sym) {
     }
 
     return LIS_SYM(sym)->name;
+}
+
+lis_obj * _symbol_symbol_value(lis_obj * genv, lis_obj * sym) {
+    if (!_symbol_symbolp(genv, sym)) {
+        not_symbol_error(genv, sym);
+        return NULL;
+    }
+
+    return LIS_SYM(sym)->value;
 }
 
 lis_obj * lisp_symbolp(lis_obj * genv, lis_obj * args) {
