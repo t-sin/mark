@@ -1,7 +1,11 @@
+#include "../util/table.h"
+
 #include "obj.h"
 #include "lstring.h"
 #include "lerror.h"
 #include "basic_stream.h"
+#include "symbol.h"
+#include "package.h"
 #include "eval.h"
 #include "print.h"
 #include "list.h"
@@ -110,10 +114,36 @@ lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     return lis_sf_progn(genv, new_lenv, _list_cdr(genv, args));
 }
 
-bool has_free_variables(lis_obj * genv, lis_obj * exp) {
-    // if (_list_consp(exp)) {
-    // } else if (
-    return true;
+// TODO: わからんけど実装する
+bool has_free_variables(lis_obj * genv, lis_obj * letsym, _table * table, lis_obj * exp) {
+    if (_list_listp(genv, exp)) {
+        // listはcar部がletのときは、letのcdr部のみ束縛tableをコピーして判定処理する
+
+        lis_obj * opname = _list_car(genv, exp);
+        if (opname == letsym) {
+            // letの変数をコピーしたtableに入れる処理
+        }
+
+        lis_obj * rest = _list_cdr(genv, exp);
+        bool result = false;
+
+        while (rest != LIS_NIL) {
+            lis_obj * arg = _list_car(genv, rest);
+            result = result || has_free_variables(genv, letsym, table, arg);
+            rest = _list_cdr(genv, rest);
+        }
+
+        return result;
+
+    } else if (_symbol_symbolp(genv, exp)) {
+        // tableに変数があったら(束縛される予定なので) false = 自由変数でない
+        // なかったらtrue = 自由変数
+        return true;
+
+    } else {
+        return false;
+    }
+
 }
 
 lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
@@ -133,7 +163,21 @@ lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     }
 
-    if (has_free_variables(genv, body)) {
+    // WIPここから: 自由変数の検出
+    bool has_free_variable = true;
+    // lis_obj * rest = body;
+    // _table * table = _make_table(256);
+    // lis_obj * letsym;
+    // intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"let"), &letsym);
+
+    // while (rest != LIS_NIL) {
+    //     lis_obj * body_exp = _list_car(genv, rest);
+    //     has_free_variable = has_free_variable || has_free_variables(genv, letsym, table, body_exp);
+    //     rest = _list_cdr(genv, rest);
+    // }
+    // WIPここまで: 自由変数の検出
+
+    if (has_free_variable) {
         return _make_lisp_closure(lambdalist, body, lenv);
     } else {
         return _make_lisp_function(lambdalist, body);
