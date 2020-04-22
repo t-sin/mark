@@ -3,6 +3,8 @@
 
 #include "obj.h"
 
+lis_obj * lisp_open(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_close(lis_obj * genv, lis_obj * args);
 lis_obj * lisp_listen(lis_obj * genv, lis_obj * args);
 
 lis_obj * lisp_force_output(lis_obj * genv, lis_obj * args);

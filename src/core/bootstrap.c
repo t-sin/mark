@@ -116,6 +116,8 @@ void init_functions(lis_global_env * genv) {
     // streams
     define_builtin_function(U"listen", sym_listen, lisp_listen);
     define_builtin_function(U"force-output", sym_force_output, lisp_force_output);
+    define_builtin_function(U"open", sym_open, lisp_open);
+    define_builtin_function(U"close", sym_close, lisp_close);
 
     // eval
     define_builtin_function(U"apply", sym_apply, lisp_apply);
