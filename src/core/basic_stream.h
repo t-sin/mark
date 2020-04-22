@@ -23,6 +23,10 @@ bool stream_write_char(lis_stream * stream, lis_char ch);
 bool stream_write_string(lis_stream * stream, lis_obj * str);
 lis_obj * stream_output_to_string(lis_stream * stream);
 
+lis_stream * stream_open(lis_string * filename,
+                         lis_stream_direction_type direction,
+                         lis_stream_element_type etype);
+void stream_close(lis_stream * stream);
 bool stream_listen_p(lis_stream * stream);
 void stream_flush(lis_stream * stream);
 

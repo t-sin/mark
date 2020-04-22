@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -262,6 +263,72 @@ lis_obj * stream_output_to_string(lis_stream * stream) {
     LIS_STR(str)->body = buf;
 
     return str;
+}
+
+void stream_flush(lis_stream * stream);
+
+lis_stream * stream_open(lis_string * pathname,
+                         lis_stream_direction_type direction,
+                         lis_stream_element_type etype) {
+    uint8_t filename[512];
+    uint8_t bytes[4];
+
+    int i;
+    int pos = 0;
+    for (i=0; i<pathname->size; i++) {
+        int len = utf8_encode_codepoint(pathname->body[i], bytes);
+        for (int j=0; j<len; j++) {
+            filename[pos + j] = bytes[j];
+        }
+        pos += len;
+    }
+    filename[pos] = '\0';
+
+    char * mode;
+    if (direction == LIS_STREAM_IN) {
+        if (etype == LIS_STREAM_TEXT) {
+            mode = "r";
+        } else {
+            mode = "rb";
+        }
+    } else if (direction == LIS_STREAM_OUT) {
+        if (etype == LIS_STREAM_TEXT) {
+            mode = "w";
+        } else {
+            mode = "wb";
+        }
+    } else {
+        printf("not allowed open input-output stream.");
+        return NULL;
+    }
+
+    FILE * file = fopen((char *)filename, mode);
+    if (file == NULL) {
+        return NULL;
+    }
+
+    lis_stream * stream = make_lis_stream(256, direction, etype);
+    if (direction == LIS_STREAM_IN) {
+        stream->fin = file;
+    } else {
+        stream->fout = file;
+    }
+
+    return stream;
+}
+
+void stream_close(lis_stream * stream) {
+    stream_flush(stream);
+    stream->stream = NULL;
+    stream->decode_state = NULL;
+
+    if (stream->fin != NULL) {
+        fclose(stream->fin);
+    }
+
+    if (stream->fout != NULL) {
+        fclose(stream->fout);
+    }
 }
 
 bool stream_listen_p(lis_stream * stream) {
