@@ -444,6 +444,10 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
             return obj;
 
         case LIS_TAG_TYPE_SYM:
+            if (LIS_SYM(obj)->package == LIS_GENV(genv)->keyword_package) {
+                return obj;
+            }
+
             val = get_lexical_value(lenv, obj);
             if (val != NULL) {
                 return val;

@@ -52,6 +52,10 @@ bool is_whitespace(lis_char ch) {
     return ch == ' ' || ch == '\t' || ch == '\n';
 }
 
+bool is_colon(lis_char ch) {
+    return ch == ':';
+}
+
 static const char NUMERIC_CHARS[] = "0123456789";
 bool is_numeric(lis_char ch) {
     return strchr(NUMERIC_CHARS, ch) != NULL;
@@ -237,7 +241,7 @@ lis_obj * read_string(lis_obj * genv, lis_stream * stream) {
     return NULL;
 }
 
-lis_obj * read_symbol(lis_obj * genv, lis_stream * stream) {
+lis_obj * read_symbol(lis_obj * genv, lis_stream * stream, lis_obj * pkg) {
     lis_char ch;
     size_t size = 0;
     lis_stream * buffer = make_lis_stream(1000, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -263,7 +267,7 @@ lis_obj * read_symbol(lis_obj * genv, lis_stream * stream) {
             }
 
             lis_obj * sym;
-            intern(genv, LIS_GENV(genv)->current_package, name, &sym);
+            intern(genv, pkg, name, &sym);
 
             return sym;
 
@@ -353,8 +357,12 @@ lis_obj * read(lis_obj * genv, lis_stream * stream) {
         stream_read_char(stream, &ch);
         obj = read_cons(genv, stream);
 
+    } else if (is_colon(ch)) {
+        stream_read_char(stream, &ch);
+        obj = read_symbol(genv, stream, LIS_GENV(genv)->keyword_package);
+
     } else {
-        obj = read_symbol(genv, stream);
+        obj = read_symbol(genv, stream, LIS_GENV(genv)->current_package);
     }
 
     return obj;
