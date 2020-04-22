@@ -118,6 +118,8 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"force-output", sym_force_output, lisp_force_output);
     define_builtin_function(U"open", sym_open, lisp_open);
     define_builtin_function(U"close", sym_close, lisp_close);
+    define_builtin_function(U"peek-byte", sym_peek_byte, lisp_peek_byte);
+    define_builtin_function(U"read-byte", sym_read_byte, lisp_read_byte);
 
     // eval
     define_builtin_function(U"apply", sym_apply, lisp_apply);
