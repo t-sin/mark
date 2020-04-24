@@ -284,6 +284,37 @@ lis_obj * lisp_unread_char(lis_obj * genv, lis_obj * args) {
     }
 }
 
-// lis_obj * lisp_write_char(lis_obj * genv, lis_obj * args) {}
+lis_obj * lisp_write_char(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 2, LSTR(U"unread-char"))) {
+        return NULL;
+    }
+
+    lis_obj * stream_obj = _list_nth(genv, INT(0), args);
+    lis_obj * ch_obj = _list_nth(genv, INT(1), args);
+
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
+        not_stream_error(genv, stream_obj);
+        return NULL;
+    }
+
+    if (LIS_TAG_BASE(ch_obj) != LIS_TAG_BASE_CHAR) {
+        not_char_error(genv, ch_obj);
+        return NULL;
+    }
+
+    if (LIS_STREAM(stream_obj)->stream == NULL) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"stream is already closed."));
+        return NULL;
+    }
+
+    if (!stream_write_char(LIS_STREAM(stream_obj), LIS_CH(ch_obj))) {
+        lis_obj * sym;
+        intern(genv, LIS_GENV(genv)->keyword_package, LSTR(U"eof"), &sym);
+        return sym;
+    } else {
+        return ch_obj;
+    }
+}
 
 // lis_obj * lisp_write_string(lis_obj * genv, lis_obj * args) {}

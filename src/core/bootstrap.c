@@ -124,6 +124,7 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"peek-char", sym_peek_char, lisp_peek_char);
     define_builtin_function(U"read-char", sym_read_char, lisp_read_char);
     define_builtin_function(U"unread-char", sym_unread_char, lisp_unread_char);
+    define_builtin_function(U"write-char", sym_write_char, lisp_write_char);
 
     // eval
     define_builtin_function(U"apply", sym_apply, lisp_apply);
