@@ -200,7 +200,7 @@ bool stream_unread_char(lis_stream * stream, lis_char ch) {
 }
 
 bool stream_write_char(lis_stream * stream, lis_char ch) {
-    if (stream->direction != LIS_STREAM_IN &&
+    if (stream->direction != LIS_STREAM_OUT &&
         stream->direction != LIS_STREAM_INOUT) {
         return false;
     }
