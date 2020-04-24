@@ -96,6 +96,9 @@ typedef struct lis_obj {
 #define LIS_TAG_BASE(o) (LIS_TAG(o) & 0x03)
 #define LIS_TAG_TYPE(o) (LIS_TAG(o) >> 2)
 
+#define LIS_CH(obj) (obj)->data.ch
+#define LIS_INT(obj) (obj)->data.num
+
 typedef struct lis_array {
     lis_obj * body;
     lis_int size;
