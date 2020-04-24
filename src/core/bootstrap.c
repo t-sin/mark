@@ -120,6 +120,7 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"close", sym_close, lisp_close);
     define_builtin_function(U"peek-byte", sym_peek_byte, lisp_peek_byte);
     define_builtin_function(U"read-byte", sym_read_byte, lisp_read_byte);
+    define_builtin_function(U"write-byte", sym_write_byte, lisp_write_byte);
     define_builtin_function(U"peek-char", sym_peek_char, lisp_peek_char);
     define_builtin_function(U"read-char", sym_read_char, lisp_read_char);
 
