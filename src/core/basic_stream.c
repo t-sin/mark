@@ -87,6 +87,7 @@ void stream_flush_buffer(lis_stream * stream) {
         }
         fputc((char)b, stream->fout);
     }
+    fflush(stream->fout);
 }
 
 bool stream_write_byte(lis_stream * stream, lis_byte b) {
