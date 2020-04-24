@@ -130,6 +130,11 @@ lis_obj * lisp_peek_byte(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
+    if (LIS_STREAM(stream_obj)->stream == NULL) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"stream is already closed."));
+        return NULL;
+    }
+
     lis_byte byte;
     if (!stream_peek_byte(LIS_STREAM(stream_obj), &byte, 1)) {
         lis_obj * sym;
@@ -149,6 +154,11 @@ lis_obj * lisp_read_byte(lis_obj * genv, lis_obj * args) {
     if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
+        return NULL;
+    }
+
+    if (LIS_STREAM(stream_obj)->stream == NULL) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"stream is already closed."));
         return NULL;
     }
 
@@ -176,6 +186,11 @@ lis_obj * lisp_peek_char(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
+    if (LIS_STREAM(stream_obj)->stream == NULL) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"stream is already closed."));
+        return NULL;
+    }
+
     lis_char ch;
     if (!stream_peek_char(LIS_STREAM(stream_obj), &ch)) {
         lis_obj * sym;
@@ -195,6 +210,11 @@ lis_obj * lisp_read_char(lis_obj * genv, lis_obj * args) {
     if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
+        return NULL;
+    }
+
+    if (LIS_STREAM(stream_obj)->stream == NULL) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"stream is already closed."));
         return NULL;
     }
 
