@@ -146,7 +146,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
 
         case LIS_TAG_TYPE_STRM:
             stream_write_string(stream, LSTR(U"#<STREAM:"));
-            snprintf(buf, BUF_SIZE, "%u", obj);
+            snprintf(buf, BUF_SIZE, "%p", (void *)obj);
             for (int i=0; i<BUF_SIZE; i++) {
                 if (buf[i] == '\0') break;
                 stream_write_char(stream, buf[i]);
