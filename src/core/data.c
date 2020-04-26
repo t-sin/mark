@@ -114,37 +114,124 @@ lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     return lis_sf_progn(genv, new_lenv, _list_cdr(genv, args));
 }
 
-// TODO: わからんけど実装する
-bool has_free_variables(lis_obj * genv, lis_obj * letsym, _table * table, lis_obj * exp) {
-    if (_list_listp(genv, exp)) {
-        // listはcar部がletのときは、letのcdr部のみ束縛tableをコピーして判定処理する
+bool _has_free_variables(lis_obj * genv, lis_obj * letsym, _table * table, lis_obj * sexp) {
+    if (_list_listp(genv, sexp)) {
+        // if car of list is `let`, add the bindings into new table and go checks
 
-        lis_obj * opname = _list_car(genv, exp);
+        lis_obj * opname = _list_car(genv, sexp);
+        lis_obj * rest;
+        _table * old_table = NULL;
         if (opname == letsym) {
-            // letの変数をコピーしたtableに入れる処理
+            old_table = table;
+            table = _make_table(48);
+
+            // copy parent bindings
+            for (int i=0; i<old_table->size; i++) {
+                _table_entry * e = old_table->array + i;
+                if (e->key != NULL) {
+                    while (e != NULL) {
+                        _table_add(table, (void *)e->key, (void *)e->key);
+                        e = e->next;
+                    }
+                }
+            }
+
+            // insert let bindings into table
+            lis_obj * bindings = _list_car(genv, _list_cdr(genv, sexp));
+            while (bindings != LIS_NIL) {
+                lis_obj * sym = _list_car(genv, _list_car(genv, bindings));
+                _table_add(table, (void *)sym, (void *)sym);
+                bindings = _list_cdr(genv, bindings);
+            }
+
+            rest = _list_cdr(genv, _list_cdr(genv, sexp));
+
+        } else {
+            rest = _list_cdr(genv, sexp);
         }
 
-        lis_obj * rest = _list_cdr(genv, exp);
         bool result = false;
 
         while (rest != LIS_NIL) {
             lis_obj * arg = _list_car(genv, rest);
-            result = result || has_free_variables(genv, letsym, table, arg);
+            result = result || _has_free_variables(genv, letsym, table, arg);
             rest = _list_cdr(genv, rest);
+        }
+
+        if (old_table != NULL) {
+            _free_table(table);
         }
 
         return result;
 
-    } else if (_symbol_symbolp(genv, exp)) {
-        // tableに変数があったら(束縛される予定なので) false = 自由変数でない
-        // なかったらtrue = 自由変数
-        return true;
+    } else if (_symbol_symbolp(genv, sexp)) {
+        // if the symbol found in table, it will be bound so it's not free variable
+        _table_entry * e = _table_find(table, (void *)sexp);
+        if (e == NULL) {
+            return true;
+        } else {
+            return false;
+        }
 
     } else {
         return false;
     }
 
 }
+
+bool has_free_variables(lis_obj * genv, lis_lambdalist * lambdalist, lis_obj * body) {
+    bool has_free_variable = false;
+    _table * table = _make_table(48);
+    lis_obj * letsym;
+    intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"let"), &letsym);
+
+    // copy required bigings
+    lis_obj * required_rest = lambdalist->required;
+    while (required_rest != LIS_NIL) {
+        lis_obj * sym = _list_car(genv, required_rest);
+        _table_add(table, (void *)sym, (void *)sym);
+        required_rest = _list_cdr(genv, required_rest);
+    }
+
+    // copy optional bigings
+    lis_arg * optional_rest = lambdalist->optional;
+    while (optional_rest != NULL) {
+        lis_obj * sym = optional_rest->name;
+        _table_add(table, (void *)sym, (void *)sym);
+        optional_rest = optional_rest->next;
+    }
+
+    // copy keyword bigings
+    if (lambdalist->keyword != NULL) {
+        for (int i=0; i<lambdalist->keyword->size; i++) {
+            _table_entry * e = lambdalist->keyword->array + i;
+            if (e->key != NULL) {
+                while (e != NULL) {
+                    _table_add(table, (void *)e->key, (void *)e->key);
+                    e = e->next;
+                }
+            }
+        }
+    }
+
+    // copy rest bigings
+    if (lambdalist->rest != NULL) {
+        lis_obj * sym = lambdalist->rest;
+        _table_add(table, (void *)sym, (void *)sym);
+    }
+
+    lis_obj * rest = body;
+    while (rest != LIS_NIL) {
+        lis_obj * body_sexp = _list_car(genv, rest);
+        has_free_variable = has_free_variable || _has_free_variables(genv, letsym, table, body_sexp);
+        rest = _list_cdr(genv, rest);
+    }
+
+    _free_table(table);
+
+    return has_free_variable;
+}
+
 
 lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (_list_length(genv, args)->data.num < 2) {
@@ -163,21 +250,7 @@ lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     }
 
-    // WIPここから: 自由変数の検出
-    bool has_free_variable = true;
-    // lis_obj * rest = body;
-    // _table * table = _make_table(256);
-    // lis_obj * letsym;
-    // intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"let"), &letsym);
-
-    // while (rest != LIS_NIL) {
-    //     lis_obj * body_exp = _list_car(genv, rest);
-    //     has_free_variable = has_free_variable || has_free_variables(genv, letsym, table, body_exp);
-    //     rest = _list_cdr(genv, rest);
-    // }
-    // WIPここまで: 自由変数の検出
-
-    if (has_free_variable) {
+    if (has_free_variables(genv, lambdalist, body)) {
         return _make_lisp_closure(lambdalist, body, lenv);
     } else {
         return _make_lisp_function(lambdalist, body);
