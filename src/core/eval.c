@@ -8,6 +8,7 @@
 #include "obj.h"
 #include "lstring.h"
 #include "basic_stream.h"
+#include "symbol.h"
 #include "list.h"
 #include "print.h"
 #include "environment.h"
@@ -491,4 +492,56 @@ lis_obj * lisp_eval(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
     return eval(genv, NULL, _list_nth(genv, _make_int(0), args));
+}
+
+bool macroexpand_1(lis_obj * genv, lis_obj * form, lis_obj * env, lis_obj ** expansion) {
+    if (_list_listp(genv, form)) {
+        lis_obj * opname = _list_car(genv, form);
+
+        if (LIS_TAG_BASE(opname) != LIS_TAG_BASE_BUILTIN ||
+            LIS_TAG_TYPE(opname) != LIS_TAG_TYPE_SYM) {
+            *expansion = form;
+            return false;
+        } else {
+            //
+        }
+
+    } else if (_symbol_symbolp(genv, form)) {
+        // symbol macro expansion...?
+        *expansion = form;
+        return false;
+
+    } else {
+        *expansion = form;
+        return false;
+    }
+}
+
+bool macroexpand(lis_obj * genv, lis_obj * form, lis_obj * env, lis_obj ** expansion) {
+    return NULL;
+}
+
+lis_obj * lisp_macroexpand_1(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 2, LSTR(U"macroexpand-1"))) {
+        return NULL;
+    }
+
+    lis_obj * form = _list_nth(genv, INT(0), args);
+    lis_obj * env = _list_nth(genv, INT(1), args);
+    lis_obj * expansion;
+    lis_obj * expanded_p;
+
+    if (macroexpand_1(genv, form, env, &expansion)) {
+        expanded_p = LIS_GENV(genv)->symbol_t;
+    } else {
+        expanded_p = LIS_NIL;
+    }
+
+    lis_obj * mv = _make_multiple_value();
+    LIS_MVAL(mv) = _list_cons(genv, expansion, _list_cons(genv, expanded_p, LIS_NIL));
+    return mv;
+}
+
+lis_obj * lisp_macroexpand(lis_obj * genv, lis_obj * args) {
+    return NULL;
 }

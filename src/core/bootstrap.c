@@ -129,6 +129,8 @@ void init_functions(lis_global_env * genv) {
     // eval
     define_builtin_function(U"apply", sym_apply, lisp_apply);
     define_builtin_function(U"eval", sym_eval, lisp_eval);
+    define_builtin_function(U"macroexpand-1", sym_macroexpand_1, lisp_macroexpand_1);
+
     // read
     define_builtin_function(U"read", sym_read, lisp_read);
     // print
