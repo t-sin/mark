@@ -27,6 +27,11 @@ _table * _make_table(size_t size) {
     return table;
 }
 
+void _free_table(_table * table) {
+    free(table->array);
+    free(table);
+}
+
 _table_entry * _table_find(_table * table, void * key) {
     size_t pos = table->hash_fn(key, table->size);
     _table_entry * entry = table->array + pos;
