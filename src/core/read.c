@@ -56,6 +56,10 @@ bool is_colon(lis_char ch) {
     return ch == ':';
 }
 
+bool is_single_quote(lis_char ch) {
+    return ch == '\'';
+}
+
 static const char NUMERIC_CHARS[] = "0123456789";
 bool is_numeric(lis_char ch) {
     return strchr(NUMERIC_CHARS, ch) != NULL;
@@ -360,6 +364,17 @@ lis_obj * read(lis_obj * genv, lis_stream * stream) {
     } else if (is_colon(ch)) {
         stream_read_char(stream, &ch);
         obj = read_symbol(genv, stream, LIS_GENV(genv)->keyword_package);
+
+    } else if (is_single_quote(ch)) {
+        stream_read_char(stream, &ch);
+        lis_obj * quoted = read(genv, stream);
+        if (quoted == NULL) {
+            return quoted;
+        }
+        lis_obj * quote;
+        intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"quote"), &quote);
+        lis_obj * list = _list_cons(genv, quote, _list_cons(genv, quoted, LIS_NIL));
+        obj = list;
 
     } else {
         obj = read_symbol(genv, stream, LIS_GENV(genv)->current_package);
