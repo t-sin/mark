@@ -20,6 +20,7 @@
 #include "eval.h"
 #include "data.h"
 #include "stream.h"
+#include "system.h"
 
 #include "bootstrap.h"
 
@@ -138,6 +139,9 @@ void init_functions(lis_global_env * genv) {
 
     // data
     define_builtin_function(U"values", sym_values, lisp_values);
+
+    // system construction
+    define_builtin_function(U"load", sym_load, lisp_load);
 }
 
 #define define_standard_stream(sname, dir, type, symname, symstream, symsym) \

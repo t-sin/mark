@@ -15,6 +15,7 @@ src = [
   'environment.c',
   'data.c',
   'stream.c',
+  'system.c',
   'bootstrap.c',
 ]
 
