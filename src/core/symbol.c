@@ -44,6 +44,15 @@ lis_obj * _symbol_symbol_function(lis_obj * genv, lis_obj * sym) {
     return LIS_SYM(sym)->fn;
 }
 
+lis_obj * _symbol_symbol_package(lis_obj * genv, lis_obj * sym) {
+    if (!_symbol_symbolp(genv, sym)) {
+        not_symbol_error(genv, sym);
+        return NULL;
+    }
+
+    return LIS_SYM(sym)->package;
+}
+
 lis_obj * lisp_symbolp(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"symbolp"))) {
         return NULL;
@@ -78,4 +87,12 @@ lis_obj * lisp_symbol_function(lis_obj * genv, lis_obj * args) {
     }
 
     return _symbol_symbol_function(genv, _list_nth(genv, INT(0), args));
+}
+
+lis_obj * lisp_symbol_package(lis_obj * genv, lis_obj * args) {
+    if (!check_arglen(genv, args, 1, LSTR(U"symbol-package"))) {
+        return NULL;
+    }
+
+    return _symbol_symbol_package(genv, _list_nth(genv, INT(0), args));
 }
