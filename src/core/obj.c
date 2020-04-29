@@ -42,6 +42,7 @@ lis_obj * _make_symbol(lis_obj * name) {
     sym->data.sym->name = name;
     sym->data.sym->constant_p = false;
     sym->data.sym->dynamic_p = false;
+    sym->data.sym->exported_p = false;
     return sym;
 }
 
