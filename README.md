@@ -42,7 +42,7 @@
   - [x] multiple values
   - [ ] garbage collection
   - [ ] multi-threading? (to interact with Mark)
-  - [ ] macro system?
+  - [x] macro system?
 - [ ] building Mark
   - [ ] lifecycle of Mark
   - [ ] DSL for Mark
