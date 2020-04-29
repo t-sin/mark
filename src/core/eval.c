@@ -502,13 +502,26 @@ lis_obj * lisp_eval(lis_obj * genv, lis_obj * args) {
 bool macroexpand_1(lis_obj * genv, lis_obj * form, lis_obj * env, lis_obj ** expansion) {
     if (_list_listp(genv, form)) {
         lis_obj * opname = _list_car(genv, form);
+        lis_obj * args = _list_cdr(genv, form);
 
         if (LIS_TAG_BASE(opname) != LIS_TAG_BASE_BUILTIN ||
             LIS_TAG_TYPE(opname) != LIS_TAG_TYPE_SYM) {
             *expansion = form;
             return false;
         } else {
-            //
+            lis_obj * fn = LIS_SYM(opname)->fn;
+            lis_obj * value = apply(genv, fn, args);
+
+            if (value == NULL) {
+                lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                stream_write_string(buffer, LSTR(U"cannot expand form: "));
+                print(genv, form, buffer);
+                LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                return false;
+            }
+
+            *expansion = value;
+            return true;
         }
 
     } else if (_symbol_symbolp(genv, form)) {
