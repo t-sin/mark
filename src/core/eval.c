@@ -508,6 +508,11 @@ bool macroexpand_1(lis_obj * genv, lis_obj * form, lis_obj * env, lis_obj ** exp
             LIS_TAG_TYPE(opname) != LIS_TAG_TYPE_SYM) {
             *expansion = form;
             return false;
+
+        } else if (LIS_SYM(opname)->fn == NULL) {
+            *expansion = form;
+            return false;
+
         } else {
             lis_obj * fn = LIS_SYM(opname)->fn;
             if (LIS_FN(fn)->type != LIS_FUNC_MACRO) {
