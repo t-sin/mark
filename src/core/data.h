@@ -15,5 +15,6 @@ lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * a
 lis_obj * lisp_values(lis_obj * genv, lis_obj * args);
 
 lis_obj * lis_sf_fset(lis_obj * genv, lis_obj * lenv, lis_obj * args);
+lis_obj * lis_macro_defun(lis_obj * genv, lis_obj * args);
 
 #endif

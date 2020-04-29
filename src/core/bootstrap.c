@@ -47,6 +47,17 @@ void init_special_forms(lis_global_env * genv) {
     // flet
 }
 
+#define define_macro(opname, symname, cfnname) \
+    lis_obj * symname = _make_symbol(LSTR(opname)); \
+    LIS_SYM(symname)->package = genv->current_package; \
+    LIS_SYM(symname)->fn = _make_raw_function(cfnname); \
+    LIS_FN(LIS_SYM(symname)->fn)->type = LIS_FUNC_MACRO_RAW; \
+    assert(add_symbol(genv->current_package, symname) != NULL)
+
+void init_macros(lis_global_env * genv) {
+    define_macro(U"defun", sym_defun, lis_macro_defun);
+}
+
 #define define_builtin_function(opname, symname, cfnname) \
     lis_obj * symname = _make_symbol(LSTR(opname)); \
     symname->data.sym->package = genv->current_package; \
@@ -224,6 +235,7 @@ lis_obj * init_global_env() {
 
     init_streams(genv);
     init_special_forms(genv);
+    init_macros(genv);
     init_functions(genv);
 
     return genv_obj;

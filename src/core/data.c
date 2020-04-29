@@ -351,3 +351,31 @@ lis_obj * lis_sf_fset(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     LIS_SYM(sym)->fn = fn;
     return fn;
 }
+
+lis_obj * lis_macro_defun(lis_obj * genv, lis_obj * args) {
+    if (_list_length(genv, args)->data.num < 2) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"too few arguments for `defun`"));
+        return NULL;
+    }
+
+    lis_obj * name = _list_nth(genv, INT(0), args);
+    lis_obj * lambdalist = _list_nth(genv, INT(1), args);
+    lis_obj * body = _list_cdr(genv, _list_cdr(genv, args));
+
+    lis_obj * lambda_sym;
+    intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"lambda"), &lambda_sym);
+    lis_obj * lambda_form = _list_cons(genv, lambda_sym, _list_cons(genv, lambdalist, body));
+
+    lis_obj * fset_sym;
+    intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"%fset"), &fset_sym);
+    lis_obj * fset_form = _list_cons(genv, fset_sym, _list_cons(genv, name, _list_cons(genv, lambda_form, LIS_NIL)));
+
+    lis_obj * progn_sym;
+    intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"progn"), &progn_sym);
+    lis_obj * quote_sym;
+    intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"quote"), &quote_sym);
+    lis_obj * quote_form = _list_cons(genv, quote_sym, _list_cons(genv, name, LIS_NIL));
+    lis_obj * expansion = _list_cons(genv, progn_sym, _list_cons(genv, fset_form, _list_cons(genv, quote_form, LIS_NIL)));
+
+    return expansion;
+}
