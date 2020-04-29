@@ -414,7 +414,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
             break;
 
         case LIS_FUNC_SPECIAL_FORM:
-            ret =  fn->data.fn->body.sf(genv, lenv, cdr);
+            ret = fn->data.fn->body.sf(genv, lenv, cdr);
             if (LIS_GENV(genv)->error != NULL) return NULL;
             return ret;
 
