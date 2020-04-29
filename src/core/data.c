@@ -328,3 +328,26 @@ lis_obj * lisp_values(lis_obj * genv, lis_obj * args) {
     LIS_MVAL(mv) = _list_reverse(genv, list);
     return mv;
 }
+
+lis_obj * lis_sf_fset(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+    if (!check_arglen(genv, args, 2, LSTR(U"%fset"))) {
+        return NULL;
+    }
+
+    lis_obj * sym = _list_nth(genv, _make_int(0), args);
+    lis_obj * fn = eval(genv, lenv, _list_nth(genv, _make_int(1), args));
+
+    if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
+        (LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN &&
+         LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_CLS)) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        stream_write_string(buffer, LSTR(U"it's not a function: "));
+        print(genv, fn, buffer);
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return NULL;
+    }
+
+    // TODO: modify lexical function bindings
+    LIS_SYM(sym)->fn = fn;
+    return fn;
+}

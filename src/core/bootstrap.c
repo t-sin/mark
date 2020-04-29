@@ -42,6 +42,7 @@ void init_special_forms(lis_global_env * genv) {
     define_special_form(U"lambda", sym_lambda, lis_sf_lambda);
     define_special_form(U"multiple-value-call", sym_multiple_value_call,
                         lis_sf_multiple_value_call);
+    define_special_form(U"%fset", sym_fset, lis_sf_fset);
 
     // flet
 }
