@@ -337,6 +337,16 @@ lis_obj * lisp_apply(lis_obj * genv, lis_obj * args) {
     }
 
     lis_obj * fn = _list_nth(genv, _make_int(0), args);
+
+    if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
+        (LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN ||
+         LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_CLS) ||
+        (LIS_FN(fn)->type != LIS_FUNC_RAW ||
+         LIS_FN(fn)->type != LIS_FUNC_NORMAL)) {
+        LIS_GENV(genv)->error = _make_error(LSTR(U"cannot apply for this function."));
+        return NULL;
+    }
+
     lis_obj * lambdalist = _list_nth(genv, _make_int(1), args);
     return apply(genv, fn, lambdalist);
 }
