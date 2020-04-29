@@ -28,8 +28,10 @@ lis_obj * add_symbol(lis_obj * package, lis_obj * symbol);
 
 package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * name, lis_obj ** sym);
 package_intern_status intern(lis_obj * genv, lis_obj * package, lis_obj * name, lis_obj ** sym);
+bool import(lis_obj * genv, lis_obj * pkg, lis_obj * sym);
 
 lis_obj * lisp_intern(lis_obj * genv, lis_obj * args);
 lis_obj * lisp_find_symbol(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_import(lis_obj * genv, lis_obj * args);
 
 #endif

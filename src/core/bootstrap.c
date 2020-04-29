@@ -107,6 +107,7 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"intern", sym_intern, lisp_intern);
     define_builtin_function(U"use-package", sym_use_package, lisp_use_package);
     define_builtin_function(U"package-use-list", sym_package_use_list, lisp_package_use_list);
+    define_builtin_function(U"import", sym_import, lisp_import);
 
     // symbols
     define_builtin_function(U"symbolp", sym_symbolp, lisp_symbolp);

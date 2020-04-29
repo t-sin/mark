@@ -127,9 +127,9 @@ lis_obj * _package_use_package(lis_obj * genv, lis_obj * pkg, lis_obj * to_use) 
         return NULL;
     }
 
-    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
-        LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
-        not_package_error(genv, pkg);
+    if (LIS_TAG_BASE(to_use) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(to_use) != LIS_TAG_TYPE_PKG) {
+        not_package_error(genv, to_use);
         return NULL;
     }
 
@@ -287,6 +287,29 @@ package_intern_status intern(lis_obj * genv, lis_obj * package, lis_obj * name, 
     return PKG_INTERNAL;
 }
 
+bool import(lis_obj * genv, lis_obj * sym, lis_obj * pkg) {
+    if (LIS_TAG_BASE(sym) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(sym) != LIS_TAG_TYPE_SYM) {
+        not_symbol_error(genv, sym);
+        return NULL;
+    }
+
+    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+        LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
+        not_package_error(genv, pkg);
+        return NULL;
+    }
+
+    lis_obj * result;
+    package_intern_status status = find_symbol(genv, pkg, LIS_SYM(sym)->name, &result);
+    if (status == PKG_NOT_FOUND || status == PKG_INHERITED) {
+        add_symbol(pkg, sym);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 lis_obj * status_to_keyword(lis_obj * genv, package_intern_status status) {
     lis_obj * key;
     switch (status) {
@@ -378,4 +401,19 @@ lis_obj * lisp_find_symbol(lis_obj * genv, lis_obj * args) {
     lis_obj * mv = _make_multiple_value();
     LIS_MVAL(mv) = _list_cons(genv, ret, _list_cons(genv, key, LIS_NIL));
     return mv;
+}
+
+lis_obj * lisp_import(lis_obj * genv, lis_obj * args) {
+    if (!check_argge(genv, args, 2, LSTR(U"import"))) {
+        return NULL;
+    }
+
+    lis_obj * sym = _list_nth(genv, INT(0), args);
+    lis_obj * pkg = _list_nth(genv, INT(1), args);
+
+    if (import(genv, sym, pkg)) {
+        return LIS_GENV(genv)->symbol_t;
+    } else {
+        return LIS_NIL;
+    }
 }
