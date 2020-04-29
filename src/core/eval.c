@@ -304,11 +304,13 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     }
 
     if (LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN &&
-        LIS_FN(fn)->type == LIS_FUNC_RAW) {
+        (LIS_FN(fn)->type == LIS_FUNC_RAW ||
+         LIS_FN(fn)->type == LIS_FUNC_MACRO_RAW)) {
         return LIS_FN(fn)->body.raw(genv, args);
 
     } else if (LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN &&
-               LIS_FN(fn)->type == LIS_FUNC_NORMAL) {
+               (LIS_FN(fn)->type == LIS_FUNC_NORMAL ||
+                LIS_FN(fn)->type == LIS_FUNC_MACRO)) {
         lis_obj * new_lenv = bind_lambdalist(genv, fn, args);
         if (new_lenv == NULL) {
             return NULL;
@@ -418,7 +420,9 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
             if (LIS_GENV(genv)->error != NULL) return NULL;
             return ret;
 
+        case LIS_FUNC_MACRO_RAW:
         case LIS_FUNC_MACRO:
+            return eval(genv, lenv, apply(genv, fn, cdr));
             break;
 
         default:
@@ -525,7 +529,8 @@ bool macroexpand_1(lis_obj * genv, lis_obj * form, lis_obj * env, lis_obj ** exp
 
         } else {
             lis_obj * fn = LIS_SYM(opname)->fn;
-            if (LIS_FN(fn)->type != LIS_FUNC_MACRO) {
+            if (LIS_FN(fn)->type != LIS_FUNC_MACRO_RAW &&
+                LIS_FN(fn)->type != LIS_FUNC_MACRO) {
                 *expansion = form;
                 return false;
             }
