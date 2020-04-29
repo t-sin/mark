@@ -354,7 +354,12 @@ lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     } else {
         lis_obj * cons = _make_cons();
-        LIS_CONS(cons)->car = eval(genv, lenv, LIS_CONS(args)->car);
+        lis_obj * value = eval(genv, lenv, LIS_CONS(args)->car);
+        if (LIS_TAG_BASE(value) == LIS_TAG_BASE_BUILTIN &&
+            LIS_TAG_TYPE(value) == LIS_TAG_TYPE_MVAL) {
+            value = _list_car(genv, LIS_MVAL(value));
+        }
+        LIS_CONS(cons)->car = value;
         LIS_CONS(cons)->cdr = eval_args(genv, lenv, LIS_CONS(args)->cdr);
         return cons;
     }
