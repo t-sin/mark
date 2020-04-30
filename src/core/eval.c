@@ -66,6 +66,8 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
 
     lis_arg * optional_rest = NULL;
 
+    _table * name_table = _make_table(48);
+
     lis_lambdalist * llist = (lis_lambdalist *)malloc(sizeof(lis_lambdalist));
     memset(llist, 0, sizeof(lis_lambdalist));
     llist->required = LIS_GENV(genv)->symbol_nil;
@@ -100,6 +102,17 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
             llist->keyword = _make_table(256);
 
         } else {
+            if (_table_find(name_table, (void *)car) == NULL) {
+                _table_add(name_table, (void *)car, (void *)car);
+            } else {
+                lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+                stream_write_string(buffer, LSTR(U"the variable `"));
+                print(genv, lambdalist, buffer);
+                stream_write_string(buffer, LSTR(U"` occurs more than once in lambda list."));
+                LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+                return NULL;
+            }
+
             if (rest_p && llist->rest == NULL) {
                 llist->rest = car;
 
@@ -191,6 +204,8 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
 
         rest = _list_cdr(genv, rest);
     }
+
+    _free_table(name_table);
 
     if (llist->required != LIS_GENV(genv)->symbol_nil) {
         llist->required = _list_reverse(genv, llist->required);
