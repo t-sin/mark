@@ -14,6 +14,8 @@
 #include "core/read.h"
 #include "core/bootstrap.h"
 
+#include "peripheral/bootstrap2.h"
+
 void print_usage() {
     printf("Sciurus Lisp\n");
     printf("usage: lis LISPATH\n");
@@ -133,6 +135,7 @@ int main(int argc, char** argv) {
     }
 
     lis_obj * genv = init_global_env();
+    init_runtime(genv);
     repl(genv);
 
     return 0;
