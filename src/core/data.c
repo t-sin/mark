@@ -337,6 +337,10 @@ lis_obj * lis_sf_fset(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     lis_obj * sym = _list_nth(genv, _make_int(0), args);
     lis_obj * fn = eval(genv, lenv, _list_nth(genv, _make_int(1), args));
 
+    if (fn == NULL) {
+        return NULL;
+    }
+
     if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
         (LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN &&
          LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_CLS)) {
