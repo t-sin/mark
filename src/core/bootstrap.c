@@ -69,6 +69,7 @@ void init_macros(lis_global_env * genv) {
 void init_functions(lis_global_env * genv) {
     // lists
     define_builtin_function(U"atom", sym_atom, lisp_atom);
+    define_builtin_function(U"null", sym_null, lisp_null);
     define_builtin_function(U"consp", sym_consp, lisp_consp);
     define_builtin_function(U"listp", sym_listp, lisp_listp);
     define_builtin_function(U"nth", sym_nth, lisp_nth);

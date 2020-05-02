@@ -4,10 +4,12 @@
 #include "obj.h"
 
 bool _list_atom(lis_obj * genv, lis_obj * obj);
+bool _list_null(lis_obj * genv, lis_obj * obj);
 bool _list_consp(lis_obj * genv, lis_obj * cons);
 bool _list_listp(lis_obj * genv, lis_obj * cons);
 
 lis_obj * lisp_atom(lis_obj * genv, lis_obj * args);
+lis_obj * lisp_null(lis_obj * genv, lis_obj * args);
 lis_obj * lisp_consp(lis_obj * genv, lis_obj * args);
 lis_obj * lisp_listp(lis_obj * genv, lis_obj * args);
 

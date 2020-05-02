@@ -29,6 +29,23 @@ lis_obj * lisp_atom(lis_obj * genv, lis_obj * args) {
     }
 }
 
+bool _list_null(lis_obj * genv, lis_obj * obj) {
+    if (obj == LIS_NIL) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+lis_obj * lisp_null(lis_obj * genv, lis_obj * args) {
+    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    if (_list_null(genv, arg)) {
+        return LIS_GENV(genv)->symbol_t;
+    } else {
+        return LIS_GENV(genv)->symbol_nil;
+    }
+}
+
 bool _list_consp(lis_obj * genv, lis_obj * cons) {
     if (LIS_TAG_BASE(cons) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(cons) != LIS_TAG_TYPE_CONS) {
