@@ -27,7 +27,7 @@
  * 010010mg => cons
  * 010110mg => environment
  * 011010mg => function
- * 011110mg => closure
+ * 011110mg => closure // NOT USED
  * 100010mg => pakcage
  * 100110mg => stream
  * 101010mg => error
@@ -45,7 +45,7 @@
 #define LIS_TAG_TYPE_CONS 0x04
 #define LIS_TAG_TYPE_ENV  0x05
 #define LIS_TAG_TYPE_FN   0x06
-#define LIS_TAG_TYPE_CLS  0x07
+//#define LIS_TAG_TYPE_CLS  0x07
 #define LIS_TAG_TYPE_PKG  0x08
 #define LIS_TAG_TYPE_STRM 0x09
 #define LIS_TAG_TYPE_ERR  0x10
@@ -80,7 +80,6 @@ typedef struct lis_obj {
         struct lis_cons * cons;
         struct lis_env * env;
         struct lis_function * fn;
-        struct lis_closure * cls;
         struct lis_package * pkg;
         struct lis_stream * stream;
         struct lis_error * err;
@@ -218,6 +217,7 @@ typedef struct lis_lambdalist {
 typedef struct lis_function {
     lis_function_type type;
     lis_lambdalist * lambdalist;
+    lis_obj * env;
     union {
         lis_obj * lisp;
         lis_obj * (* raw)(lis_obj *, lis_obj *);
@@ -226,13 +226,6 @@ typedef struct lis_function {
 } lis_function;
 
 #define LIS_FN(obj) ((obj)->data.fn)
-
-typedef struct lis_closure {
-    lis_obj * fn;
-    lis_obj * env;
-} lis_closure;
-
-#define LIS_CLS(obj) ((obj)->data.cls)
 
 typedef enum lis_stream_direction_type {
     LIS_STREAM_IN, LIS_STREAM_OUT, LIS_STREAM_INOUT,
@@ -274,8 +267,7 @@ lis_obj * _make_package(lis_obj * name);
 lis_obj * _make_env();
 lis_obj * _make_lexical_env();
 lis_obj * _make_raw_function();
-lis_obj * _make_lisp_function(lis_lambdalist * lambdalist, lis_obj * body);
-lis_obj * _make_lisp_closure(lis_lambdalist * lambdalist, lis_obj * body, lis_obj * lenv);
+lis_obj * _make_lisp_function(lis_lambdalist * lambdalist, lis_obj * body, lis_obj * env);
 lis_obj * _make_lis_stream(lis_stream * s);
 lis_obj * _make_error(lis_obj * msg);
 lis_obj * _make_multiple_value();

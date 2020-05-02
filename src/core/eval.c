@@ -308,8 +308,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
 
 lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
-        (LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN &&
-         LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_CLS)) {
+        LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         print(genv, fn, buffer);
         stream_write_string(buffer, LSTR(U" is not a lisp function."));
@@ -330,17 +329,9 @@ lis_obj * apply(lis_obj * genv, lis_obj * fn, lis_obj * args) {
         if (new_lenv == NULL) {
             return NULL;
         }
+        LIS_ENV(new_lenv)->parent = LIS_FN(fn)->env;
 
         return lis_sf_progn(genv, new_lenv, LIS_FN(fn)->body.lisp);
-
-    } else if (LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_CLS) {
-        lis_obj * new_lenv = bind_lambdalist(genv, LIS_CLS(fn)->fn, args);
-        if (new_lenv == NULL) {
-            return NULL;
-        }
-        LIS_ENV(new_lenv)->parent = LIS_CLS(fn)->env;
-
-        return lis_sf_progn(genv, new_lenv, LIS_FN(LIS_CLS(fn)->fn)->body.lisp);
 
     } else {
         printf("something wrong...\n");
@@ -356,10 +347,9 @@ lis_obj * lisp_apply(lis_obj * genv, lis_obj * args) {
     lis_obj * fn = _list_nth(genv, _make_int(0), args);
 
     if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
-        (LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN ||
-         LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_CLS) ||
-        (LIS_FN(fn)->type != LIS_FUNC_RAW ||
-         LIS_FN(fn)->type != LIS_FUNC_NORMAL)) {
+        LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN ||
+        !(LIS_FN(fn)->type == LIS_FUNC_RAW ||
+          LIS_FN(fn)->type == LIS_FUNC_NORMAL)) {
         LIS_GENV(genv)->error = _make_error(LSTR(U"cannot apply for this function."));
         return NULL;
     }
@@ -382,6 +372,11 @@ lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     } else {
         lis_obj * cons = _make_cons();
         lis_obj * value = eval(genv, lenv, LIS_CONS(args)->car);
+
+        if (LIS_GENV(genv)->error != NULL) {
+            return NULL;
+        }
+
         if (LIS_TAG_BASE(value) == LIS_TAG_BASE_BUILTIN &&
             LIS_TAG_TYPE(value) == LIS_TAG_TYPE_MVAL) {
             value = _list_car(genv, LIS_MVAL(value));
@@ -502,7 +497,6 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
 
         case LIS_TAG_TYPE_ENV:
         case LIS_TAG_TYPE_FN:
-        case LIS_TAG_TYPE_CLS:
         case LIS_TAG_TYPE_PKG:
             return obj;
 
