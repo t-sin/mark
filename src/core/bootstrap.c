@@ -153,6 +153,7 @@ void init_functions(lis_global_env * genv) {
     define_builtin_function(U"print", sym_print, lisp_print);
 
     // data
+    define_builtin_function(U"eq", sym_eq, lisp_eq);
     define_builtin_function(U"values", sym_values, lisp_values);
 
     // system construction

@@ -312,6 +312,20 @@ lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * a
     return apply(genv, fn, new_args);
 }
 
+lis_obj * lisp_eq(lis_obj * genv, lis_obj * args) {
+    if (!check_argge(genv, args, 2, LSTR(U"eq"))) {
+        return NULL;
+    }
+
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
+    if (arg1 == arg2) {
+        return LIS_GENV(genv)->symbol_t;
+    } else {
+        return LIS_NIL;
+    }
+}
+
 lis_obj * lisp_values(lis_obj * genv, lis_obj * args) {
     if (args == LIS_NIL) {
         return LIS_NIL;
