@@ -303,7 +303,13 @@ lis_obj * read_cons(lis_obj * genv, lis_stream * stream) {
             break;
 
         } else {
-            current->data.cons->car = read(genv, stream);
+            lis_obj * car = read(genv, stream);
+            if (car == NULL) {
+                reader_error(genv, LSTR(U"car of read() is NULL!"));
+                return NULL;
+            }
+
+            current->data.cons->car = car;
             skip_whitespaces(stream);
 
             if (stream_peek_char(stream, &ch) && is_cons_delimiter(ch)) {
