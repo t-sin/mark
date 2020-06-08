@@ -58,7 +58,7 @@ lis_obj * _make_cons() {
 #define DEFAULT_PACKAGE_LEN 256
 lis_obj * _make_package(lis_obj * name) {
     lis_obj * pkg = (lis_obj *)malloc(sizeof(lis_obj));
-    pkg->tags = LIS_TAG_BASE_BUILTIN << 2 | LIS_TAG_TYPE_PKG << 4;
+    pkg->tags = LIS_TAG_BASE_INTERNAL << 2 | LIS_TAG_TYPE_PKG << 4;
     pkg->data.pkg = (lis_package *)malloc(sizeof(lis_package));
     pkg->data.pkg->name = name;
     pkg->data.pkg->num = 0;
@@ -70,7 +70,7 @@ lis_obj * _make_package(lis_obj * name) {
 
 lis_obj * _make_env(env_type type) {
     lis_obj * env = (lis_obj *)malloc(sizeof(lis_obj));
-    env->tags = LIS_TAG_BASE_BUILTIN << 2 | LIS_TAG_TYPE_ENV << 4;
+    env->tags = LIS_TAG_BASE_INTERNAL << 2 | LIS_TAG_TYPE_ENV << 4;
     env->data.env = (lis_env *)malloc(sizeof(lis_env));
     env->data.env->parent = NULL;
     env->data.env = (lis_env *)malloc(sizeof(lis_env));
@@ -109,14 +109,14 @@ lis_obj * _make_lisp_function(lis_lambdalist * lambdalist, lis_obj * body, lis_o
 
 lis_obj * _make_lis_stream(lis_stream * s) {
     lis_obj * stream = (lis_obj *)malloc(sizeof(lis_obj));
-    stream->tags = LIS_TAG_BASE_BUILTIN << 2 | LIS_TAG_TYPE_STRM << 4;
+    stream->tags = LIS_TAG_BASE_INTERNAL << 2 | LIS_TAG_TYPE_STRM << 4;
     stream->data.stream = s;
     return stream;
 }
 
 lis_obj * _make_error(lis_obj * msg) {
     lis_obj * err = (lis_obj *)malloc(sizeof(lis_obj));
-    err->tags = LIS_TAG_BASE_BUILTIN << 2 | LIS_TAG_TYPE_ERR << 4;
+    err->tags = LIS_TAG_BASE_INTERNAL << 2 | LIS_TAG_TYPE_ERR << 4;
     err->data.err = (lis_error *)malloc(sizeof(lis_error));
     err->data.err->message = msg;
     return err;
@@ -124,6 +124,6 @@ lis_obj * _make_error(lis_obj * msg) {
 
 lis_obj * _make_multiple_value() {
     lis_obj * mval = (lis_obj *)malloc(sizeof(lis_obj));
-    mval->tags = LIS_TAG_BASE_BUILTIN << 2 | LIS_TAG_TYPE_MVAL << 4;
+    mval->tags = LIS_TAG_BASE_INTERNAL << 2 | LIS_TAG_TYPE_MVAL << 4;
     return mval;
 }

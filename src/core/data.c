@@ -152,7 +152,7 @@ lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * a
     while (rest != LIS_NIL) {
         lis_obj * car = eval(genv, lenv, _list_car(genv, rest));
 
-        if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
+        if (LIS_TAG_BASE(car) == LIS_TAG_BASE_INTERNAL &&
             LIS_TAG_TYPE(car) == LIS_TAG_TYPE_MVAL) {
 
             lis_obj * mval_rest = LIS_MVAL(car);

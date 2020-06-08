@@ -71,7 +71,7 @@ lis_obj * lisp_close(lis_obj * genv, lis_obj * args) {
 
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
 
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -88,7 +88,7 @@ lis_obj * lisp_listen(lis_obj * genv, lis_obj * args) {
 
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
 
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -106,7 +106,7 @@ lis_obj * lisp_force_output(lis_obj * genv, lis_obj * args) {
     lis_obj * stream = LIS_GENV(genv)->stream_stdout;
 
     if (stream_obj != LIS_GENV(genv)->symbol_nil) {
-        if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+        if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
             LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
             not_stream_error(genv, stream_obj);
             return NULL;
@@ -124,7 +124,7 @@ lis_obj * lisp_peek_byte(lis_obj * genv, lis_obj * args) {
     }
     
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -151,7 +151,7 @@ lis_obj * lisp_read_byte(lis_obj * genv, lis_obj * args) {
     }
 
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -185,7 +185,7 @@ lis_obj * lisp_write_byte(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -204,7 +204,7 @@ lis_obj * lisp_peek_char(lis_obj * genv, lis_obj * args) {
     }
 
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -231,7 +231,7 @@ lis_obj * lisp_read_char(lis_obj * genv, lis_obj * args) {
     }
 
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -261,7 +261,7 @@ lis_obj * lisp_unread_char(lis_obj * genv, lis_obj * args) {
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
     lis_obj * ch_obj = _list_nth(genv, INT(1), args);
 
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;
@@ -292,7 +292,7 @@ lis_obj * lisp_write_char(lis_obj * genv, lis_obj * args) {
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
     lis_obj * ch_obj = _list_nth(genv, INT(1), args);
 
-    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
         not_stream_error(genv, stream_obj);
         return NULL;

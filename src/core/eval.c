@@ -377,7 +377,7 @@ lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
             return NULL;
         }
 
-        if (LIS_TAG_BASE(value) == LIS_TAG_BASE_BUILTIN &&
+        if (LIS_TAG_BASE(value) == LIS_TAG_BASE_INTERNAL &&
             LIS_TAG_TYPE(value) == LIS_TAG_TYPE_MVAL) {
             value = _list_car(genv, LIS_MVAL(value));
         }
@@ -495,6 +495,18 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
         case LIS_TAG_TYPE_CONS:
             return eval_cons(genv, lenv, obj);
 
+        default:
+            buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+            print(genv, obj, buffer);
+            stream_write_string(buffer, LSTR(U" is unknown type... it may be a bug!"));
+            LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+            return NULL;
+        }
+
+    } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_INTERNAL) {
+        lis_stream * buffer;
+
+        switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ENV:
         case LIS_TAG_TYPE_FN:
         case LIS_TAG_TYPE_PKG:

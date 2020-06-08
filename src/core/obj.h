@@ -16,7 +16,7 @@
  * 000000mg => int
  * 000001mg => char
  * xxxx10mg => built-in types
- * 0000xxmg => multiple value
+ * xxxx11mg => internal types
  *
  * built-in types
  * 
@@ -25,31 +25,34 @@
  * 001010mg => timestamp
  * 001110mg => symbol
  * 010010mg => cons
- * 010110mg => environment
  * 011010mg => function
- * 011110mg => closure // NOT USED
- * 100010mg => pakcage
- * 100110mg => stream
- * 101010mg => error
- * 101110mg => multiple value
+ *
+ * internal types
+ *
+ * 000011mg => environment
+ * 000111mg => pakcage
+ * 001011mg => stream
+ * 001111mg => error
+ * 010011mg => multiple value
  */
 
-#define LIS_TAG_BASE_INT      0x00
-#define LIS_TAG_BASE_CHAR     0x01
-#define LIS_TAG_BASE_BUILTIN  0x02
+#define LIS_TAG_BASE_INT       0x00
+#define LIS_TAG_BASE_CHAR      0x01
+#define LIS_TAG_BASE_BUILTIN   0x02
+#define LIS_TAG_BASE_INTERNAL  0x03
 
 #define LIS_TAG_TYPE_ARY  0x00
 #define LIS_TAG_TYPE_STR  0x01
 #define LIS_TAG_TYPE_TS   0x02
 #define LIS_TAG_TYPE_SYM  0x03
 #define LIS_TAG_TYPE_CONS 0x04
-#define LIS_TAG_TYPE_ENV  0x05
-#define LIS_TAG_TYPE_FN   0x06
-//#define LIS_TAG_TYPE_CLS  0x07
-#define LIS_TAG_TYPE_PKG  0x08
-#define LIS_TAG_TYPE_STRM 0x09
-#define LIS_TAG_TYPE_ERR  0x10
-#define LIS_TAG_TYPE_MVAL 0x0b
+#define LIS_TAG_TYPE_FN   0x05
+
+#define LIS_TAG_TYPE_ENV  0x00
+#define LIS_TAG_TYPE_PKG  0x01
+#define LIS_TAG_TYPE_STRM 0x02
+#define LIS_TAG_TYPE_ERR  0x03
+#define LIS_TAG_TYPE_MVAL 0x04
 
 
 typedef uint8_t lis_byte;

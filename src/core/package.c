@@ -121,13 +121,13 @@ lis_obj * _package_find_package(lis_obj * genv, lis_obj * name) {
 }
 
 lis_obj * _package_use_package(lis_obj * genv, lis_obj * pkg, lis_obj * to_use) {
-    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
         not_package_error(genv, pkg);
         return NULL;
     }
 
-    if (LIS_TAG_BASE(to_use) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(to_use) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(to_use) != LIS_TAG_TYPE_PKG) {
         not_package_error(genv, to_use);
         return NULL;
@@ -159,7 +159,7 @@ lis_obj * _package_use_package(lis_obj * genv, lis_obj * pkg, lis_obj * to_use) 
 }
 
 lis_obj * _package_package_use_list(lis_obj * genv, lis_obj * pkg) {
-    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
         not_package_error(genv, pkg);
         return NULL;
@@ -198,7 +198,7 @@ lis_obj * lisp_find_package(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
-    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_INTERNAL);
     assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);
 
     assert(LIS_TAG_BASE(symbol) == LIS_TAG_BASE_BUILTIN);
@@ -234,7 +234,7 @@ lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
 }
 
 package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * name, lis_obj ** sym) {
-    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_INTERNAL);
     assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);
 
     assert(LIS_TAG_BASE(name) == LIS_TAG_BASE_BUILTIN);
@@ -264,7 +264,7 @@ package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * n
 }
 
 package_intern_status intern(lis_obj * genv, lis_obj * package, lis_obj * name, lis_obj ** sym) {
-    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_BASE(package) == LIS_TAG_BASE_INTERNAL);
     assert(LIS_TAG_TYPE(package) == LIS_TAG_TYPE_PKG);
 
     assert(LIS_TAG_BASE(name) == LIS_TAG_BASE_BUILTIN);
@@ -294,7 +294,7 @@ bool import(lis_obj * genv, lis_obj * sym, lis_obj * pkg) {
         return NULL;
     }
 
-    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
         not_package_error(genv, pkg);
         return NULL;
@@ -340,7 +340,7 @@ lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
 
     if (pkg == LIS_GENV(genv)->symbol_nil) {
         pkg = LIS_GENV(genv)->current_package;
-    } else if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_BUILTIN ||
+    } else if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_INTERNAL ||
                LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
         not_package_error(genv, pkg);
         return NULL;

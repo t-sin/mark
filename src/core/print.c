@@ -33,7 +33,7 @@ void print_cons(lis_obj * genv, lis_obj * car, lis_obj * cdr, lis_stream * strea
 
 #define BUF_SIZE 256
 void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
-    assert(LIS_TAG_BASE(genv) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_BASE(genv) == LIS_TAG_BASE_INTERNAL);
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
     assert(genv->data.env->type == LIS_ENV_GLOBAL);
 
@@ -90,6 +90,27 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
             stream_write_char(stream, ')');
             break;
 
+        case LIS_TAG_TYPE_FN:
+            stream_write_string(stream, LSTR(U"#<FN: "));
+
+            if (obj->data.fn->type == LIS_FUNC_MACRO) {
+                stream_write_string(stream, LSTR(U"macro "));
+            }
+            if (obj->data.fn->type == LIS_FUNC_SPECIAL_FORM) {
+                stream_write_string(stream, LSTR(U"special "));
+            }
+
+            snprintf(buf, BUF_SIZE, "%u", obj->data.num);
+            for (int i=0; i<BUF_SIZE; i++) {
+                if (buf[i] == '\0') break;
+                stream_write_char(stream, buf[i]);
+            }
+            stream_write_char(stream, '>');
+            break;
+        }
+
+    } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_INTERNAL) {
+        switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ENV:
             stream_write_string(stream, LSTR(U"#<FN: "));
             if (obj->data.env->type == LIS_ENV_GLOBAL) {
@@ -106,24 +127,6 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
                 stream_write_char(stream, buf[i]);
             }
 
-            stream_write_char(stream, '>');
-            break;
-
-        case LIS_TAG_TYPE_FN:
-            stream_write_string(stream, LSTR(U"#<FN: "));
-
-            if (obj->data.fn->type == LIS_FUNC_MACRO) {
-                stream_write_string(stream, LSTR(U"macro "));
-            }
-            if (obj->data.fn->type == LIS_FUNC_SPECIAL_FORM) {
-                stream_write_string(stream, LSTR(U"special "));
-            }
-
-            snprintf(buf, BUF_SIZE, "%u", obj->data.num);
-            for (int i=0; i<BUF_SIZE; i++) {
-                if (buf[i] == '\0') break;
-                stream_write_char(stream, buf[i]);
-            }
             stream_write_char(stream, '>');
             break;
 
@@ -147,6 +150,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
             print(genv, _list_car(genv, LIS_MVAL(obj)), stream);
             break;
         }
+
     } else {
         printf("unknown object: %x\n", obj->tags);
     }
