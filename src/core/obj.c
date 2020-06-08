@@ -73,7 +73,6 @@ lis_obj * _make_env(env_type type) {
     env->tags = LIS_TAG_BASE_INTERNAL << 2 | LIS_TAG_TYPE_ENV << 4;
     env->data.env = (lis_env *)malloc(sizeof(lis_env));
     env->data.env->parent = NULL;
-    env->data.env = (lis_env *)malloc(sizeof(lis_env));
     env->data.env->type = type;
     return env;
 }
