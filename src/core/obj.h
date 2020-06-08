@@ -25,7 +25,7 @@
  * 001010mg => timestamp
  * 001110mg => symbol
  * 010010mg => cons
- * 011010mg => function
+ * 010110mg => function
  *
  * internal types
  *
