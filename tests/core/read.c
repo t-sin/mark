@@ -67,8 +67,19 @@ void test_empty_input() {
     assert(result == NULL);
 }
 
-void test_nil() {
-    lis_obj * input = LSTR(U"nil");
+void test_whitespaces() {
+    lis_obj * input = LSTR(U"   ");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result == NULL);
+}
+
+void test_number_one_digit() {
+    lis_obj * input = LSTR(U"1");
     lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
 
     assert(stream_write_string(input_stream, input));
@@ -76,10 +87,63 @@ void test_nil() {
     lis_obj * result = read(genv, input_stream);
 
     assert(result != NULL);
+    assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_INT);
+    assert(LIS_INT(result) == 1);
+}
+
+void test_number_two_digits() {
+    lis_obj * input = LSTR(U"98");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result != NULL);
+    assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_INT);
+    assert(LIS_INT(result) == 98);
+}
+
+void test_empty_string() {
+    lis_obj * input = LSTR(U"\"\"");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result != NULL);
+    assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_TYPE(result) == LIS_TAG_TYPE_STR);
+    assert(LIS_STR(result)->size == 0);
+}
+
+void test_string() {
+    lis_obj * input = LSTR(U"\"abcde123\"");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result != NULL);
+    assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_TYPE(result) == LIS_TAG_TYPE_STR);
+    assert(LIS_STR(result)->size == 8);
+    assert(LIS_STR(result)->body[0] == 'a');
+    assert(LIS_STR(result)->body[1] == 'b');
+    assert(LIS_STR(result)->body[7] == '3');
 }
 
 int main() {
     test_empty_input();
-    test_nil();
+    test_whitespaces();
+
+    test_number_one_digit();
+    test_number_two_digits();
+
+    test_empty_string();
+    test_string();
+
     return 0;
 }
