@@ -60,40 +60,22 @@ lis_obj * init_minimal_global_env() {
 }
 
 void test_empty_input() {
-    lis_obj * input = LSTR(U"");
-    lis_obj * expected = LSTR(U"");
     lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-
-    assert(stream_write_string(input_stream, input));
     lis_obj * genv = init_minimal_global_env();
-    lis_obj * obj_read = read(genv, input_stream);
+    lis_obj * result = read(genv, input_stream);
 
-    lis_stream * output_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-
-    print(genv, obj_read, output_stream);
-    lis_obj * result = stream_output_to_string(output_stream);
-
-    assert(_string_equal(LIS_STR(result), LIS_STR(expected)));
+    assert(result == NULL);
 }
 
 void test_nil() {
     lis_obj * input = LSTR(U"nil");
-    lis_obj * expected = LSTR(U"nil");
     lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
 
     assert(stream_write_string(input_stream, input));
     lis_obj * genv = init_minimal_global_env();
-    lis_obj * obj_read = read(genv, input_stream);
+    lis_obj * result = read(genv, input_stream);
 
-    assert(obj_read != NULL);
-
-    lis_stream * output_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
-
-    print(genv, obj_read, output_stream);
-    lis_obj * result = stream_output_to_string(output_stream);
     assert(result != NULL);
-
-    assert(_string_equal(LIS_STR(result), LIS_STR(expected)));
 }
 
 int main() {
