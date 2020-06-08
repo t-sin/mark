@@ -135,6 +135,19 @@ void test_string() {
     assert(LIS_STR(result)->body[7] == '3');
 }
 
+void test_symbol_ends_with_eof() {
+    lis_obj * input = LSTR(U"symbol");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result != NULL);
+    assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_TYPE(result) == LIS_TAG_TYPE_SYM);
+}
+
 int main() {
     test_empty_input();
     test_whitespaces();
@@ -144,6 +157,8 @@ int main() {
 
     test_empty_string();
     test_string();
+
+    test_symbol_ends_with_eof();
 
     return 0;
 }
