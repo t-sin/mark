@@ -139,6 +139,8 @@ void test_symbol_ends_with_eof() {
     lis_obj * input = LSTR(U"symbol");
     lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
 
+    lis_obj * expected_name = LSTR(U"symbol");
+
     assert(stream_write_string(input_stream, input));
     lis_obj * genv = init_minimal_global_env();
     lis_obj * result = read(genv, input_stream);
@@ -146,12 +148,15 @@ void test_symbol_ends_with_eof() {
     assert(result != NULL);
     assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(result) == LIS_TAG_TYPE_SYM);
+    assert(_string_equal(LIS_STR(expected_name), LIS_STR(LIS_SYM(result)->name)));
 }
 
 void test_symbol_ends_with_space() {
     lis_obj * input = LSTR(U"symbol ");
     lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
 
+    lis_obj * expected_name = LSTR(U"symbol");
+
     assert(stream_write_string(input_stream, input));
     lis_obj * genv = init_minimal_global_env();
     lis_obj * result = read(genv, input_stream);
@@ -159,12 +164,15 @@ void test_symbol_ends_with_space() {
     assert(result != NULL);
     assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(result) == LIS_TAG_TYPE_SYM);
+    assert(_string_equal(LIS_STR(expected_name), LIS_STR(LIS_SYM(result)->name)));
 }
 
 void test_symbol_ends_with_paren() {
     lis_obj * input = LSTR(U"symbol(");
     lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
 
+    lis_obj * expected_name = LSTR(U"symbol");
+
     assert(stream_write_string(input_stream, input));
     lis_obj * genv = init_minimal_global_env();
     lis_obj * result = read(genv, input_stream);
@@ -172,6 +180,7 @@ void test_symbol_ends_with_paren() {
     assert(result != NULL);
     assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(result) == LIS_TAG_TYPE_SYM);
+    assert(_string_equal(LIS_STR(expected_name), LIS_STR(LIS_SYM(result)->name)));
 }
 
 int main() {
