@@ -183,6 +183,30 @@ void test_symbol_ends_with_paren() {
     assert(_string_equal(LIS_STR(expected_name), LIS_STR(LIS_SYM(result)->name)));
 }
 
+void test_nil() {
+    lis_obj * input = LSTR(U"nil");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result != NULL);
+    assert(result == LIS_NIL);
+}
+
+void test_empty_list() {
+    lis_obj * input = LSTR(U"()");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result != NULL);
+    assert(result == LIS_NIL);
+}
+
 int main() {
     test_empty_input();
     test_whitespaces();
@@ -196,6 +220,9 @@ int main() {
     test_symbol_ends_with_eof();
     test_symbol_ends_with_space();
     test_symbol_ends_with_paren();
+
+    test_nil();
+    test_empty_list();
 
     return 0;
 }
