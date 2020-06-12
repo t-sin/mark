@@ -288,6 +288,44 @@ void test_list_without_nest_with_two_element() {
     assert(LIS_CONS(second_cons)->cdr == LIS_NIL);
 }
 
+void test_list_with_one_nest() {
+    lis_obj * input = LSTR(U"(1 (2))");
+    lis_stream * input_stream = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+
+    assert(stream_write_string(input_stream, input));
+    lis_obj * genv = init_minimal_global_env();
+    lis_obj * result = read(genv, input_stream);
+
+    assert(result != NULL);
+    assert(LIS_TAG_BASE(result) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_TYPE(result) == LIS_TAG_TYPE_CONS);
+
+    assert(LIS_CONS(result)->car != NULL);
+    assert(LIS_TAG_BASE(LIS_CONS(result)->car) == LIS_TAG_BASE_INT);
+    assert(LIS_INT(LIS_CONS(result)->car) == 1);
+
+    assert(LIS_CONS(result)->cdr != NULL);
+    assert(LIS_TAG_BASE(LIS_CONS(result)->cdr) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_TYPE(LIS_CONS(result)->cdr) == LIS_TAG_TYPE_CONS);
+
+    lis_obj * second_cons = LIS_CONS(result)->cdr;
+
+    assert(LIS_CONS(second_cons)->car != NULL);
+    assert(LIS_TAG_BASE(LIS_CONS(second_cons)->car) == LIS_TAG_BASE_BUILTIN);
+    assert(LIS_TAG_TYPE(LIS_CONS(second_cons)->car) == LIS_TAG_TYPE_CONS);
+
+    lis_obj * third_cons = LIS_CONS(second_cons)->car;
+
+    assert(LIS_CONS(third_cons)->car != NULL);
+    assert(LIS_TAG_BASE(LIS_CONS(third_cons)->car) == LIS_TAG_BASE_INT);
+    assert(LIS_INT(LIS_CONS(third_cons)->car) == 2);
+
+    assert(LIS_CONS(third_cons)->cdr == LIS_NIL);
+
+    assert(LIS_CONS(second_cons)->cdr == LIS_NIL);
+}
+
+
 int main() {
     test_empty_input();
     test_whitespaces();
@@ -308,6 +346,9 @@ int main() {
     test_list_without_nest_with_one_element();
     test_list_without_nest_with_one_element_2();
     test_list_without_nest_with_two_element();
+
+    test_list_with_one_nest();
+    //test_newline();
 
     return 0;
 }
