@@ -157,7 +157,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
 }
 
 void print_mval(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
-    if (LIS_TAG_BASE(obj) != LIS_TAG_BASE_BUILTIN ||
+    if (LIS_TAG_BASE(obj) != LIS_TAG_BASE_INTERNAL ||
         LIS_TAG_TYPE(obj) != LIS_TAG_TYPE_MVAL) {
         print(genv, obj, stream);
         return;
