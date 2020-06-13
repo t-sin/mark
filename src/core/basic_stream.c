@@ -188,6 +188,7 @@ bool stream_unread_char(lis_stream * stream, lis_char ch) {
     int i;
     lis_byte _b;
     for (i=0; i<len; i++) {
+        // TODO: unreadする順序が逆なのでは？
         if (!_stream_unread_byte(stream->stream, bytes[i])) {
             for (; i>0; i--) {
                 _stream_read_byte(stream->stream, &_b);
