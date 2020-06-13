@@ -18,7 +18,6 @@ bool load(lis_obj * genv, lis_string * filename) {
     }
 
     while (stream_peek_char(input, &ch)) {
-        printf("aaaaaaaa ");
         lis_obj * obj = read(genv, input);
 
         if (LIS_GENV(genv)->error != NULL) {
