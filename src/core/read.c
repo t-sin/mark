@@ -305,7 +305,7 @@ lis_obj * read_cons(lis_obj * genv, lis_stream * stream) {
         } else {
             lis_obj * car = read(genv, stream);
             if (car == NULL) {
-                reader_error(genv, LSTR(U"car of read() is NULL!"));
+                reader_error(genv, LSTR(U"car of read_cons() is NULL!"));
                 return NULL;
             }
 
