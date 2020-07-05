@@ -23,7 +23,7 @@ lis_obj * u2lstring(const char32_t * ustr, size_t ustr_size) {
 
     _str->body = body;
     _str->size = ustr_size - 1;
-    str->data.str = _str;
+    LIS_STR(str) = _str;
 
     return str;
 }
@@ -61,7 +61,7 @@ lis_obj * lisp_string_equal(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    if (_string_equal(arg1->data.str, arg2->data.str)) {
+    if (_string_equal(LIS_STR(arg1), LIS_STR(arg2))) {
         return LIS_T(genv);
     } else {
         return LIS_NIL(genv);

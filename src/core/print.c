@@ -11,8 +11,8 @@
 #include "print.h"
 
 void print_string(lis_stream * stream, lis_obj * str) {
-    for (size_t i=0; i < str->data.str->size; i++) {
-        stream_write_char(stream, str->data.str->body[i]);
+    for (size_t i=0; i < LIS_STR(str)->size; i++) {
+        stream_write_char(stream, LIS_STR(str)->body[i]);
     }
 }
 

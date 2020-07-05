@@ -231,8 +231,8 @@ bool stream_write_string(lis_stream * stream, lis_obj * str) {
     assert(LIS_TAG_BASE(str) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(str) == LIS_TAG_TYPE_STR);
 
-    for (int i=0; i<str->data.str->size; i++) {
-        if (!stream_write_char(stream, str->data.str->body[i])) {
+    for (int i=0; i<LIS_STR(str)->size; i++) {
+        if (!stream_write_char(stream, LIS_STR(str)->body[i])) {
             return false;
         }
     }

@@ -224,12 +224,12 @@ lis_obj * read_string(lis_obj * genv, lis_stream * stream) {
             stream_read_char(stream, &ch);
 
             lis_obj * str = _make_string();
-            str->data.str->size = size;
-            str->data.str->body = (lis_char *)malloc(sizeof(lis_char) * size);
+            LIS_STR(str)->size = size;
+            LIS_STR(str)->body = (lis_char *)malloc(sizeof(lis_char) * size);
 
             for (int i=0; i<size; i++) {
                 stream_read_char(buffer, &ch);
-                str->data.str->body[i] = ch;
+                LIS_STR(str)->body[i] = ch;
             }
 
             return str;
@@ -263,11 +263,11 @@ lis_obj * read_symbol(lis_obj * genv, lis_stream * stream, lis_obj * pkg) {
             }
 
             lis_obj * name = _make_string();
-            name->data.str->size = size;
-            name->data.str->body = (lis_char *)malloc(sizeof(lis_char) * size);
+            LIS_STR(name)->size = size;
+            LIS_STR(name)->body = (lis_char *)malloc(sizeof(lis_char) * size);
             for (int i=0; i<size; i++) {
                 stream_read_char(buffer, &ch);
-                name->data.str->body[i] = ch;
+                LIS_STR(name)->body[i] = ch;
             }
 
             lis_obj * sym;
