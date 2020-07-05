@@ -20,7 +20,7 @@ void print_cons(lis_obj * genv, lis_obj * car, lis_obj * cdr, lis_stream * strea
     print(genv, car, stream);
     if (LIS_TAG_BASE(cdr) == LIS_TAG_BASE_BUILTIN && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS) {
         stream_write_char(stream, ' ');
-        print_cons(genv, cdr->data.cons->car, cdr->data.cons->cdr, stream);
+        print_cons(genv, LIS_CONS(cdr)->car, LIS_CONS(cdr)->cdr, stream);
     } else if (cdr == LIS_NIL(genv)) {
         ;
     } else {
@@ -86,7 +86,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
 
         case LIS_TAG_TYPE_CONS:
             stream_write_char(stream, '(');
-            print_cons(genv, obj->data.cons->car, obj->data.cons->cdr, stream);
+            print_cons(genv, LIS_CONS(obj)->car, LIS_CONS(obj)->cdr, stream);
             stream_write_char(stream, ')');
             break;
 

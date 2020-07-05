@@ -17,11 +17,11 @@ lis_obj * lis_sf_quote(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"quote"))) {
         return NULL;
     }
-    return args->data.cons->car;
+    return LIS_CONS(args)->car;
 }
 
 lis_obj * lis_sf_function(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
-    lis_obj * sym = args->data.cons->car;
+    lis_obj * sym = LIS_CONS(args)->car;
     if (LIS_TAG_BASE(sym) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(sym) != LIS_TAG_TYPE_SYM) {
         lis_stream * stream = genv->data.env->env.global->stream_stderr->data.stream;

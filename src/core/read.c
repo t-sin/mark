@@ -309,13 +309,13 @@ lis_obj * read_cons(lis_obj * genv, lis_stream * stream) {
                 return NULL;
             }
 
-            current->data.cons->car = car;
+            LIS_CONS(current)->car = car;
             skip_whitespaces(stream);
 
             if (stream_peek_char(stream, &ch) && is_cons_delimiter(ch)) {
                 // cons
                 stream_read_char(stream, &ch);
-                current->data.cons->cdr = read(genv, stream);
+                LIS_CONS(current)->cdr = read(genv, stream);
 
                 skip_whitespaces(stream);
                 stream_peek_char(stream, &ch);
@@ -330,7 +330,7 @@ lis_obj * read_cons(lis_obj * genv, lis_stream * stream) {
             } else {
                 // list
                 lis_obj * cdr = _make_cons();
-                current->data.cons->cdr = cdr;
+                LIS_CONS(current)->cdr = cdr;
                 prev_current = current;
                 current = cdr;
             }

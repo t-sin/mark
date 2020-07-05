@@ -388,8 +388,8 @@ lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 }
 
 lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
-    lis_obj * name = cons->data.cons->car;
-    lis_obj * cdr = cons->data.cons->cdr;
+    lis_obj * name = LIS_CONS(cons)->car;
+    lis_obj * cdr = LIS_CONS(cons)->cdr;
 
     if (LIS_TAG_BASE(name) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(name) != LIS_TAG_TYPE_SYM) {
