@@ -17,7 +17,7 @@
 #include "eval.h"
 
 bool check_arglen(lis_obj * genv, lis_obj * args, int len, lis_obj * opname) {
-    if (_list_length(genv, args)->data.num != len) {
+    if (LIS_INT(_list_length(genv, args)) != len) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         stream_write_string(buffer, LSTR(U"wrong number of args for `"));
         stream_write_string(buffer, opname);
@@ -31,7 +31,7 @@ bool check_arglen(lis_obj * genv, lis_obj * args, int len, lis_obj * opname) {
 }
 
 bool check_argge(lis_obj * genv, lis_obj * args, int len, lis_obj * opname) {
-    if (_list_length(genv, args)->data.num < len) {
+    if (LIS_INT(_list_length(genv, args)) < len) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         stream_write_string(buffer, LSTR(U"few number of args for `"));
         stream_write_string(buffer, opname);
@@ -45,7 +45,7 @@ bool check_argge(lis_obj * genv, lis_obj * args, int len, lis_obj * opname) {
 }
 
 bool check_argeven(lis_obj * genv, lis_obj * args, lis_obj * opname) {
-    if (_list_length(genv, args)->data.num % 2 == 0) {
+    if (LIS_INT(_list_length(genv, args)) % 2 == 0) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         stream_write_string(buffer, LSTR(U"odd number of args for `"));
         stream_write_string(buffer, opname);
@@ -126,7 +126,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 } else if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
                            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
 
-                    if (_list_length(genv, car)->data.num != 2) {
+                    if (LIS_INT(_list_length(genv, car)) != 2) {
                         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
                         stream_write_string(buffer, LSTR(U"malformed keyword arg: "));
                         print(genv, car, buffer);
@@ -159,7 +159,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 } else if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
                            LIS_TAG_TYPE(car) == LIS_TAG_TYPE_CONS) {
 
-                    if (_list_length(genv, car)->data.num != 2) {
+                    if (LIS_INT(_list_length(genv, car)) != 2) {
                         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
                         stream_write_string(buffer, LSTR(U"malformed optional arg: "));
                         print(genv, car, buffer);

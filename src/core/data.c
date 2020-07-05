@@ -115,7 +115,7 @@ lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 }
 
 lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num < 2) {
+    if (LIS_INT(_list_length(genv, args)) < 2) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
         stream_write_string(buffer, LSTR(U"malformed lambda expression: "));
         print(genv, args, buffer);
@@ -246,7 +246,7 @@ lis_obj * lis_sf_fset(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 }
 
 lis_obj * lis_macro_defun(lis_obj * genv, lis_obj * args) {
-    if (_list_length(genv, args)->data.num < 2) {
+    if (LIS_INT(_list_length(genv, args)) < 2) {
         LIS_GENV(genv)->error = _make_error(LSTR(U"too few arguments for `defun`"));
         return NULL;
     }

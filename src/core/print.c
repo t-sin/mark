@@ -44,7 +44,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     char buf[BUF_SIZE];
 
     if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_INT) {
-        snprintf(buf, BUF_SIZE, "%d", obj->data.num);
+        snprintf(buf, BUF_SIZE, "%d", LIS_INT(obj));
         for (int i=0; i<BUF_SIZE; i++) {
             if (buf[i] == '\0') return;
             stream_write_char(stream, buf[i]);
@@ -100,7 +100,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
                 stream_write_string(stream, LSTR(U"special "));
             }
 
-            snprintf(buf, BUF_SIZE, "%u", obj->data.num);
+            snprintf(buf, BUF_SIZE, "%u", LIS_INT(obj));
             for (int i=0; i<BUF_SIZE; i++) {
                 if (buf[i] == '\0') break;
                 stream_write_char(stream, buf[i]);
@@ -121,7 +121,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
                 stream_write_string(stream, LSTR(U"lexical "));
             }
 
-            snprintf(buf, BUF_SIZE, "%u", obj->data.num);
+            snprintf(buf, BUF_SIZE, "%u", LIS_INT(obj));
             for (int i=0; i<BUF_SIZE; i++) {
                 if (buf[i] == '\0') break;
                 stream_write_char(stream, buf[i]);

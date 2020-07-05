@@ -27,7 +27,7 @@ lis_obj * _int_zerop(lis_obj * genv, lis_obj * num) {
         return NULL;
     }
 
-    if (num->data.num == 0) {
+    if (LIS_INT(num) == 0) {
         return LIS_T(genv);
     } else {
         return LIS_NIL(genv);
@@ -48,7 +48,7 @@ lis_obj * _int_plusp(lis_obj * genv, lis_obj * num) {
         return NULL;
     }
 
-    if (num->data.num > 0) {
+    if (LIS_INT(num) > 0) {
         return LIS_T(genv);
     } else {
         return LIS_NIL(genv);
@@ -72,7 +72,7 @@ lis_obj * _int_minusp(lis_obj * genv, lis_obj * num) {
         return NULL;
     }
 
-    if (num->data.num < 0) {
+    if (LIS_INT(num) < 0) {
         return LIS_T(genv);
     } else {
         return LIS_NIL(genv);
@@ -98,7 +98,7 @@ lis_obj * _int_equal(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    if (a->data.num == b->data.num) {
+    if (LIS_INT(a) == LIS_INT(b)) {
         return LIS_T(genv);
     } else {
         return LIS_NIL(genv);
@@ -126,7 +126,7 @@ lis_obj * _int_add(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    return INT(a->data.num + b->data.num);
+    return INT(LIS_INT(a) + LIS_INT(b));
 }
 
 lis_obj * lisp_add(lis_obj * genv, lis_obj * args) {
@@ -150,7 +150,7 @@ lis_obj * _int_sub(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    return INT(a->data.num - b->data.num);
+    return INT(LIS_INT(a) - LIS_INT(b));
 }
 
 lis_obj * lisp_sub(lis_obj * genv, lis_obj * args) {
@@ -174,7 +174,7 @@ lis_obj * _int_mul(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    return INT(a->data.num * b->data.num);
+    return INT(LIS_INT(a) * LIS_INT(b));
 }
 
 lis_obj * lisp_mul(lis_obj * genv, lis_obj * args) {
@@ -198,12 +198,12 @@ lis_obj * _int_div(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    if (b->data.num == 0) {
+    if (LIS_INT(b) == 0) {
         LIS_GENV(genv)->error = _make_error(LSTR(U"division by zero."));
         return NULL;
     }
 
-    return INT(a->data.num / b->data.num);
+    return INT(LIS_INT(a) / LIS_INT(b));
 }
 
 lis_obj * lisp_div(lis_obj * genv, lis_obj * args) {

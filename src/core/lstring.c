@@ -105,7 +105,7 @@ lis_obj * _string_char(lis_obj * genv, lis_obj * str, lis_obj * n) {
         return NULL;
     }
 
-    lis_int pos = n->data.num;
+    lis_int pos = LIS_INT(n);
     if (pos < 0 || pos >= LIS_STR(str)->size) {
         LIS_GENV(genv)->error = _make_error(LSTR(U"out of range"));
         return NULL;

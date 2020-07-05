@@ -122,7 +122,7 @@ lis_obj * _list_nth(lis_obj * genv, lis_obj * n, lis_obj * list) {
 
     } else {
         lis_obj * ret = list;
-        for (int i=0; i<n->data.num; i++) {
+        for (int i=0; i<LIS_INT(n); i++) {
             ret = LIS_CONS(ret)->cdr;
             if (ret == LIS_NIL(genv)) {
                 return ret;
