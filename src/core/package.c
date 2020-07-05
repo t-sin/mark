@@ -173,7 +173,7 @@ lis_obj * lisp_make_package(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"make-package"))) {
         return NULL;
     }
-    return _package_make_package(genv, _list_nth(genv, _make_int(0), args));
+    return _package_make_package(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * lisp_list_all_packages(lis_obj * genv, lis_obj * args) {
@@ -187,14 +187,14 @@ lis_obj * lisp_in_package(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"in-package"))) {
         return NULL;
     }
-    return _package_in_package(genv, _list_nth(genv, _make_int(0), args));
+    return _package_in_package(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * lisp_find_package(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"find-package"))) {
         return NULL;
     }
-    return _package_find_package(genv, _list_nth(genv, _make_int(0), args));
+    return _package_find_package(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {

@@ -176,8 +176,8 @@ lis_obj * lisp_print(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * obj = _list_nth(genv, _make_int(0), args);
-    lis_obj * stream_obj = _list_nth(genv, _make_int(1), args);
+    lis_obj * obj = _list_nth(genv, INT(0), args);
+    lis_obj * stream_obj = _list_nth(genv, INT(1), args);
     lis_stream * stream;
 
     if (stream_obj == LIS_NIL(genv)) {

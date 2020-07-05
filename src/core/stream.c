@@ -141,7 +141,7 @@ lis_obj * lisp_peek_byte(lis_obj * genv, lis_obj * args) {
         intern(genv, LIS_GENV(genv)->keyword_package, LSTR(U"eof"), &sym);
         return sym;
     } else {
-        return _make_int(byte);
+        return INT(byte);
     }
 }
 
@@ -168,7 +168,7 @@ lis_obj * lisp_read_byte(lis_obj * genv, lis_obj * args) {
         intern(genv, LIS_GENV(genv)->keyword_package, LSTR(U"eof"), &sym);
         return sym;
     } else {
-        return _make_int(byte);
+        return INT(byte);
     }
 }
 

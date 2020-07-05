@@ -111,7 +111,7 @@ lis_obj * read_integer(lis_obj * genv, lis_stream * stream) {
                 s[i] = ch;
             }
 
-            lis_obj * integer = _make_int(atoi(s));
+            lis_obj * integer = INT(atoi(s));
             return integer;
 
         } else {
@@ -390,7 +390,7 @@ lis_obj * read(lis_obj * genv, lis_stream * stream) {
 }
 
 lis_obj * lisp_read(lis_obj * genv, lis_obj * args) {
-    lis_obj * obj = _list_nth(genv, _make_int(0), args);
+    lis_obj * obj = _list_nth(genv, INT(0), args);
     lis_stream * stream;
 
     if (obj == LIS_NIL(genv)) {

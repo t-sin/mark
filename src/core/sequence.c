@@ -40,12 +40,12 @@ lis_obj * lisp_copy_seq(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _seq_copy_seq(genv, _list_nth(genv, _make_int(0), args));
+    return _seq_copy_seq(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * _seq_length(lis_obj * genv, lis_obj * seq) {
     if (seq == LIS_GENV(genv)->symbol_nil) {
-        return _make_int(0);
+        return INT(0);
 
     } else if (LIS_TAG_BASE(seq) == LIS_TAG_BASE_BUILTIN) {
         switch (LIS_TAG_TYPE(seq)) {
@@ -75,7 +75,7 @@ lis_obj * lisp_length(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _seq_length(genv, _list_nth(genv, _make_int(0), args));
+    return _seq_length(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * _seq_elt(lis_obj * genv, lis_obj * seq, lis_obj * n) {
@@ -110,14 +110,14 @@ lis_obj * lisp_elt(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _seq_elt(genv, arg1, arg2);
 }
 
 lis_obj * _seq_reverse(lis_obj * genv, lis_obj * seq) {
    if (seq == LIS_GENV(genv)->symbol_nil) {
-        return _make_int(0);
+        return INT(0);
 
     } else if (LIS_TAG_BASE(seq) == LIS_TAG_BASE_BUILTIN) {
         switch (LIS_TAG_TYPE(seq)) {
@@ -147,5 +147,5 @@ lis_obj * lisp_reverse(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _seq_reverse(genv, _list_nth(genv, _make_int(0), args));
+    return _seq_reverse(genv, _list_nth(genv, INT(0), args));
 }

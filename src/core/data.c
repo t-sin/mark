@@ -42,8 +42,8 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * sym = _list_nth(genv, _make_int(0), args);
-    lis_obj * val = eval(genv, lenv, _list_nth(genv, _make_int(1), args));
+    lis_obj * sym = _list_nth(genv, INT(0), args);
+    lis_obj * val = eval(genv, lenv, _list_nth(genv, INT(1), args));
 
     if (lenv == NULL) {
         sym->data.sym->value = val;
@@ -78,11 +78,11 @@ lis_obj * lis_sf_if(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * condition = eval(genv, lenv, _list_nth(genv, _make_int(0), args));
+    lis_obj * condition = eval(genv, lenv, _list_nth(genv, INT(0), args));
     if (condition != LIS_NIL(genv)) {
-        return eval(genv, lenv, _list_nth(genv, _make_int(1), args));
+        return eval(genv, lenv, _list_nth(genv, INT(1), args));
     } else {
-        return eval(genv, lenv, _list_nth(genv, _make_int(2), args));
+        return eval(genv, lenv, _list_nth(genv, INT(2), args));
     }
 }
 
@@ -123,7 +123,7 @@ lis_obj * lis_sf_lambda(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * _lambdalist = _list_nth(genv, _make_int(0), args);
+    lis_obj * _lambdalist = _list_nth(genv, INT(0), args);
     lis_lambdalist * lambdalist = validate_lambdalist(genv, lenv, _lambdalist);
     lis_obj * body = _list_cdr(genv, args);
 
@@ -224,8 +224,8 @@ lis_obj * lis_sf_fset(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * sym = _list_nth(genv, _make_int(0), args);
-    lis_obj * fn = eval(genv, lenv, _list_nth(genv, _make_int(1), args));
+    lis_obj * sym = _list_nth(genv, INT(0), args);
+    lis_obj * fn = eval(genv, lenv, _list_nth(genv, INT(1), args));
 
     if (fn == NULL) {
         return NULL;

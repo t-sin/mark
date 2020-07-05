@@ -133,9 +133,9 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
                     }
 
-                    lis_obj * name = _list_nth(genv, _make_int(0), car);
+                    lis_obj * name = _list_nth(genv, INT(0), car);
                     lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->default_value = eval(genv, lenv, _list_nth(genv, _make_int(1), car));
+                    arg->default_value = eval(genv, lenv, _list_nth(genv, INT(1), car));
                     _table_add(llist->keyword, (void *)name, (void *)arg);
 
                 } else {
@@ -167,8 +167,8 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                     }
 
                     arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->name = _list_nth(genv, _make_int(0), car);
-                    arg->default_value = eval(genv, lenv, _list_nth(genv, _make_int(1), car));
+                    arg->name = _list_nth(genv, INT(0), car);
+                    arg->default_value = eval(genv, lenv, _list_nth(genv, INT(1), car));
                     arg->next = NULL;
 
                 } else {
@@ -344,7 +344,7 @@ lis_obj * lisp_apply(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * fn = _list_nth(genv, _make_int(0), args);
+    lis_obj * fn = _list_nth(genv, INT(0), args);
 
     if (LIS_TAG_BASE(fn) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(fn) != LIS_TAG_TYPE_FN ||
@@ -354,7 +354,7 @@ lis_obj * lisp_apply(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * lambdalist = _list_nth(genv, _make_int(1), args);
+    lis_obj * lambdalist = _list_nth(genv, INT(1), args);
     return apply(genv, fn, lambdalist);
 }
 
@@ -531,7 +531,7 @@ lis_obj * lisp_eval(lis_obj * genv, lis_obj * args) {
     if (!check_arglen(genv, args, 1, LSTR(U"eval"))) {
         return NULL;
     }
-    return eval(genv, NULL, _list_nth(genv, _make_int(0), args));
+    return eval(genv, NULL, _list_nth(genv, INT(0), args));
 }
 
 bool macroexpand_1(lis_obj * genv, lis_obj * form, lis_obj * env, lis_obj ** expansion) {

@@ -13,7 +13,7 @@ lis_obj * lisp_integerp(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg = _list_nth(genv, INT(0), args);
     if (LIS_TAG_BASE(arg) == LIS_TAG_BASE_INT) {
         return LIS_T(genv);
     } else {
@@ -39,7 +39,7 @@ lis_obj * lisp_zerop(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _int_zerop(genv, _list_nth(genv, _make_int(0), args));
+    return _int_zerop(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * _int_plusp(lis_obj * genv, lis_obj * num) {
@@ -60,7 +60,7 @@ lis_obj * lisp_plusp(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _int_plusp(genv, _list_nth(genv, _make_int(0), args));
+    return _int_plusp(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * _int_minusp(lis_obj * genv, lis_obj * num) {
@@ -84,7 +84,7 @@ lis_obj * lisp_minusp(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _int_minusp(genv, _list_nth(genv, _make_int(0), args));
+    return _int_minusp(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * _int_equal(lis_obj * genv, lis_obj * a, lis_obj * b) {
@@ -110,8 +110,8 @@ lis_obj * lisp_equal(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _int_equal(genv, arg1, arg2);
 }
 
@@ -126,7 +126,7 @@ lis_obj * _int_add(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    return _make_int(a->data.num + b->data.num);
+    return INT(a->data.num + b->data.num);
 }
 
 lis_obj * lisp_add(lis_obj * genv, lis_obj * args) {
@@ -134,8 +134,8 @@ lis_obj * lisp_add(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _int_add(genv, arg1, arg2);
 }
 
@@ -150,7 +150,7 @@ lis_obj * _int_sub(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    return _make_int(a->data.num - b->data.num);
+    return INT(a->data.num - b->data.num);
 }
 
 lis_obj * lisp_sub(lis_obj * genv, lis_obj * args) {
@@ -158,8 +158,8 @@ lis_obj * lisp_sub(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _int_sub(genv, arg1, arg2);
 }
 
@@ -174,7 +174,7 @@ lis_obj * _int_mul(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    return _make_int(a->data.num * b->data.num);
+    return INT(a->data.num * b->data.num);
 }
 
 lis_obj * lisp_mul(lis_obj * genv, lis_obj * args) {
@@ -182,8 +182,8 @@ lis_obj * lisp_mul(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _int_mul(genv, arg1, arg2);
 }
 
@@ -203,7 +203,7 @@ lis_obj * _int_div(lis_obj * genv, lis_obj * a, lis_obj * b) {
         return NULL;
     }
 
-    return _make_int(a->data.num / b->data.num);
+    return INT(a->data.num / b->data.num);
 }
 
 lis_obj * lisp_div(lis_obj * genv, lis_obj * args) {
@@ -211,7 +211,7 @@ lis_obj * lisp_div(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _int_div(genv, arg1, arg2);
 }

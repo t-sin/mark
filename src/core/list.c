@@ -21,7 +21,7 @@ bool _list_atom(lis_obj * genv, lis_obj * obj) {
 }
 
 lis_obj * lisp_atom(lis_obj * genv, lis_obj * args) {
-    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg = _list_nth(genv, INT(0), args);
     if (_list_atom(genv, arg)) {
         return LIS_T(genv);
     } else {
@@ -38,7 +38,7 @@ bool _list_null(lis_obj * genv, lis_obj * obj) {
 }
 
 lis_obj * lisp_null(lis_obj * genv, lis_obj * args) {
-    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg = _list_nth(genv, INT(0), args);
     if (_list_null(genv, arg)) {
         return LIS_T(genv);
     } else {
@@ -56,7 +56,7 @@ bool _list_consp(lis_obj * genv, lis_obj * cons) {
 }
 
 lis_obj * lisp_consp(lis_obj * genv, lis_obj * args) {
-    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg = _list_nth(genv, INT(0), args);
     if (_list_consp(genv, arg)) {
         return LIS_T(genv);
     } else {
@@ -77,7 +77,7 @@ bool _list_listp(lis_obj * genv, lis_obj * obj) {
 }
 
 lis_obj * lisp_listp(lis_obj * genv, lis_obj * args) {
-    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg = _list_nth(genv, INT(0), args);
     if(_list_listp(genv, arg)) {
         return LIS_T(genv);
     } else {
@@ -87,7 +87,7 @@ lis_obj * lisp_listp(lis_obj * genv, lis_obj * args) {
 
 lis_obj * _list_length(lis_obj * genv, lis_obj * list) {
     if (list == LIS_NIL(genv)) {
-        return _make_int(0);
+        return INT(0);
     } else if (LIS_TAG_BASE(list) != LIS_TAG_BASE_BUILTIN ||
                LIS_TAG_TYPE(list) != LIS_TAG_TYPE_CONS) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
@@ -96,7 +96,7 @@ lis_obj * _list_length(lis_obj * genv, lis_obj * list) {
         LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
         return NULL;
     } else {
-        return _int_add(genv, _list_length(genv, LIS_CONS(list)->cdr), _make_int(1));
+        return _int_add(genv, _list_length(genv, LIS_CONS(list)->cdr), INT(1));
     }
 }
 
@@ -137,8 +137,8 @@ lis_obj * lisp_nth(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _list_nth(genv, arg1, arg2);
 }
 
@@ -154,8 +154,8 @@ lis_obj * lisp_cons(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     return _list_cons(genv, arg1, arg2);
 }
 
@@ -180,7 +180,7 @@ lis_obj * lisp_car(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _list_car(genv, _list_nth(genv, _make_int(0), args));
+    return _list_car(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * _list_cdr(lis_obj * genv, lis_obj * cons) {
@@ -204,7 +204,7 @@ lis_obj * lisp_cdr(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _list_cdr(genv, _list_nth(genv, _make_int(0), args));
+    return _list_cdr(genv, _list_nth(genv, INT(0), args));
 }
 
 lis_obj * _list_rplaca(lis_obj * genv, lis_obj * cons, lis_obj * obj) {
@@ -260,7 +260,7 @@ lis_obj * lisp_first(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _list_nth(genv, _make_int(0), LIS_CONS(args)->car);
+    return _list_nth(genv, INT(0), LIS_CONS(args)->car);
 }
 
 lis_obj * lisp_second(lis_obj * genv, lis_obj * args) {
@@ -268,7 +268,7 @@ lis_obj * lisp_second(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _list_nth(genv, _make_int(1), LIS_CONS(args)->car);
+    return _list_nth(genv, INT(1), LIS_CONS(args)->car);
 }
 
 lis_obj * lisp_third(lis_obj * genv, lis_obj * args) {
@@ -276,7 +276,7 @@ lis_obj * lisp_third(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _list_nth(genv, _make_int(2), LIS_CONS(args)->car);
+    return _list_nth(genv, INT(2), LIS_CONS(args)->car);
 }
 
 lis_obj * lisp_fourth(lis_obj * genv, lis_obj * args) {
@@ -284,7 +284,7 @@ lis_obj * lisp_fourth(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _list_nth(genv, _make_int(3), LIS_CONS(args)->car);
+    return _list_nth(genv, INT(3), LIS_CONS(args)->car);
 }
 
 lis_obj * lisp_fifth(lis_obj * genv, lis_obj * args) {
@@ -292,7 +292,7 @@ lis_obj * lisp_fifth(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    return _list_nth(genv, _make_int(4), LIS_CONS(args)->car);
+    return _list_nth(genv, INT(4), LIS_CONS(args)->car);
 }
 
 lis_obj * _list_reverse(lis_obj * genv, lis_obj * list) {

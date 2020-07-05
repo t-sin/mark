@@ -47,8 +47,8 @@ lis_obj * lisp_string_equal(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg1 = _list_nth(genv, _make_int(0), args);
-    lis_obj * arg2 = _list_nth(genv, _make_int(1), args);
+    lis_obj * arg1 = _list_nth(genv, INT(0), args);
+    lis_obj * arg2 = _list_nth(genv, INT(1), args);
     if (LIS_TAG_BASE(arg1) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(arg1) != LIS_TAG_TYPE_STR) {
         not_string_error(genv, arg1);
@@ -73,7 +73,7 @@ lis_obj * lisp_stringp(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    lis_obj * arg = _list_nth(genv, _make_int(0), args);
+    lis_obj * arg = _list_nth(genv, INT(0), args);
     if (LIS_TAG_BASE(arg) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(arg) != LIS_TAG_TYPE_STR) {
         return LIS_NIL(genv);
@@ -89,7 +89,7 @@ lis_obj * _string_length(lis_obj * genv, lis_obj * str) {
         return NULL;
     }
 
-    return _make_int(LIS_STR(str)->size);
+    return INT(LIS_STR(str)->size);
 }
 
 lis_obj * _string_char(lis_obj * genv, lis_obj * str, lis_obj * n) {
