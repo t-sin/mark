@@ -53,7 +53,7 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_CHAR) {
         stream_write_char(stream, '#');
         stream_write_char(stream, '\\');
-        stream_write_char(stream, obj->data.ch);
+        stream_write_char(stream, LIS_CH(obj));
 
     } else if (LIS_TAG_BASE(obj) == LIS_TAG_BASE_BUILTIN) {
         // built-in types
