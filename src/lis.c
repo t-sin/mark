@@ -78,7 +78,7 @@ void repl(lis_obj * genv) {
     lis_stream * stream_stderr = LIS_STREAM(LIS_GENV(genv)->stream_stderr);
 
     while (true) {
-        stream_write_string(stream_stdout, LIS_GENV(genv)->current_package->data.pkg->name);
+        stream_write_string(stream_stdout, LIS_PKG(LIS_GENV(genv)->current_package)->name);
         stream_write_string(stream_stdout, prompt);
         stream_flush(stream_stdout);
 

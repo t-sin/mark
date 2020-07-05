@@ -204,7 +204,7 @@ lis_obj * add_symbol(lis_obj * package, lis_obj * symbol) {
     assert(LIS_TAG_BASE(symbol) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(symbol) == LIS_TAG_TYPE_SYM);
 
-    lis_package * pkg = package->data.pkg;
+    lis_package * pkg = LIS_PKG(package);
 
     if (pkg->num > pkg->size) {
         size_t new_size = pkg->size * 2;
@@ -240,7 +240,7 @@ package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * n
     assert(LIS_TAG_BASE(name) == LIS_TAG_BASE_BUILTIN);
     assert(LIS_TAG_TYPE(name) == LIS_TAG_TYPE_STR);
 
-    lis_package * pkg = package->data.pkg;
+    lis_package * pkg = LIS_PKG(package);
 
     for (int i=0; i<pkg->num; i++) {
         if (pkg->symbols[i] != NULL &&
