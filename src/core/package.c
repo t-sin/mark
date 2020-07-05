@@ -50,14 +50,14 @@ lis_obj * _package_make_package(lis_obj * genv, lis_obj * name) {
     }
 
     lis_obj * pkg = _make_package(name_str);
-    LIS_PKG(pkg)->uselist = LIS_NIL;
+    LIS_PKG(pkg)->uselist = LIS_NIL(genv);
     _table_add(pkgtable, (void *)name_str, (void *)pkg);
 
     return pkg;
 }
 
 lis_obj * _package_list_all_packages(lis_obj * genv) {
-    lis_obj * pkg_list = LIS_GENV(genv)->symbol_nil;
+    lis_obj * pkg_list = LIS_NIL(genv);
     _table * table = LIS_GENV(genv)->package_table;
 
     for (size_t i=0; i<table->size; i++) {
@@ -113,7 +113,7 @@ lis_obj * _package_find_package(lis_obj * genv, lis_obj * name) {
     }
 
     if (res == NULL) {
-        return LIS_NIL;
+        return LIS_NIL(genv);
     }
 
     lis_obj * pkg = (lis_obj *)res->value;
@@ -139,18 +139,18 @@ lis_obj * _package_use_package(lis_obj * genv, lis_obj * pkg, lis_obj * to_use) 
 
     lis_obj * rest = LIS_PKG(pkg)->uselist;
 
-    if (rest == LIS_NIL) {
-        LIS_PKG(pkg)->uselist = _list_cons(genv, to_use, LIS_NIL);
+    if (rest == LIS_NIL(genv)) {
+        LIS_PKG(pkg)->uselist = _list_cons(genv, to_use, LIS_NIL(genv));
     }
 
-    while (rest != LIS_NIL) {
+    while (rest != LIS_NIL(genv)) {
         if (_list_car(genv, rest) == to_use) {
             return to_use;
         }
 
         lis_obj * next = _list_cdr(genv, rest);
-        if (next == LIS_NIL) {
-            LIS_CONS(rest)->cdr = _list_cons(genv, to_use, LIS_NIL);
+        if (next == LIS_NIL(genv)) {
+            LIS_CONS(rest)->cdr = _list_cons(genv, to_use, LIS_NIL(genv));
         }
         rest = next;
     }
@@ -251,7 +251,7 @@ package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * n
     }
 
     lis_obj * rest = pkg->uselist;
-    while (rest != LIS_NIL) {
+    while (rest != LIS_NIL(genv)) {
         package_intern_status status = find_symbol(genv, _list_car(genv, rest), name, sym);
         if (status == PKG_INTERNAL || status == PKG_INHERITED) {
             return PKG_INHERITED;
@@ -259,7 +259,7 @@ package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * n
         rest = _list_cdr(genv, rest);
     }
 
-    *sym = LIS_NIL;
+    *sym = LIS_NIL(genv);
     return PKG_NOT_FOUND;
 }
 
@@ -323,7 +323,7 @@ lis_obj * status_to_keyword(lis_obj * genv, package_intern_status status) {
         intern(genv, LIS_GENV(genv)->keyword_package, LSTR(U"inherited"), &key);
         break;
     default:
-        key = LIS_NIL;
+        key = LIS_NIL(genv);
     }
 
     return key;
@@ -338,7 +338,7 @@ lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
     lis_obj * pkg = _list_nth(genv, INT(1), args);
     lis_obj * ret;
 
-    if (pkg == LIS_GENV(genv)->symbol_nil) {
+    if (pkg == LIS_NIL(genv)) {
         pkg = LIS_GENV(genv)->current_package;
     } else if (LIS_TAG_BASE(pkg) != LIS_TAG_BASE_INTERNAL ||
                LIS_TAG_TYPE(pkg) != LIS_TAG_TYPE_PKG) {
@@ -349,7 +349,7 @@ lis_obj * lisp_intern(lis_obj * genv, lis_obj * args) {
     package_intern_status status = intern(genv, pkg, name, &ret);
     lis_obj * key = status_to_keyword(genv, status);
     lis_obj * mv = _make_multiple_value();
-    LIS_MVAL(mv) = _list_cons(genv, ret, _list_cons(genv, key, LIS_NIL));
+    LIS_MVAL(mv) = _list_cons(genv, ret, _list_cons(genv, key, LIS_NIL(genv)));
     return mv;
 }
 
@@ -361,7 +361,7 @@ lis_obj * lisp_use_package(lis_obj * genv, lis_obj * args) {
     lis_obj * to_use = _package_find_package(genv, _list_nth(genv, INT(0), args));
     lis_obj * pkg = _list_nth(genv, INT(1), args);
 
-    if (pkg == LIS_NIL) {
+    if (pkg == LIS_NIL(genv)) {
         pkg = LIS_GENV(genv)->current_package;
     }
 
@@ -391,7 +391,7 @@ lis_obj * lisp_find_symbol(lis_obj * genv, lis_obj * args) {
         return NULL;
     }
 
-    if (pkg == LIS_NIL) {
+    if (pkg == LIS_NIL(genv)) {
         pkg = LIS_GENV(genv)->current_package;
     }
 
@@ -399,7 +399,7 @@ lis_obj * lisp_find_symbol(lis_obj * genv, lis_obj * args) {
     package_intern_status status = find_symbol(genv, pkg, name, &ret);
     lis_obj * key = status_to_keyword(genv, status);
     lis_obj * mv = _make_multiple_value();
-    LIS_MVAL(mv) = _list_cons(genv, ret, _list_cons(genv, key, LIS_NIL));
+    LIS_MVAL(mv) = _list_cons(genv, ret, _list_cons(genv, key, LIS_NIL(genv)));
     return mv;
 }
 
@@ -412,8 +412,8 @@ lis_obj * lisp_import(lis_obj * genv, lis_obj * args) {
     lis_obj * pkg = _list_nth(genv, INT(1), args);
 
     if (import(genv, sym, pkg)) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_NIL;
+        return LIS_NIL(genv);
     }
 }

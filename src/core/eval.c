@@ -70,9 +70,9 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
 
     lis_lambdalist * llist = (lis_lambdalist *)malloc(sizeof(lis_lambdalist));
     memset(llist, 0, sizeof(lis_lambdalist));
-    llist->required = LIS_GENV(genv)->symbol_nil;
+    llist->required = LIS_NIL(genv);
 
-    while (rest != LIS_GENV(genv)->symbol_nil) {
+    while (rest != LIS_NIL(genv)) {
         lis_obj * car = _list_car(genv, rest);
 
         if (car == LIS_GENV(genv)->symbol_optional) {
@@ -120,7 +120,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                 if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
                     lis_arg * arg = (lis_arg *)malloc(sizeof(lis_arg));
-                    arg->default_value = LIS_GENV(genv)->symbol_nil;
+                    arg->default_value = LIS_NIL(genv);
                     _table_add(llist->keyword, (void *)car, (void *)arg);
 
                 } else if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
@@ -153,7 +153,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
                     LIS_TAG_TYPE(car) == LIS_TAG_TYPE_SYM) {
                     arg = (lis_arg *)malloc(sizeof(lis_arg));
                     arg->name = car;
-                    arg->default_value = LIS_GENV(genv)->symbol_nil;
+                    arg->default_value = LIS_NIL(genv);
                     arg->next = NULL;
 
                 } else if (LIS_TAG_BASE(car) == LIS_TAG_BASE_BUILTIN &&
@@ -207,7 +207,7 @@ lis_lambdalist * validate_lambdalist(lis_obj * genv, lis_obj * lenv, lis_obj * l
 
     _free_table(name_table);
 
-    if (llist->required != LIS_GENV(genv)->symbol_nil) {
+    if (llist->required != LIS_NIL(genv)) {
         llist->required = _list_reverse(genv, llist->required);
     }
     return llist;
@@ -219,8 +219,8 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     lis_lambdalist * lambdalist = LIS_FN(fn)->lambdalist;
 
     lis_obj * required_rest = lambdalist->required;
-    while (required_rest != LIS_GENV(genv)->symbol_nil) {
-        if (args_rest == LIS_GENV(genv)->symbol_nil) {
+    while (required_rest != LIS_NIL(genv)) {
+        if (args_rest == LIS_NIL(genv)) {
             LIS_GENV(genv)->error = _make_error(LSTR(U"too few argument."));
             return NULL;
         }
@@ -237,7 +237,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     while (optional_rest != NULL) {
         lis_obj * name = optional_rest->name;
 
-        if (args_rest == LIS_GENV(genv)->symbol_nil) {
+        if (args_rest == LIS_NIL(genv)) {
             set_lexical_value(lenv, name, optional_rest->default_value);
 
         } else {
@@ -256,7 +256,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
     if (lambdalist->keyword != NULL) {
         int keyword_arg_num = 0;
 
-        while (args_rest != LIS_GENV(genv)->symbol_nil) {
+        while (args_rest != LIS_NIL(genv)) {
             lis_obj * name = _list_car(genv, args_rest);
             _table_entry * e = _table_find(lambdalist->keyword, (void *)name);
 
@@ -270,7 +270,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
 
             args_rest = _list_cdr(genv, args_rest);
 
-            if (args_rest == LIS_GENV(genv)->symbol_nil) {
+            if (args_rest == LIS_NIL(genv)) {
                 LIS_GENV(genv)->error = _make_error(LSTR(U"odd nunber of &key argument."));
                 return NULL;
             }
@@ -299,7 +299,7 @@ lis_obj * bind_lambdalist(lis_obj * genv, lis_obj * fn, lis_obj * args) {
         }
     }
 
-    if (lambdalist->rest == NULL && args_rest != LIS_GENV(genv)->symbol_nil) {
+    if (lambdalist->rest == NULL && args_rest != LIS_NIL(genv)) {
         LIS_GENV(genv)->error = _make_error(LSTR(U"too many argument."));
     }
 
@@ -359,8 +359,8 @@ lis_obj * lisp_apply(lis_obj * genv, lis_obj * args) {
 }
 
 lis_obj * eval_args(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
-    if (args == LIS_GENV(genv)->symbol_nil) {
-        return LIS_GENV(genv)->symbol_nil;
+    if (args == LIS_NIL(genv)) {
+        return LIS_NIL(genv);
     } else if (LIS_TAG_BASE(args) != LIS_TAG_BASE_BUILTIN ||
                LIS_TAG_TYPE(args) != LIS_TAG_TYPE_CONS) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
@@ -397,7 +397,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
         return NULL;
     }
 
-    if (cdr != LIS_GENV(genv)->symbol_nil &&
+    if (cdr != LIS_NIL(genv) &&
         !(LIS_TAG_BASE(cdr) == LIS_TAG_BASE_BUILTIN &&
           LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS)) {
         lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_OUT, LIS_STREAM_TEXT);
@@ -596,13 +596,13 @@ lis_obj * lisp_macroexpand_1(lis_obj * genv, lis_obj * args) {
     lis_obj * expanded_p;
 
     if (macroexpand_1(genv, form, env, &expansion)) {
-        expanded_p = LIS_GENV(genv)->symbol_t;
+        expanded_p = LIS_T(genv);
     } else {
-        expanded_p = LIS_NIL;
+        expanded_p = LIS_NIL(genv);
     }
 
     lis_obj * mv = _make_multiple_value();
-    LIS_MVAL(mv) = _list_cons(genv, expansion, _list_cons(genv, expanded_p, LIS_NIL));
+    LIS_MVAL(mv) = _list_cons(genv, expansion, _list_cons(genv, expanded_p, LIS_NIL(genv)));
     return mv;
 }
 

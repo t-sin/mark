@@ -208,7 +208,7 @@ void test_nil() {
     lis_obj * result = read(genv, input_stream);
 
     assert(result != NULL);
-    assert(result == LIS_NIL);
+    assert(result == LIS_NIL(genv));
 }
 
 void test_empty_list() {
@@ -220,7 +220,7 @@ void test_empty_list() {
     lis_obj * result = read(genv, input_stream);
 
     assert(result != NULL);
-    assert(result == LIS_NIL);
+    assert(result == LIS_NIL(genv));
 }
 
 void test_list_without_nest_with_one_element() {
@@ -237,7 +237,7 @@ void test_list_without_nest_with_one_element() {
     assert(LIS_CONS(result)->car != NULL);
     assert(LIS_TAG_BASE(LIS_CONS(result)->car) == LIS_TAG_BASE_INT);
     assert(LIS_INT(LIS_CONS(result)->car) == 1);
-    assert(LIS_CONS(result)->cdr == LIS_NIL);
+    assert(LIS_CONS(result)->cdr == LIS_NIL(genv));
 }
 
 void test_list_without_nest_with_one_element_2() {
@@ -256,7 +256,7 @@ void test_list_without_nest_with_one_element_2() {
     assert(LIS_TAG_BASE(LIS_CONS(result)->car) == LIS_TAG_BASE_INT);
     assert(LIS_INT(LIS_CONS(result)->car) == 1);
 
-    assert(LIS_CONS(result)->cdr == LIS_NIL);
+    assert(LIS_CONS(result)->cdr == LIS_NIL(genv));
 }
 
 void test_list_without_nest_with_two_element() {
@@ -285,7 +285,7 @@ void test_list_without_nest_with_two_element() {
     assert(LIS_TAG_BASE(LIS_CONS(second_cons)->car) == LIS_TAG_BASE_INT);
     assert(LIS_INT(LIS_CONS(second_cons)->car) == 2);
 
-    assert(LIS_CONS(second_cons)->cdr == LIS_NIL);
+    assert(LIS_CONS(second_cons)->cdr == LIS_NIL(genv));
 }
 
 void test_list_with_one_nest() {
@@ -320,9 +320,9 @@ void test_list_with_one_nest() {
     assert(LIS_TAG_BASE(LIS_CONS(third_cons)->car) == LIS_TAG_BASE_INT);
     assert(LIS_INT(LIS_CONS(third_cons)->car) == 2);
 
-    assert(LIS_CONS(third_cons)->cdr == LIS_NIL);
+    assert(LIS_CONS(third_cons)->cdr == LIS_NIL(genv));
 
-    assert(LIS_CONS(second_cons)->cdr == LIS_NIL);
+    assert(LIS_CONS(second_cons)->cdr == LIS_NIL(genv));
 }
 
 void test_newline_separated_expressions() {
@@ -342,7 +342,7 @@ void test_newline_separated_expressions() {
     assert(LIS_TAG_BASE(LIS_CONS(result)->car) == LIS_TAG_BASE_INT);
     assert(LIS_INT(LIS_CONS(result)->car) == 1);
 
-    assert(LIS_CONS(result)->cdr == LIS_NIL);
+    assert(LIS_CONS(result)->cdr == LIS_NIL(genv));
 
     result = read(genv, input_stream);
 
@@ -354,7 +354,7 @@ void test_newline_separated_expressions() {
     assert(LIS_TAG_BASE(LIS_CONS(result)->car) == LIS_TAG_BASE_INT);
     assert(LIS_INT(LIS_CONS(result)->car) == 2);
 
-    assert(LIS_CONS(result)->cdr == LIS_NIL);
+    assert(LIS_CONS(result)->cdr == LIS_NIL(genv));
 }
 
 

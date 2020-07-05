@@ -62,9 +62,9 @@ lis_obj * lisp_string_equal(lis_obj * genv, lis_obj * args) {
     }
 
     if (_string_equal(arg1->data.str, arg2->data.str)) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 
@@ -76,9 +76,9 @@ lis_obj * lisp_stringp(lis_obj * genv, lis_obj * args) {
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
     if (LIS_TAG_BASE(arg) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(arg) != LIS_TAG_TYPE_STR) {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     } else {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     }
 }
 

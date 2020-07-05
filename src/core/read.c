@@ -296,9 +296,9 @@ lis_obj * read_cons(lis_obj * genv, lis_stream * stream) {
         if (stream_peek_char(stream, &ch) && is_cons_close_delimiter(ch)) {
             stream_read_char(stream, &ch);
             if (current != head) {
-                prev_current->data.cons->cdr = genv->data.env->env.global->symbol_nil;
+                LIS_CONS(prev_current)->cdr = LIS_NIL(genv);
             } else {
-                head = genv->data.env->env.global->symbol_nil;
+                head = LIS_NIL(genv);
             }
             break;
 
@@ -379,7 +379,7 @@ lis_obj * read(lis_obj * genv, lis_stream * stream) {
         }
         lis_obj * quote;
         intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"quote"), &quote);
-        lis_obj * list = _list_cons(genv, quote, _list_cons(genv, quoted, LIS_NIL));
+        lis_obj * list = _list_cons(genv, quote, _list_cons(genv, quoted, LIS_NIL(genv)));
         obj = list;
 
     } else {
@@ -393,7 +393,7 @@ lis_obj * lisp_read(lis_obj * genv, lis_obj * args) {
     lis_obj * obj = _list_nth(genv, _make_int(0), args);
     lis_stream * stream;
 
-    if (obj == LIS_GENV(genv)->symbol_nil) {
+    if (obj == LIS_NIL(genv)) {
         stream = LIS_STREAM(LIS_GENV(genv)->stream_stdin);
     } else {
         stream = LIS_STREAM(obj);

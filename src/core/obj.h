@@ -175,7 +175,8 @@ typedef struct lis_global_env {
     lis_obj * stream_stderr;
 } lis_global_env;
 
-#define LIS_NIL LIS_GENV(genv)->symbol_nil
+#define LIS_T(genv) LIS_GENV(genv)->symbol_t
+#define LIS_NIL(genv) LIS_GENV(genv)->symbol_nil
 
 typedef struct lis_dynamic_env {
 } lis_dynamic_env;

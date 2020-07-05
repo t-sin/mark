@@ -19,9 +19,9 @@ lis_obj * lisp_arrayp(lis_obj * genv, lis_obj * args) {
     }
 
     if (_array_arrayp(genv, _list_nth(genv, _make_int(0), args))) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 

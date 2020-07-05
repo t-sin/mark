@@ -15,9 +15,9 @@ lis_obj * lisp_integerp(lis_obj * genv, lis_obj * args) {
 
     lis_obj * arg = _list_nth(genv, _make_int(0), args);
     if (LIS_TAG_BASE(arg) == LIS_TAG_BASE_INT) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 
@@ -28,9 +28,9 @@ lis_obj * _int_zerop(lis_obj * genv, lis_obj * num) {
     }
 
     if (num->data.num == 0) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 
@@ -49,9 +49,9 @@ lis_obj * _int_plusp(lis_obj * genv, lis_obj * num) {
     }
 
     if (num->data.num > 0) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 
@@ -73,9 +73,9 @@ lis_obj * _int_minusp(lis_obj * genv, lis_obj * num) {
     }
 
     if (num->data.num < 0) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 
@@ -99,9 +99,9 @@ lis_obj * _int_equal(lis_obj * genv, lis_obj * a, lis_obj * b) {
     }
 
     if (a->data.num == b->data.num) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 

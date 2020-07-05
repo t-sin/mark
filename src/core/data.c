@@ -31,7 +31,7 @@ lis_obj * lis_sf_function(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         return NULL;
     }
     if (sym->data.sym->fn == NULL) {
-        return genv->data.env->env.global->symbol_nil;
+        return LIS_NIL(genv);
     } else {
         return sym->data.sym->fn;
     }
@@ -62,10 +62,10 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 }
 
 lis_obj * lis_sf_progn(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
-    lis_obj * ret = LIS_GENV(genv)->symbol_nil;
+    lis_obj * ret = LIS_NIL(genv);
 
     lis_obj * rest = args;
-    while (rest != LIS_GENV(genv)->symbol_nil) {
+    while (rest != LIS_NIL(genv)) {
         ret = eval(genv, lenv, _list_car(genv, rest));
         rest = _list_cdr(genv, rest);
     }
@@ -79,7 +79,7 @@ lis_obj * lis_sf_if(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     }
 
     lis_obj * condition = eval(genv, lenv, _list_nth(genv, _make_int(0), args));
-    if (condition != LIS_GENV(genv)->symbol_nil) {
+    if (condition != LIS_NIL(genv)) {
         return eval(genv, lenv, _list_nth(genv, _make_int(1), args));
     } else {
         return eval(genv, lenv, _list_nth(genv, _make_int(2), args));
@@ -97,7 +97,7 @@ lis_obj * lis_sf_let(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     }
 
     lis_obj * rest = binding_list;
-    while (rest != LIS_GENV(genv)->symbol_nil) {
+    while (rest != LIS_NIL(genv)) {
         lis_obj * binding = _list_car(genv, rest);
 
         if (!check_arglen(genv, binding, 2, LSTR(U"binding list of let"))) {
@@ -147,20 +147,20 @@ lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * a
     }
 
     lis_obj * rest = _list_cdr(genv, args);
-    lis_obj * new_args = LIS_NIL;
+    lis_obj * new_args = LIS_NIL(genv);
     lis_obj * tail = new_args;
-    while (rest != LIS_NIL) {
+    while (rest != LIS_NIL(genv)) {
         lis_obj * car = eval(genv, lenv, _list_car(genv, rest));
 
         if (LIS_TAG_BASE(car) == LIS_TAG_BASE_INTERNAL &&
             LIS_TAG_TYPE(car) == LIS_TAG_TYPE_MVAL) {
 
             lis_obj * mval_rest = LIS_MVAL(car);
-            while (mval_rest != LIS_NIL) {
+            while (mval_rest != LIS_NIL(genv)) {
                 lis_obj * val = _list_car(genv, mval_rest);
-                lis_obj * cons = _list_cons(genv, val, LIS_NIL);
+                lis_obj * cons = _list_cons(genv, val, LIS_NIL(genv));
 
-                if (new_args == LIS_NIL) {
+                if (new_args == LIS_NIL(genv)) {
                     tail = new_args = cons;
                 } else {
                     LIS_CONS(tail)->cdr = cons;
@@ -171,9 +171,9 @@ lis_obj * lis_sf_multiple_value_call(lis_obj * genv, lis_obj * lenv, lis_obj * a
             }
 
         } else {
-            lis_obj * cons = _list_cons(genv, car, LIS_NIL);
+            lis_obj * cons = _list_cons(genv, car, LIS_NIL(genv));
 
-            if (new_args == LIS_NIL) {
+            if (new_args == LIS_NIL(genv)) {
                 tail = new_args = cons;
 
             } else {
@@ -196,20 +196,20 @@ lis_obj * lisp_eq(lis_obj * genv, lis_obj * args) {
     lis_obj * arg1 = _list_nth(genv, INT(0), args);
     lis_obj * arg2 = _list_nth(genv, INT(1), args);
     if (arg1 == arg2) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_NIL;
+        return LIS_NIL(genv);
     }
 }
 
 lis_obj * lisp_values(lis_obj * genv, lis_obj * args) {
-    if (args == LIS_NIL) {
-        return LIS_NIL;
+    if (args == LIS_NIL(genv)) {
+        return LIS_NIL(genv);
     }
 
     lis_obj * rest = args;
-    lis_obj * list = LIS_NIL;
-    while (rest != LIS_GENV(genv)->symbol_nil) {
+    lis_obj * list = LIS_NIL(genv);
+    while (rest != LIS_NIL(genv)) {
         list = _list_cons(genv, _list_car(genv, rest), list);
         rest = _list_cdr(genv, rest);
     }
@@ -261,14 +261,14 @@ lis_obj * lis_macro_defun(lis_obj * genv, lis_obj * args) {
 
     lis_obj * fset_sym;
     intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"%fset"), &fset_sym);
-    lis_obj * fset_form = _list_cons(genv, fset_sym, _list_cons(genv, name, _list_cons(genv, lambda_form, LIS_NIL)));
+    lis_obj * fset_form = _list_cons(genv, fset_sym, _list_cons(genv, name, _list_cons(genv, lambda_form, LIS_NIL(genv))));
 
     lis_obj * progn_sym;
     intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"progn"), &progn_sym);
     lis_obj * quote_sym;
     intern(genv, LIS_GENV(genv)->lis_package, LSTR(U"quote"), &quote_sym);
-    lis_obj * quote_form = _list_cons(genv, quote_sym, _list_cons(genv, name, LIS_NIL));
-    lis_obj * expansion = _list_cons(genv, progn_sym, _list_cons(genv, fset_form, _list_cons(genv, quote_form, LIS_NIL)));
+    lis_obj * quote_form = _list_cons(genv, quote_sym, _list_cons(genv, name, LIS_NIL(genv)));
+    lis_obj * expansion = _list_cons(genv, progn_sym, _list_cons(genv, fset_form, _list_cons(genv, quote_form, LIS_NIL(genv))));
 
     return expansion;
 }

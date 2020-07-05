@@ -49,7 +49,7 @@ lis_obj * lisp_load(lis_obj * genv, lis_obj * args) {
     }
 
     if (!load(genv, LIS_STR(filename))) {
-        return LIS_NIL;
+        return LIS_NIL(genv);
     } else {
         return filename;
     }

@@ -21,7 +21,7 @@ void print_cons(lis_obj * genv, lis_obj * car, lis_obj * cdr, lis_stream * strea
     if (LIS_TAG_BASE(cdr) == LIS_TAG_BASE_BUILTIN && LIS_TAG_TYPE(cdr) == LIS_TAG_TYPE_CONS) {
         stream_write_char(stream, ' ');
         print_cons(genv, cdr->data.cons->car, cdr->data.cons->cdr, stream);
-    } else if (cdr == genv->data.env->env.global->symbol_nil) {
+    } else if (cdr == LIS_NIL(genv)) {
         ;
     } else {
         stream_write_char(stream, ' ');
@@ -164,10 +164,10 @@ void print_mval(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     }
 
     lis_obj * rest = LIS_MVAL(obj);
-    while (rest != LIS_NIL) {
+    while (rest != LIS_NIL(genv)) {
         print(genv, _list_car(genv, rest), stream);
         rest = _list_cdr(genv, rest);
-        if (rest != LIS_NIL) stream_write_char(stream, '\n');
+        if (rest != LIS_NIL(genv)) stream_write_char(stream, '\n');
     }
 }
 
@@ -180,7 +180,7 @@ lis_obj * lisp_print(lis_obj * genv, lis_obj * args) {
     lis_obj * stream_obj = _list_nth(genv, _make_int(1), args);
     lis_stream * stream;
 
-    if (stream_obj == LIS_GENV(genv)->symbol_nil) {
+    if (stream_obj == LIS_NIL(genv)) {
         stream = LIS_STREAM(LIS_GENV(genv)->stream_stdout);
     } else {
         stream = LIS_STREAM(stream_obj);
@@ -189,5 +189,5 @@ lis_obj * lisp_print(lis_obj * genv, lis_obj * args) {
     print(genv, obj, stream);
     stream_write_char(stream, '\n');
     stream_flush(stream);
-    return LIS_GENV(genv)->symbol_nil;
+    return LIS_NIL(genv);
 }

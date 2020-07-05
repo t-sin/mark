@@ -78,7 +78,7 @@ lis_obj * lisp_close(lis_obj * genv, lis_obj * args) {
     }
 
     stream_close(LIS_STREAM(stream_obj));
-    return LIS_NIL;
+    return LIS_NIL(genv);
 }
 
 lis_obj * lisp_listen(lis_obj * genv, lis_obj * args) {
@@ -95,9 +95,9 @@ lis_obj * lisp_listen(lis_obj * genv, lis_obj * args) {
     }
 
     if (stream_listen_p(LIS_STREAM(stream_obj))) {
-        return LIS_GENV(genv)->symbol_t;
+        return LIS_T(genv);
     } else {
-        return LIS_GENV(genv)->symbol_nil;
+        return LIS_NIL(genv);
     }
 }
 
@@ -105,7 +105,7 @@ lis_obj * lisp_force_output(lis_obj * genv, lis_obj * args) {
     lis_obj * stream_obj = _list_nth(genv, INT(0), args);
     lis_obj * stream = LIS_GENV(genv)->stream_stdout;
 
-    if (stream_obj != LIS_GENV(genv)->symbol_nil) {
+    if (stream_obj != LIS_NIL(genv)) {
         if (LIS_TAG_BASE(stream_obj) != LIS_TAG_BASE_INTERNAL ||
             LIS_TAG_TYPE(stream_obj) != LIS_TAG_TYPE_STRM) {
             not_stream_error(genv, stream_obj);
@@ -115,7 +115,7 @@ lis_obj * lisp_force_output(lis_obj * genv, lis_obj * args) {
     }
 
     stream_flush(LIS_STREAM(stream));
-    return LIS_GENV(genv)->symbol_nil;
+    return LIS_NIL(genv);
 }
 
 lis_obj * lisp_peek_byte(lis_obj * genv, lis_obj * args) {
@@ -194,7 +194,7 @@ lis_obj * lisp_write_byte(lis_obj * genv, lis_obj * args) {
     if (!stream_write_byte(LIS_STREAM(stream_obj), LIS_INT(byte_obj))) {
         return byte_obj;
     } else {
-        return LIS_NIL;
+        return LIS_NIL(genv);
     }
 }
 
@@ -278,7 +278,7 @@ lis_obj * lisp_unread_char(lis_obj * genv, lis_obj * args) {
     }
 
     if (!stream_unread_char(LIS_STREAM(stream_obj), LIS_CH(ch_obj))) {
-        return LIS_NIL;
+        return LIS_NIL(genv);
     } else {
         return ch_obj;
     }
