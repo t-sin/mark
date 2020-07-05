@@ -65,7 +65,7 @@ bool _stream_peek_byte(_stream * stream, uint8_t * out, size_t n) {
     }
 
     size_t pos = (stream->tail + n) % stream->buffer_size;
-    if (n > _stream_filled(stream)) {
+    if (n >= _stream_filled(stream)) {
         return false;
     }
 
