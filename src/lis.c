@@ -73,9 +73,9 @@ void repl(lis_obj * genv) {
     printf("Sciurus Lisp, v0.0.0\n");
 
     lis_obj * prompt = LSTR(U"? ");
-    lis_stream * stream_stdin = genv->data.env->env.global->stream_stdin->data.stream;
-    lis_stream * stream_stdout = genv->data.env->env.global->stream_stdout->data.stream;
-    lis_stream * stream_stderr = genv->data.env->env.global->stream_stderr->data.stream;
+    lis_stream * stream_stdin = LIS_STREAM(genv->data.env->env.global->stream_stdin);
+    lis_stream * stream_stdout = LIS_STREAM(genv->data.env->env.global->stream_stdout);
+    lis_stream * stream_stderr = LIS_STREAM(genv->data.env->env.global->stream_stderr);
 
     while (true) {
         stream_write_string(stream_stdout, genv->data.env->env.global->current_package->data.pkg->name);

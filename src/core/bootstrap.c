@@ -163,7 +163,7 @@ void init_functions(lis_global_env * genv) {
 #define define_standard_stream(sname, dir, type, symname, symstream, symsym) \
     lis_obj * symname = LSTR(sname); \
     lis_obj * symstream = _make_lis_stream(make_lis_stream(1024, dir, type)); \
-    symstream->data.stream->name = symname; \
+    LIS_STREAM(symstream)->name = symname; \
     lis_obj * symsym = _make_symbol(symname); \
     symsym->data.sym->constant_p = true; \
     symsym->data.sym->dynamic_p = true; \
@@ -174,17 +174,17 @@ void init_functions(lis_global_env * genv) {
 void init_streams(lis_global_env * genv) {
     define_standard_stream(U"*stdin*", LIS_STREAM_IN, LIS_STREAM_TEXT,
                            name_stdin, stream_stdin, sym_stdin);
-    stream_stdin->data.stream->fin = stdin;
+    LIS_STREAM(stream_stdin)->fin = stdin;
     genv->stream_stdin = stream_stdin;
 
     define_standard_stream(U"*stdout*", LIS_STREAM_INOUT, LIS_STREAM_TEXT,
                            name_stdout, stream_stdout, sym_stdout);
-    stream_stdout->data.stream->fout = stdout;
+    LIS_STREAM(stream_stdout)->fout = stdout;
     genv->stream_stdout = stream_stdout;
 
     define_standard_stream(U"*stderr*", LIS_STREAM_INOUT, LIS_STREAM_TEXT,
                            name_stderr, stream_stderr, sym_stderr);
-    stream_stderr->data.stream->fout = stderr;
+    LIS_STREAM(stream_stderr)->fout = stderr;
     genv->stream_stderr = stream_stderr;
 }
 
