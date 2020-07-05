@@ -414,7 +414,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
 
         lis_obj * args;
         lis_obj * ret;
-        switch (fn->data.fn->type) {
+        switch (LIS_FN(fn)->type) {
         case LIS_FUNC_RAW:
         case LIS_FUNC_NORMAL:
             args = eval_args(genv, lenv, cdr);
@@ -426,7 +426,7 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
             break;
 
         case LIS_FUNC_SPECIAL_FORM:
-            ret = fn->data.fn->body.sf(genv, lenv, cdr);
+            ret = LIS_FN(fn)->body.sf(genv, lenv, cdr);
             if (LIS_GENV(genv)->error != NULL) return NULL;
             return ret;
 

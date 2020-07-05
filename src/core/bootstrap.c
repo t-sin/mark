@@ -28,7 +28,7 @@
     lis_obj * symname = _make_symbol(LSTR(opname)); \
     LIS_SYM(symname)->package = genv->current_package; \
     LIS_SYM(symname)->fn = _make_raw_function(cfnname); \
-    LIS_SYM(symname)->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM; \
+    LIS_FN(LIS_SYM(symname)->fn)->type = LIS_FUNC_SPECIAL_FORM; \
     assert(add_symbol(genv->current_package, symname) != NULL)
 
 
@@ -62,7 +62,7 @@ void init_macros(lis_global_env * genv) {
     lis_obj * symname = _make_symbol(LSTR(opname)); \
     LIS_SYM(symname)->package = genv->current_package; \
     LIS_SYM(symname)->fn = _make_raw_function(cfnname); \
-    LIS_SYM(symname)->fn->data.fn->type = LIS_FUNC_RAW; \
+    LIS_FN(LIS_SYM(symname)->fn)->type = LIS_FUNC_RAW; \
     assert(add_symbol(genv->current_package, symname) != NULL)
 
 

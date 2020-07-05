@@ -93,10 +93,10 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
         case LIS_TAG_TYPE_FN:
             stream_write_string(stream, LSTR(U"#<FN: "));
 
-            if (obj->data.fn->type == LIS_FUNC_MACRO) {
+            if (LIS_FN(obj)->type == LIS_FUNC_MACRO) {
                 stream_write_string(stream, LSTR(U"macro "));
             }
-            if (obj->data.fn->type == LIS_FUNC_SPECIAL_FORM) {
+            if (LIS_FN(obj)->type == LIS_FUNC_SPECIAL_FORM) {
                 stream_write_string(stream, LSTR(U"special "));
             }
 
