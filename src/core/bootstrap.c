@@ -222,7 +222,7 @@ lis_obj * init_global_env() {
     genv->package_table->eq_fn = _table_string_eq;
 
     lis_obj * genv_obj = _make_env(LIS_ENV_GLOBAL);
-    genv_obj->data.env->env.global = genv;
+    LIS_GENV(genv_obj) = genv;
 
 
     lis_obj * pkg_lis = _package_make_package(genv_obj, LSTR(U"lis"));

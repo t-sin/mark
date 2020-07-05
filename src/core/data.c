@@ -24,7 +24,7 @@ lis_obj * lis_sf_function(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     lis_obj * sym = LIS_CONS(args)->car;
     if (LIS_TAG_BASE(sym) != LIS_TAG_BASE_BUILTIN ||
         LIS_TAG_TYPE(sym) != LIS_TAG_TYPE_SYM) {
-        lis_stream * stream = LIS_STREAM(genv->data.env->env.global->stream_stderr);
+        lis_stream * stream = LIS_STREAM(LIS_GENV(genv)->stream_stderr);
         print(genv, sym, stream);
         stream_write_string(stream, LSTR(U" is not a symbol."));
         LIS_GENV(genv)->error = _make_error(stream_output_to_string(stream));

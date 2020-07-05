@@ -35,7 +35,7 @@ void print_cons(lis_obj * genv, lis_obj * car, lis_obj * cdr, lis_stream * strea
 void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
     assert(LIS_TAG_BASE(genv) == LIS_TAG_BASE_INTERNAL);
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
-    assert(genv->data.env->type == LIS_ENV_GLOBAL);
+    assert(LIS_ENV(genv)->type == LIS_ENV_GLOBAL);
 
     if (obj == NULL) {
         return;
@@ -113,11 +113,11 @@ void print(lis_obj * genv, lis_obj * obj, lis_stream * stream) {
         switch (LIS_TAG_TYPE(obj)) {
         case LIS_TAG_TYPE_ENV:
             stream_write_string(stream, LSTR(U"#<FN: "));
-            if (obj->data.env->type == LIS_ENV_GLOBAL) {
+            if (LIS_ENV(obj)->type == LIS_ENV_GLOBAL) {
                 stream_write_string(stream, LSTR(U"global "));
-            } else if (obj->data.env->type == LIS_ENV_DYNAMIC) {
+            } else if (LIS_ENV(obj)->type == LIS_ENV_DYNAMIC) {
                 stream_write_string(stream, LSTR(U"dynamic "));
-            } else if (obj->data.env->type == LIS_ENV_LEXICAL) {
+            } else if (LIS_ENV(obj)->type == LIS_ENV_LEXICAL) {
                 stream_write_string(stream, LSTR(U"lexical "));
             }
 

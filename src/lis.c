@@ -68,17 +68,17 @@ bool parse_option(int argc, char** argv, struct Option* opt) {
 void repl(lis_obj * genv) {
     assert(LIS_TAG_BASE(genv) == LIS_TAG_BASE_INTERNAL);
     assert(LIS_TAG_TYPE(genv) == LIS_TAG_TYPE_ENV);
-    assert(genv->data.env->type == LIS_ENV_GLOBAL);
+    assert(LIS_ENV(genv)->type == LIS_ENV_GLOBAL);
 
     printf("Sciurus Lisp, v0.0.0\n");
 
     lis_obj * prompt = LSTR(U"? ");
-    lis_stream * stream_stdin = LIS_STREAM(genv->data.env->env.global->stream_stdin);
-    lis_stream * stream_stdout = LIS_STREAM(genv->data.env->env.global->stream_stdout);
-    lis_stream * stream_stderr = LIS_STREAM(genv->data.env->env.global->stream_stderr);
+    lis_stream * stream_stdin = LIS_STREAM(LIS_GENV(genv)->stream_stdin);
+    lis_stream * stream_stdout = LIS_STREAM(LIS_GENV(genv)->stream_stdout);
+    lis_stream * stream_stderr = LIS_STREAM(LIS_GENV(genv)->stream_stderr);
 
     while (true) {
-        stream_write_string(stream_stdout, genv->data.env->env.global->current_package->data.pkg->name);
+        stream_write_string(stream_stdout, LIS_GENV(genv)->current_package->data.pkg->name);
         stream_write_string(stream_stdout, prompt);
         stream_flush(stream_stdout);
 
