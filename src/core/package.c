@@ -244,7 +244,7 @@ package_intern_status find_symbol(lis_obj * genv, lis_obj * package, lis_obj * n
 
     for (int i=0; i<pkg->num; i++) {
         if (pkg->symbols[i] != NULL &&
-            _string_equal(LIS_STR(pkg->symbols[i]->data.sym->name), LIS_STR(name))) {
+            _string_equal(LIS_STR(LIS_SYM(pkg->symbols[i])->name), LIS_STR(name))) {
             *sym = pkg->symbols[i];
             return PKG_INTERNAL;
         }

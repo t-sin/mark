@@ -407,8 +407,8 @@ lis_obj * eval_cons(lis_obj * genv, lis_obj * lenv, lis_obj * cons) {
         return NULL;
     }
 
-    if (name->data.sym->fn != NULL) {
-        lis_obj * fn = name->data.sym->fn;
+    if (LIS_SYM(name)->fn != NULL) {
+        lis_obj * fn = LIS_SYM(name)->fn;
         assert(LIS_TAG_BASE(fn) == LIS_TAG_BASE_BUILTIN);
         assert(LIS_TAG_TYPE(fn) == LIS_TAG_TYPE_FN);
 
@@ -481,8 +481,8 @@ lis_obj * eval(lis_obj * genv, lis_obj * lenv, lis_obj * obj) {
             val = get_lexical_value(lenv, obj);
             if (val != NULL) {
                 return val;
-            } else if (obj->data.sym->value != NULL) {
-                return obj->data.sym->value;
+            } else if (LIS_SYM(obj)->value != NULL) {
+                return LIS_SYM(obj)->value;
             } else {
                 buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
                 stream_write_string(buffer, LSTR(U"unbound variable: `"));

@@ -26,9 +26,9 @@
 
 #define define_special_form(opname, symname, cfnname) \
     lis_obj * symname = _make_symbol(LSTR(opname)); \
-    symname->data.sym->package = genv->current_package; \
-    symname->data.sym->fn = _make_raw_function(cfnname); \
-    symname->data.sym->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM; \
+    LIS_SYM(symname)->package = genv->current_package; \
+    LIS_SYM(symname)->fn = _make_raw_function(cfnname); \
+    LIS_SYM(symname)->fn->data.fn->type = LIS_FUNC_SPECIAL_FORM; \
     assert(add_symbol(genv->current_package, symname) != NULL)
 
 
@@ -60,9 +60,9 @@ void init_macros(lis_global_env * genv) {
 
 #define define_builtin_function(opname, symname, cfnname) \
     lis_obj * symname = _make_symbol(LSTR(opname)); \
-    symname->data.sym->package = genv->current_package; \
-    symname->data.sym->fn = _make_raw_function(cfnname); \
-    symname->data.sym->fn->data.fn->type = LIS_FUNC_RAW; \
+    LIS_SYM(symname)->package = genv->current_package; \
+    LIS_SYM(symname)->fn = _make_raw_function(cfnname); \
+    LIS_SYM(symname)->fn->data.fn->type = LIS_FUNC_RAW; \
     assert(add_symbol(genv->current_package, symname) != NULL)
 
 
@@ -165,10 +165,10 @@ void init_functions(lis_global_env * genv) {
     lis_obj * symstream = _make_lis_stream(make_lis_stream(1024, dir, type)); \
     LIS_STREAM(symstream)->name = symname; \
     lis_obj * symsym = _make_symbol(symname); \
-    symsym->data.sym->constant_p = true; \
-    symsym->data.sym->dynamic_p = true; \
-    symsym->data.sym->package = genv->current_package; \
-    symsym->data.sym->value = symstream; \
+    LIS_SYM(symsym)->constant_p = true; \
+    LIS_SYM(symsym)->dynamic_p = true; \
+    LIS_SYM(symsym)->package = genv->current_package; \
+    LIS_SYM(symsym)->value = symstream; \
     assert(add_symbol(genv->current_package, symsym) != NULL)
 
 void init_streams(lis_global_env * genv) {
@@ -190,17 +190,17 @@ void init_streams(lis_global_env * genv) {
 
 #define define_symbol(sym_name, pkg, name) \
     lis_obj * sym_name = _make_symbol(LSTR(name)); \
-    sym_name->data.sym->constant_p = true; \
-    sym_name->data.sym->package = (pkg); \
+    LIS_SYM(sym_name)->constant_p = true; \
+    LIS_SYM(sym_name)->package = (pkg); \
     assert(add_symbol((pkg), sym_name) != NULL);
 
 void init_symbols(lis_global_env * genv) {
     define_symbol(sym_nil, genv->current_package, U"nil");
-    sym_nil->data.sym->value = sym_nil;
+    LIS_SYM(sym_nil)->value = sym_nil;
     genv->symbol_nil = sym_nil;
 
     define_symbol(sym_t, genv->current_package, U"t");
-    sym_t->data.sym->value = sym_t;
+    LIS_SYM(sym_t)->value = sym_t;
     genv->symbol_t = sym_t;
 
     define_symbol(sym_optional, genv->current_package, U"&optional");

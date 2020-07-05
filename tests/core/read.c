@@ -12,17 +12,17 @@
 
 #define define_symbol(sym_name, pkg, name) \
     lis_obj * sym_name = _make_symbol(LSTR(name)); \
-    sym_name->data.sym->constant_p = true; \
-    sym_name->data.sym->package = (pkg); \
+    LIS_SYM(sym_name)->constant_p = true; \
+    LIS_SYM(sym_name)->package = (pkg); \
     assert(add_symbol((pkg), sym_name) != NULL);
 
 void init_symbols(lis_global_env * genv) {
     define_symbol(sym_nil, genv->current_package, U"nil");
-    sym_nil->data.sym->value = sym_nil;
+    LIS_SYM(sym_nil)->value = sym_nil;
     genv->symbol_nil = sym_nil;
 
     define_symbol(sym_t, genv->current_package, U"t");
-    sym_t->data.sym->value = sym_t;
+    LIS_SYM(sym_t)->value = sym_t;
     genv->symbol_t = sym_t;
 
     define_symbol(sym_optional, genv->current_package, U"&optional");

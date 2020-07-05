@@ -30,10 +30,10 @@ lis_obj * lis_sf_function(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
         LIS_GENV(genv)->error = _make_error(stream_output_to_string(stream));
         return NULL;
     }
-    if (sym->data.sym->fn == NULL) {
+    if (LIS_SYM(sym)->fn == NULL) {
         return LIS_NIL(genv);
     } else {
-        return sym->data.sym->fn;
+        return LIS_SYM(sym)->fn;
     }
 }
 
@@ -46,7 +46,7 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     lis_obj * val = eval(genv, lenv, _list_nth(genv, INT(1), args));
 
     if (lenv == NULL) {
-        sym->data.sym->value = val;
+        LIS_SYM(sym)->value = val;
         return val;
     }
 
@@ -55,7 +55,7 @@ lis_obj * lis_sf_setq(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (value != NULL) {
         find_and_set_lexical_value(lenv, sym, val);
     } else {
-        sym->data.sym->value = val;
+        LIS_SYM(sym)->value = val;
     }
 
     return val;
