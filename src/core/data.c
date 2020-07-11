@@ -295,3 +295,32 @@ lis_obj * lis_sf_block(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     return val;
 }
 
+lis_obj * lis_sf_return_from(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+    lis_obj * name = _list_car(genv, args);
+
+    jmp_buf * block = get_block(lenv, name);
+
+    if (block == NULL) {
+        lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+        stream_write_string(buffer, LSTR(U"return for unknown block: `"));
+        print(genv, name, buffer);
+        stream_write_string(buffer, LSTR(U"`"));
+        LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+        return NULL;
+    }
+
+    lis_obj * val = NULL;
+    if (_list_cdr(genv, args) == LIS_NIL(genv)) {
+        val = LIS_NIL(genv);
+    } else {
+        val = eval(genv, lenv, _list_nth(genv, INT(1), args));
+    }
+
+    LIS_GENV(genv)->return_from_value = val;
+    longjmp(*block, 1);
+
+    return val;
+}
+
+lis_obj * lis_sf_unwind_protect(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+}

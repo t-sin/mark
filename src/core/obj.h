@@ -163,6 +163,7 @@ typedef struct lis_global_env {
     lis_obj * lis_package;
 
     lis_obj * error;
+    lis_obj * return_from_value;
 
     lis_obj * symbol_t;
     lis_obj * symbol_nil;
