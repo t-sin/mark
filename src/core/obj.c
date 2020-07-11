@@ -84,6 +84,8 @@ lis_obj * _make_lexical_env() {
     LIS_LENV(env) = (lis_lexical_env *)malloc(sizeof(lis_lexical_env));
     LIS_LENV(env)->var = _make_table(256);
     LIS_LENV(env)->fn = _make_table(256);
+    LIS_LENV(env)->btags = _make_table(10);
+    LIS_LENV(env)->gtags = _make_table(10);
     return env;
 }
 

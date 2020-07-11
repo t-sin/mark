@@ -1,3 +1,5 @@
+#include <setjmp.h>
+
 #include "../util/table.h"
 
 #include "obj.h"
@@ -272,3 +274,24 @@ lis_obj * lis_macro_defun(lis_obj * genv, lis_obj * args) {
 
     return expansion;
 }
+
+lis_obj * lis_sf_block(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+    lis_obj * new_lenv = _make_lexical_env(LIS_ENV_LEXICAL);
+    LIS_ENV(new_lenv)->parent = lenv;
+
+    lis_obj * name = _list_car(genv, args);
+    jmp_buf * block = (jmp_buf *)malloc(sizeof(jmp_buf));
+
+    _table_add(LIS_LENV(new_lenv)->btags, (void *)name, (void *)block);
+
+    lis_obj * val = NULL;
+
+    if (setjmp(*block) == 0) {
+        val = lis_sf_progn(genv, new_lenv, _list_cdr(genv, args));
+    } else {
+        val = NULL;
+    }
+
+    return val;
+}
+

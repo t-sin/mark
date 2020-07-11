@@ -184,6 +184,8 @@ typedef struct lis_dynamic_env {
 typedef struct lis_lexical_env {
     _table * var;
     _table * fn;
+    _table * gtags;
+    _table * btags;
 } lis_lexical_env;
 
 typedef struct lis_env {

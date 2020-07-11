@@ -19,4 +19,9 @@ lis_obj * lisp_values(lis_obj * genv, lis_obj * args);
 lis_obj * lis_sf_fset(lis_obj * genv, lis_obj * lenv, lis_obj * args);
 lis_obj * lis_macro_defun(lis_obj * genv, lis_obj * args);
 
+lis_obj * lis_sf_block(lis_obj * genv, lis_obj * lenv, lis_obj * args);
+lis_obj * lis_sf_return_from(lis_obj * genv, lis_obj * lenv, lis_obj * args);
+
+lis_obj * lis_sf_unwind_protect(lis_obj * genv, lis_obj * lenv, lis_obj * args);
+
 #endif
