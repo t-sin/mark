@@ -1,24 +1,51 @@
 # Sciurus: language design
 
-## basic features
+Here is some design memo for a Lisp named Sciurus.
+
+## goal
+
+Sciurus is a Lisp implementation.
+Its goal is, for now, to implement a program called "Mark",
+a text-basee interactive squirrel simulation program.
+
+## features (goals)
+
+Sciurus has these features below:
 
 - Common Lisp based
     - reader system
     - macro system
     - stream based I/O
     - image oriented
-- Some CL features are refined
-    - case-sensitive characters
+    - multiple values
+- some CL features are refined
+    - case-sensitive reader
     - nested package system
     - standard features consists of several packages
-- foreign function interface
-- core features are separated into each packages
-- compile feature (on a virtual machine)
-- threading or asynchronous processing (for Mark)
-- event driven programming (for Mark)
-- text processing like regex (for Mark)
+- towards Mark
+    - threading or asynchronous processing
+    - event driven programming
+    - text processing like regex
+- compilation (on a virtual machine)
 
-### package design
+## language implementation policy
+
+Sciurus is hosted on a virtual machine, for several reasons.
+First, I thought it is handy to implement image oriented language.
+Second, to gives scope to optimize some branching/jumping operations like `tagbody`/`go`.
+On a tree-walking interpreter, I have no idea to optimize that situations.
+Third, I have never implemented languages on virtual machines.
+
+I want Sciurus be "image oriented" like Common Lisp, Sciurus should have compilation API,
+but I also want to provide abctraction for compilation details from Sciurus users.
+Sciurus users should not care what Sciurus is running on, VM, interpreter, or as native code.
+So compilation and image package (these are in *package design* section) are available after switching implementation laygers, for instance, a case of introducing native compiler.
+
+## virtual machine
+
+TBD
+
+## package design
 
 - type
     - characters
@@ -38,7 +65,7 @@
 - algorithm
     - sort
 
-- kernel features
+- kernel
     - symbols
     - packages
     - evaluation
@@ -51,16 +78,16 @@
             - unwind-protect
         - if
 
-- I/O features
+- I/O
     - streams (extensible like gray streams)
     - reader
         - hash table literals
         - array literals
     - printer
 
-- system features
+- system
     - garabge collection
     - compilation/image dumping
 
-- additional features
+- optional
     - CLOS-like object system
