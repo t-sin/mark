@@ -1,4 +1,4 @@
-# Sciurus: Language design
+# Sciurus: language design
 
 ## basic features
 
@@ -9,7 +9,8 @@
     - image oriented
 - Some CL features are refined
     - case-sensitive characters
-    - package splitted standard features
+    - nested package system
+    - standard features consists of several packages
 - foreign function interface
 - core features are separated into each packages
 - compile feature (on a virtual machine)
@@ -19,29 +20,36 @@
 
 ### package design
 
-- types
+- type
     - characters
     - strings
-    - symbols
-    - packages
     - functions
     - conses
     - sequences (extensible)
-    - equality (eq, ...)
+    - utilities
+        - equality (eq, ...)
+        - type-of, typep
 
 - data structures
     - hash tables
     - arrays
-    
+    - (more data structures?)
+
+- algorithm
+    - sort
+
 - kernel features
+    - symbols
+    - packages
     - evaluation
     - macros
     - controll flows
-        - block/return
-        - go/tagbody
-        - throw/catch
+        - primitives
+            - block/return
+            - go/tagbody
+            - throw/catch
+            - unwind-protect
         - if
-    - object systems?
 
 - I/O features
     - streams (extensible like gray streams)
@@ -55,4 +63,4 @@
     - compilation/image dumping
 
 - additional features
-    - object system
+    - CLOS-like object system
