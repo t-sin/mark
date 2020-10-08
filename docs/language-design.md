@@ -52,7 +52,9 @@ Supported types on VM are follows:
 - arrays
 - conses
 
-For concurrency, the VM will have multiple D registers and manupilate those to schedule multiple tasks ([@athos told me this idea. Thanks!](https://twitter.com/athos0220/status/1314071624287617024))
+For concurrency, the VM will have multiple D registers and manupilate those to schedule multiple tasks
+([@athos told me this idea. Thanks!](https://twitter.com/athos0220/status/1314071624287617024)).
+To implement task scheduling I bought a book ["The Art of Concurrency"](https://github.com/Geal/nom/wiki/Error-management) (off cource, of Japanese translation)...
 
 ## TODO: filling the gap between the VM and Sciurus
 
