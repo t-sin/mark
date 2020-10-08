@@ -36,7 +36,7 @@ Second, to gives scope to optimize some branching/jumping operations like `tagbo
 On a tree-walking interpreter, I have no idea to optimize that situations.
 Third, I have never implemented languages on virtual machines.
 
-I want Sciurus be "image oriented" like Common Lisp, Sciurus should have compilation API,
+I want Sciurus to be "image oriented" like Common Lisp, Sciurus should have compilation API,
 but I also want to provide abctraction for compilation details from Sciurus users.
 Sciurus users should not care what Sciurus is running on, VM, interpreter, or as native code.
 So compilation and image package (these are in *package design* section) are available after switching implementation laygers, for instance, a case of introducing native compiler.
