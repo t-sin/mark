@@ -49,25 +49,27 @@ TBD
 
 - type
     - characters
+    - arrays
     - strings
     - functions
     - conses
     - sequences (extensible)
+    - structures
+    - symbols
+    - packages
     - utilities
         - equality (eq, ...)
         - type-of, typep
 
 - data structures
     - hash tables
-    - arrays
     - (more data structures?)
 
 - algorithm
     - sort
+    - (more algorithms?)
 
 - kernel
-    - symbols
-    - packages
     - evaluation
     - macros
     - controll flows
