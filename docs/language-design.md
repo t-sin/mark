@@ -23,7 +23,7 @@ Sciurus has these features below:
     - nested package system
     - standard features consists of several packages
 - towards Mark
-    - threading or asynchronous processing
+    - concurrency
     - event driven programming
     - text processing like regex
 - compilation (on a virtual machine)
