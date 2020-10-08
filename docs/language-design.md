@@ -43,7 +43,18 @@ So compilation and image package (these are in *package design* section) are ava
 
 ## virtual machine
 
-TBD
+The virtual machine for Sciurus is Peter Landin's SECD machine based stack machine.
+
+Supported types on VM are follows:
+
+- bytes
+- integers
+- arrays
+- conses
+
+For concurrency, the VM will have multiple D registers and manupilate those to schedule multiple tasks ([This idea is told by @athos. Thanks!](https://twitter.com/athos0220/status/1314071624287617024))
+
+## TODO: filling the gap between Sciurus and the VM
 
 ## package design
 
