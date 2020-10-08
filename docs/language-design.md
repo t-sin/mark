@@ -54,7 +54,7 @@ Supported types on VM are follows:
 
 For concurrency, the VM will have multiple D registers and manupilate those to schedule multiple tasks ([@athos told me this idea. Thanks!](https://twitter.com/athos0220/status/1314071624287617024))
 
-## TODO: filling the gap between Sciurus and the VM
+## TODO: filling the gap between the VM and Sciurus
 
 ## package design
 
