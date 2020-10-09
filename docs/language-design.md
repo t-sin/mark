@@ -102,7 +102,7 @@ To implement task scheduling I bought a book ["The Art of Concurrency"](https://
     - printer
 
 - system
-    - garabge collection
+    - garbage collection
     - compilation/image dumping
 
 - optional
