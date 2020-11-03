@@ -28,4 +28,6 @@ void _table_add(_table * table, void * key, void * value);
 _table_entry * _table_find(_table * table, void * key);
 void _table_remove(_table * table, void * key);
 
+_table * _copy_table(_table * table);
+
 #endif

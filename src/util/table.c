@@ -127,3 +127,25 @@ void _table_remove(_table * table, void * key) {
         entry = entry->next;
     }
 }
+
+_table * _copy_table(_table * table) {
+    _table * new_table = (_table *)malloc(sizeof(_table));
+    new_table->size = table->size;
+    new_table->array = (_table_entry *)malloc(sizeof(_table_entry) * new_table->size);
+    new_table->num = table->num;
+    new_table->hash_fn = table->hash_fn;
+    new_table->eq_fn = table->eq_fn;
+
+     for (size_t i=0; i<table->size; i++) {
+        _table_entry * e = table->array + i;
+        if (e->key != NULL) {
+            while (e != NULL) {
+                _entry_set(new_table->array, new_table->size, e->key, e->value,
+                           table->hash_fn, table->eq_fn);
+                e = e->next;
+            }
+        }
+    }
+
+    return new_table;
+}
