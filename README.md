@@ -1,5 +1,7 @@
 # Mark - A squirrel who is implemented
 
+This `virtual-machine` branch is closed.
+
 > Mark wakes up.
 > --- "The Squirrel Awakes" by Toh Enjoe
 
