@@ -298,6 +298,7 @@ lis_obj * lis_sf_block(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 lis_obj * lis_sf_return_from(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     lis_obj * name = _list_car(genv, args);
 
+    LIS_GENV(genv)->jump_tag = name;
     jmp_buf * block = get_block(lenv, name);
 
     if (block == NULL) {
@@ -323,4 +324,57 @@ lis_obj * lis_sf_return_from(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
 }
 
 lis_obj * lis_sf_unwind_protect(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
+    lis_obj * protected = _list_nth(genv, INT(0), args);
+    lis_obj * cleanup = _list_nth(genv, INT(1), args);
+
+    jmp_buf * unwind_point = (jmp_buf *)malloc(sizeof(jmp_buf));
+
+    // replace all available jmp_buf with unwind_point
+    _table * orig_btags = LIS_LENV(lenv)->btags;
+    _table * new_btags = _copy_table(orig_btags);
+
+    LIS_LENV(lenv)->btags = new_btags;
+
+    for (size_t i=0; i<new_btags->size; i++) {
+        _table_entry * entry = new_btags->array + i;
+
+        if (entry == NULL) {
+            continue;
+        }
+
+        while (entry != NULL) {
+            entry->value = unwind_point;
+            entry = entry->next;
+        }
+    }
+
+    if (setjmp(*unwind_point) == 0) {
+        return eval(genv, lenv, protected);
+    } else {
+        eval(genv, lenv, cleanup);
+        lis_obj * tag = LIS_GENV(genv)->jump_tag;
+
+        if (tag == NULL) {
+            lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+            stream_write_string(buffer, LSTR(U"invalid tag: `"));
+            print(genv, tag, buffer);
+            stream_write_string(buffer, LSTR(U"`"));
+            LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+            return NULL;
+        }
+
+        LIS_LENV(lenv)->btags = orig_btags;
+        jmp_buf * block = get_block(lenv, tag);
+        if (tag == NULL) {
+            lis_stream * buffer = make_lis_stream(1024, LIS_STREAM_INOUT, LIS_STREAM_TEXT);
+            stream_write_string(buffer, LSTR(U"invalid tag: `"));
+            print(genv, tag, buffer);
+            stream_write_string(buffer, LSTR(U"`"));
+            LIS_GENV(genv)->error = _make_error(stream_output_to_string(buffer));
+            return NULL;
+        }
+
+        longjmp(*block, 1);
+        return NULL;
+    }
 }

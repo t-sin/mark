@@ -45,6 +45,7 @@ void init_special_forms(lis_global_env * genv) {
     define_special_form(U"%fset", sym_fset, lis_sf_fset);
     define_special_form(U"block", sym_block, lis_sf_block);
     define_special_form(U"return-from", sym_return_from, lis_sf_return_from);
+    define_special_form(U"unwind-protect", sym_unwind_protect, lis_sf_unwind_protect);
     // flet
 }
 
@@ -218,6 +219,7 @@ lis_obj * init_global_env() {
     lis_global_env * genv;
     genv = (lis_global_env *)malloc(sizeof(lis_global_env));
     genv->error = NULL;
+    genv->jump_tag = NULL;
     genv->return_from_value = NULL;
     memset(genv, 0, sizeof(lis_global_env));
     genv->package_table = _make_table(256);
