@@ -289,7 +289,7 @@ lis_obj * lis_sf_block(lis_obj * genv, lis_obj * lenv, lis_obj * args) {
     if (setjmp(*block) == 0) {
         val = lis_sf_progn(genv, new_lenv, _list_cdr(genv, args));
     } else {
-        val = NULL;
+        val = LIS_GENV(genv)->return_from_value;
     }
 
     return val;
