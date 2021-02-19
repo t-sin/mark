@@ -1,2 +1,0 @@
-subdir('util')
-subdir('core')
