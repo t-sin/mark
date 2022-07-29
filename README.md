@@ -13,7 +13,7 @@
 
 ## Mark Versions
 
-- Mark A: A time-scheduled squrrel.
+- [Mark A](MarkA/README.md): A time-scheduled squrrel.
 - Mark B: An interactive squerrel via keyboard inputs.
 - Mark C: Many squirrels interacts each other, implemented with OO-style archtecture.
 - Mark D: Actor model archtecture (parallelism with functional programming style)???
