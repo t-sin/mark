@@ -18,6 +18,10 @@
 - Mark C: Many squirrels interacts each other, implemented with OO-style archtecture.
 - Mark D: Actor model archtecture (parallelism with functional programming style)???
 
+## Author
+
+- t-sin (<shinichi.tanaka45@gmail.com>)
+
 ## License
 
 These *Mark*s is licensed under the GNU General Public License Version 3. See [COPYING](COPYING) for details.
