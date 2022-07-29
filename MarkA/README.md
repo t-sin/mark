@@ -101,3 +101,8 @@ The Sciurus language features:
     (println "count %n" *count*))
   (set *count* (+ *count* 1)))
 ```
+
+## memo
+
+- to schedule events, use POSIX [`settimer()`](https://linuxjm.osdn.jp/html/LDP_man-pages/man2/getitimer.2.html) and handling UNIX signals
+- for time information, use [`gmtime_r()`](https://linuxjm.osdn.jp/html/LDP_man-pages/man3/ctime.3.html)
