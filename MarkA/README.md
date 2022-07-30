@@ -94,12 +94,12 @@ The Sciurus language features:
 
 ```
 ;; internal states
-(defvar *count* 0)
+(defvar count 0)
 
 (define-tick-event 'notify-every-10-ticks
-  (when (= (% *count* 10) 0)
-    (println "count %n" *count*))
-  (set *count* (+ *count* 1)))
+  (when (= (% count 10) 0)
+    (println "count %n" count))
+  (set count (+ count 1)))
 ```
 
 ## memo
