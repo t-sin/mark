@@ -9,7 +9,6 @@
 - customizable behavior with some events
   - per-tick events
   - time events
-  - probabilistic events
   - complex events with internal states and composing events above
 - switch behavior via run-time variables
 
@@ -45,10 +44,10 @@ The Sciurus language features:
   - slicing
   - index accessing
 - formatted string outputs
+- random number generation
 - event registration operations to the run-time scheduler
   - per-tick events
   - time events
-  - probabilistic events
   - composing events above
 - run-time variables
 
@@ -100,6 +99,13 @@ The Sciurus language features:
   (when (= (% count 10) 0)
     (println "count %n" count))
   (set count (+ count 1)))
+```
+
+```
+;; probabilistic outputs (50%)
+(define-tick-event 'notify-at-random
+  (when (= (random 1) 0)
+    (println "hi!")))
 ```
 
 ## memo
